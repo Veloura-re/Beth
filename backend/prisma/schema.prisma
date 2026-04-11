@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  
+  users     User[]
+  campaigns Campaign[]
+}
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  password       String
+  name           String
+  role           Role          @default(AGENT)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  scans           Scan[]          @relation("AgentScans")
+  painterScans    Scan[]          @relation("PainterScans")
+  qrCodes         QRCode[]
+  cashouts        CashoutRequest[]
+  payouts         PainterPayout[]  @relation("PainterReiceved")
+  recordedPayouts PainterPayout[]  @relation("AdminRecorded")
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  AGENT
+  PAINTER
+}
+
+model Campaign {
+  id             String       @id @default(uuid())
+  name           String
+  description    String?
+  budget         Float        @default(0)
+  rewardPerScan  Int          @default(10)
+  painterMargin  Float        @default(0.05)
+  systemRevenue  Float        @default(0.25)
+  status         String       @default("ACTIVE")
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+  
+  qrCodes      QRCode[]
+  scans        Scan[]
+}
+
+model QRCode {
+  id             String    @id @default(uuid())
+  campaignId     String
+  campaign       Campaign  @relation(fields: [campaignId], references: [id])
+  painterId      String
+  painter        User      @relation(fields: [painterId], references: [id])
+  rewardPoints   Int
+  expirationDate DateTime?
+  status         String    @default("ACTIVE")
+  locationName   String?
+  gps            String?
+  createdAt      DateTime  @default(now())
+  
+  scans          Scan[]
+}
+
+model Scan {
+  id             String   @id @default(uuid())
+  qrId           String
+  qr             QRCode   @relation(fields: [qrId], references: [id])
+  agentId        String
+  agent          User     @relation("AgentScans", fields: [agentId], references: [id])
+  painterId      String
+  painter        User     @relation("PainterScans", fields: [painterId], references: [id])
+  campaignId     String
+  campaign       Campaign @relation(fields: [campaignId], references: [id])
+  timestamp      DateTime @default(now())
+  
+  lat            Float?
+  lng            Float?
+  
+  pointsEarned   Int
+  painterEarned  Float
+  systemRevenue  Float
+}
+
+model CashoutRequest {
+  id        String   @id @default(uuid())
+  agentId   String
+  agent     User     @relation(fields: [agentId], references: [id])
+  amount    Float
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED, PAID
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PainterPayout {
+  id          String   @id @default(uuid())
+  painterId   String
+  painter     User     @relation("PainterReiceved", fields: [painterId], references: [id])
+  adminId     String
+  admin       User     @relation("AdminRecorded", fields: [adminId], references: [id])
+  amount      Float
+  timestamp   DateTime @default(now())
+}
+
+model Invitation {
+  id             String       @id @default(uuid())
+  email          String
+  token          String       @unique
+  role           Role
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  expiresAt      DateTime
+  status         String       @default("PENDING") // PENDING, ACCEPTED, EXPIRED
+}

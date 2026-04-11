@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Inter+Tight:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #ff0033;
+  --primary-rgb: 255, 0, 51;
+  --primary-gradient: linear-gradient(135deg, #ff0033 0%, #cc0029 100%);
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-bright: rgba(255, 255, 255, 0.15);
+  --red-glow: 0 0 20px rgba(255, 0, 51, 0.3);
+  --red-glow-strong: 0 0 35px rgba(255, 0, 51, 0.5);
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --radius: 12px;
+}
+
+[data-theme='light'] {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card-bg: rgba(0, 0, 0, 0.03);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Inter Tight', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Cyber Grid Background */
+.cyber-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.02;
+  pointer-events: none;
+  z-index: 1000;
+  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+}
+
+/* Glassmorphism */
+.glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+}
+
+.glass-nav {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 15px rgba(255, 0, 51, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(255, 0, 51, 0.4); }
+  100% { box-shadow: 0 0 15px rgba(255, 0, 51, 0.2); }
+}
+
+.glow-btn {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--red-glow);
+}
+
+.glow-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--red-glow-strong);
+}
+
+.text-gradient {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
