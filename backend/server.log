@@ -1,0 +1,75 @@
+
+> backend@1.0.0 dev
+> ts-node-dev --respawn --transpile-only src/index.ts
+
+[INFO] 18:38:10 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 6.0.2)
+◇ injected env (5) from .env // tip: ⌘ suppress logs { quiet: true }
+Server running on port 5000
+(node:13903) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[INFO] 18:39:01 Restarting: /home/liora/Videos/beth/backend/src/routes/auth.ts has been modified
+◇ injected env (5) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Server running on port 5000
+(node:13940) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Login error: PrismaClientKnownRequestError: 
+Invalid `prisma.user.findUnique()` invocation in
+/home/liora/Videos/beth/backend/src/routes/auth.ts:14:36
+
+  11 router.post('/login', async (req, res) => {
+  12   const { email, password } = req.body;
+  13   try {
+→ 14     const user = await prisma.user.findUnique(
+Error opening a TLS connection: self-signed certificate in certificate chain
+    at Gr.handleRequestError (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at a (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at /home/liora/Videos/beth/backend/src/routes/auth.ts:14:18 {
+  code: 'P1011',
+  meta: {
+    modelName: 'User',
+    driverAdapterError: DriverAdapterError: TlsConnectionError
+        at PrismaPgAdapter.onError (/home/liora/Videos/beth/backend/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/home/liora/Videos/beth/backend/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at PrismaPgAdapter.queryRaw (/home/liora/Videos/beth/backend/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at e.interpretNode (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at e.interpretNode (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:213:41)
+        at e.interpretNode (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at e.run (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at execute (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at jt.request (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+[INFO] 18:39:48 Restarting: /home/liora/Videos/beth/backend/src/index.ts has been modified
+◇ injected env (5) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Server running on port 5000
+(node:13980) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13980) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.

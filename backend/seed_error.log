@@ -1,0 +1,44 @@
+🌱 Seeding Beth Reward System...
+(node:12274) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PrismaClientKnownRequestError: 
+Invalid `prisma.organization.upsert()` invocation in
+/home/liora/Videos/beth/backend/prisma/seed.ts:15:41
+
+  12 console.log('🌱 Seeding Beth Reward System...');
+  13 
+  14 // 1. Create Default Organization
+→ 15 const org = await prisma.organization.upsert(
+Error opening a TLS connection: self-signed certificate in certificate chain
+    at Gr.handleRequestError (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async main (/home/liora/Videos/beth/backend/prisma/seed.ts:15:15) {
+  code: 'P1011',
+  meta: {
+    modelName: 'Organization',
+    driverAdapterError: DriverAdapterError: TlsConnectionError
+        at PrismaPgAdapter.onError (/home/liora/Videos/beth/backend/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at /home/liora/Videos/beth/backend/node_modules/@prisma/adapter-pg/dist/index.js:720:68
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.startTransaction (/home/liora/Videos/beth/backend/node_modules/@prisma/adapter-pg/dist/index.js:720:18)
+        at async qt.#r (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:163:31)
+        at async qt.startInternalTransaction (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:96:12)
+        at async e.interpretNode (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:259:33)
+        at async e.run (/home/liora/Videos/beth/backend/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async execute (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/home/liora/Videos/beth/backend/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}

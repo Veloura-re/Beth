@@ -26,6 +26,7 @@ router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (
         email,
         token,
         role: role as Role,
+        organizationId: (req as AuthRequest).user?.organizationId || '',
         expiresAt,
       },
     });
@@ -33,7 +34,7 @@ router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (
     const inviteLink = `${process.env.FRONTEND_URL}/invite?token=${token}&email=${email}`;
 
     // Send email via Resend
-    if (process.env.RESEND_API_KEY) {
+    if (resend) {
       await resend.emails.send({
         from: 'Beth Rewards <onboarding@resend.dev>',
         to: email,

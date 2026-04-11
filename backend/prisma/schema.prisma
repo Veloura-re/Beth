@@ -11,8 +11,9 @@ model Organization {
   name      String
   createdAt DateTime   @default(now())
   
-  users     User[]
-  campaigns Campaign[]
+  users       User[]
+  campaigns   Campaign[]
+  invitations Invitation[]
 }
 
 model User {
