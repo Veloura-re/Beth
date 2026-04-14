@@ -1,70 +1,236 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  SafeAreaView, 
+  TouchableOpacity, 
+  StatusBar,
+  ActivityIndicator,
+  RefreshControl
+} from 'react-native';
 import { Theme } from '../theme/theme';
-import { Zap, History, Wallet, Camera } from 'lucide-react-native';
+import { 
+  Menu, 
+  LayoutDashboard, 
+  Users, 
+  QrCode, 
+  Wallet, 
+  ShieldAlert, 
+  Shapes, 
+  LogOut,
+  UserPlus,
+  Target,
+  ArrowUpRight,
+  Shield
+} from 'lucide-react-native';
+import { apiFetch, logout } from '../utils/api';
+import Sidebar from '../components/Sidebar';
 
 export default function DashboardScreen({ navigation }) {
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  const loadData = async () => {
+    try {
+      const data = await apiFetch('/users/me');
+      setProfile(data);
+    } catch (error) {
+      console.error('Failed to load profile', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadData();
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace('Login');
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.center]}>
+        <ActivityIndicator color={Theme.primary} />
+      </View>
+    );
+  }
+
+  const role = profile?.role;
+  const isAgent = role === 'AGENT';
+  const isAdmin = role === 'ADMIN' || role === 'SUPERADMIN';
+
+  const AdminActionCard = ({ title, subtitle, icon: Icon, onPress }) => (
+    <TouchableOpacity 
+      style={styles.actionCard}
+      onPress={onPress}
+      activeOpacity={0.9}
+    >
+      <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+        <Icon color="black" size={24} />
+      </View>
+      <View style={styles.actionInfo}>
+        <Text style={styles.actionTitle}>{title}</Text>
+        <Text style={styles.actionDesc}>{subtitle}</Text>
+      </View>
+      <View style={styles.actionBtn}>
+         <ArrowUpRight color="black" size={16} />
+      </View>
+    </TouchableOpacity>
+  );
+
   const stats = [
-    { label: 'Total Points', value: '1,450', icon: Zap },
-    { label: 'Earnings', value: '$145.00', icon: Wallet },
+    { label: isAdmin ? 'Platform Volume' : 'Volume', value: profile?.performance?.totalScans || 0, id: '01' },
+    { label: isAdmin ? 'Total Units' : 'Units', value: profile?.performance?.availableBalance || 0, id: '02' },
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.welcomeText}>Welcome Back,</Text>
-            <Text style={styles.nameText}>Agent Liora</Text>
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => setSidebarVisible(true)} style={styles.exitBtn}>
+          <Menu color="black" size={24} />
+        </TouchableOpacity>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>{profile?.name?.toUpperCase()}</Text>
+          <View style={[styles.roleBadge, { backgroundColor: isAdmin ? '#000000' : Theme.border }]}>
+            <Text style={[styles.roleBadgeText, { color: isAdmin ? '#FFFFFF' : '#000000' }]}>
+              {profile?.role || 'FETCHING'}
+            </Text>
           </View>
-          <TouchableOpacity style={styles.profileCircle}>
-            <Text style={styles.profileLetter}>L</Text>
-          </TouchableOpacity>
+        </View>
+        <View style={styles.placeholder} />
+      </View>
+
+      <ScrollView 
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <View style={styles.sectionHeader}>
+           <Text style={styles.sectionLabel}>System Status</Text>
+           <View style={styles.hLine} />
         </View>
 
-        {/* Stats Grid */}
         <View style={styles.statsGrid}>
-          {stats.map((stat, i) => (
-            <View key={i} style={styles.statCard}>
-              <stat.icon color={Theme.primary} size={24} style={styles.statIcon} />
-              <Text style={styles.statLabel}>{stat.label}</Text>
-              <Text style={styles.statValue}>{stat.value}</Text>
+          {stats.map((s, i) => (
+            <View key={i} style={[styles.statCard, i % 2 === 0 && styles.borderRight]}>
+              <Text style={styles.statId}>{s.id}</Text>
+              <Text style={styles.statLabel}>{s.label}</Text>
+              <Text style={styles.statValue}>{s.value.toLocaleString()}</Text>
+              <View style={styles.statFooter}>
+                 <ArrowUpRight size={12} color={Theme.muted} />
+                 <Text style={styles.statTrend}>STABLE</Text>
+              </View>
             </View>
           ))}
         </View>
 
-        {/* Scan Button (Large) */}
-        <TouchableOpacity 
-          style={styles.scanButton}
-          onPress={() => navigation.navigate('Scanner')}
-        >
-          <View style={styles.scanInner}>
-            <Camera color="white" size={40} />
-            <Text style={styles.scanText}>SCAN QR CODE</Text>
-            <Text style={styles.scanSubtext}>Earn rewards instantly</Text>
-          </View>
-        </TouchableOpacity>
-
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Rewards')}>
-            <Text style={styles.viewAll}>View All</Text>
-          </TouchableOpacity>
+           <Text style={styles.sectionLabel}>Structural Directives</Text>
+           <View style={styles.hLine} />
         </View>
 
-        {[1, 2, 3].map((i) => (
-          <View key={i} style={styles.activityCard}>
-            <View style={styles.activityIcon}>
-              <Zap color={Theme.primary} size={20} />
-            </View>
-            <View style={styles.activityInfo}>
-              <Text style={styles.activityTitle}>Scanned: Times Square</Text>
-              <Text style={styles.activityDate}>2 hours ago</Text>
-            </View>
-            <Text style={styles.activityPoints}>+10 pts</Text>
+        {(role === 'SUPERADMIN' || role === 'ADMIN') && (
+           <View>
+              {role === 'SUPERADMIN' && (
+                <AdminActionCard 
+                  title="ADMIN REGISTRY" 
+                  subtitle="Manage high-level organizational nodes." 
+                  icon={Shield} 
+                  onPress={() => navigation.navigate('Personnel', { roleType: 'ADMIN' })}
+                />
+              )}
+              <AdminActionCard 
+                title="PERSONNEL REGISTRY" 
+                subtitle="Manage and monitor field agent rosters." 
+                icon={UserPlus} 
+                onPress={() => navigation.navigate('Personnel', { roleType: 'AGENT' })}
+              />
+              <AdminActionCard 
+                title="SYSTEM DIRECTIVES" 
+                subtitle="Initialize and oversee active reward protocols." 
+                icon={Target} 
+                onPress={() => navigation.navigate('Campaigns')}
+              />
+              <AdminActionCard 
+                title="PROTOCOL REGISTRY" 
+                subtitle="Technical identifier and QR deployment registry." 
+                icon={QrCode} 
+                onPress={() => navigation.navigate('Protocols')}
+              />
+              <AdminActionCard 
+                title="TREASURY LEDGER" 
+                subtitle="Fiscal oversight and disbursement records." 
+                icon={Wallet} 
+                onPress={() => navigation.navigate('Treasury')}
+              />
+           </View>
+        )}
+
+        {role === 'AGENT' && (
+          <View>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => navigation.navigate('Scanner')}
+              activeOpacity={0.9}
+            >
+              <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+                <ShieldAlert color="black" size={24} />
+              </View>
+              <View style={styles.actionInfo}>
+                <Text style={styles.actionTitle}>INITIALIZE SCAN</Text>
+                <Text style={styles.actionDesc}>Technical ID verification and Capture</Text>
+              </View>
+              <View style={styles.actionBtn}>
+                 <ArrowUpRight color="black" size={16} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => navigation.navigate('Rewards')}
+              activeOpacity={0.9}
+            >
+              <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+                <Shapes color="black" size={24} />
+              </View>
+              <View style={styles.actionInfo}>
+                <Text style={styles.actionTitle}>VALUE REGISTRY</Text>
+                <Text style={styles.actionDesc}>Live Reward and Performance Pulse</Text>
+              </View>
+              <View style={styles.actionBtn}>
+                 <ArrowUpRight color="black" size={16} />
+              </View>
+            </TouchableOpacity>
           </View>
-        ))}
+        )}
+
+        <View style={styles.footerNote}>
+           <Text style={styles.footerNoteText}>
+             ALL OPERATIONS LOGGED PURSUANT TO MERSI ARCHITECTURE STANDARDS V 16.2.0
+           </Text>
+        </View>
       </ScrollView>
+
+      <Sidebar 
+        visible={sidebarVisible} 
+        onClose={() => setSidebarVisible(false)}
+        navigation={navigation}
+        currentRole={profile?.role}
+        onLogout={handleLogout}
+      />
     </SafeAreaView>
   );
 }
@@ -74,144 +240,178 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Theme.background,
   },
-  scrollContent: {
-    padding: 24,
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 32,
+    borderBottomWidth: 1,
+    borderBottomColor: Theme.border,
+    backgroundColor: '#FFFFFF',
+  },
+  headerTextContainer: {
     alignItems: 'center',
-    marginBottom: 32,
-    marginTop: 16,
   },
-  welcomeText: {
-    color: Theme.muted,
-    fontSize: 16,
+  roleBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginTop: 6,
+    borderWidth: 1,
+    borderColor: '#000000',
   },
-  nameText: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: '800',
+  roleBadgeText: {
+    fontSize: 8,
+    fontWeight: '900',
+    letterSpacing: 2,
   },
-  profileCircle: {
+  placeholder: {
     width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: Theme.surface,
-    borderWidth: 1,
-    borderColor: Theme.border,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  profileLetter: {
-    color: Theme.primary,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 32,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: Theme.surface,
-    borderRadius: Theme.radius,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: Theme.border,
-  },
-  statIcon: {
-    marginBottom: 12,
-  },
-  statLabel: {
+  headerSub: {
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 3,
     color: Theme.muted,
-    fontSize: 12,
+    textTransform: 'uppercase',
     marginBottom: 4,
   },
-  statValue: {
-    color: 'white',
+  headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '200',
+    color: '#000000',
+    letterSpacing: -0.5,
   },
-  scanButton: {
-    backgroundColor: Theme.primary,
-    borderRadius: 24,
-    height: 200,
-    marginBottom: 40,
-    overflow: 'hidden',
-    shadowColor: Theme.primary,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  scanInner: {
-    flex: 1,
+  exitBtn: {
+    width: 48,
+    height: 48,
+    borderWidth: 1,
+    borderColor: Theme.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scanText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: '900',
-    marginTop: 12,
-    letterSpacing: 1,
-  },
-  scanSubtext: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 14,
-    marginTop: 4,
+  content: {
+    padding: 32,
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    gap: 16,
+    marginBottom: 24,
   },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+  sectionLabel: {
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 2,
+    color: Theme.muted,
+    textTransform: 'uppercase',
   },
-  viewAll: {
-    color: Theme.primary,
-    fontWeight: '600',
+  hLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Theme.border,
   },
-  activityCard: {
+  statsGrid: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Theme.surface,
-    borderRadius: Theme.radius,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: Theme.border,
+    marginBottom: 48,
   },
-  activityIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 0, 51, 0.1)',
+  statCard: {
+    flex: 1,
+    padding: 24,
+  },
+  borderRight: {
+    borderRightWidth: 1,
+    borderRightColor: Theme.border,
+  },
+  statId: {
+    fontSize: 24,
+    fontWeight: '200',
+    color: '#000000',
+    opacity: 0.1,
+    fontStyle: 'italic',
+    marginBottom: 8,
+  },
+  statLabel: {
+    fontSize: 8,
+    fontWeight: '900',
+    letterSpacing: 2,
+    color: Theme.muted,
+    textTransform: 'uppercase',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#000000',
+    marginBottom: 12,
+  },
+  statFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  statTrend: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: Theme.muted,
+  },
+  actionCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 24,
+    borderWidth: 1,
+    borderColor: Theme.border,
+    marginBottom: 12,
+  },
+  actionIconWrapper: {
+    width: 56,
+    height: 56,
+    backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    marginRight: 20,
   },
-  activityInfo: {
+  actionInfo: {
     flex: 1,
   },
-  activityTitle: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginBottom: 2,
-  },
-  activityDate: {
-    color: Theme.muted,
+  actionTitle: {
     fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 2,
+    color: '#000000',
+    marginBottom: 4,
   },
-  activityPoints: {
-    color: Theme.primary,
-    fontWeight: '800',
-    fontSize: 16,
+  actionDesc: {
+    fontSize: 10,
+    color: Theme.muted,
+    fontWeight: '600',
   },
+  actionBtn: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footerNote: {
+    marginTop: 48,
+    borderTopWidth: 1,
+    borderTopColor: Theme.border,
+    paddingTop: 24,
+  },
+  footerNoteText: {
+    fontSize: 8,
+    fontWeight: '900',
+    letterSpacing: 1.5,
+    color: Theme.muted,
+    opacity: 0.4,
+    textAlign: 'center',
+    lineHeight: 14,
+  }
 });

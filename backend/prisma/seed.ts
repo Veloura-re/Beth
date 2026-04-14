@@ -1,4 +1,5 @@
 import 'dotenv/config';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import { PrismaClient, Role } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
@@ -12,9 +13,19 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  console.log('🚨 Purging existing system data...');
+  // Delete in order to respect dependencies
+  await prisma.scan.deleteMany();
+  await prisma.qRCode.deleteMany();
+  await prisma.campaign.deleteMany();
+  await prisma.cashoutRequest.deleteMany();
+  await prisma.painterPayout.deleteMany();
+  await prisma.invitation.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.organization.deleteMany();
+  
   console.log('🌱 Seeding Beth Reward System...');
 
-  // 1. Create Default Organization
   const org = await prisma.organization.upsert({
     where: { id: 'default-org-id' },
     update: {},
@@ -28,7 +39,6 @@ async function main() {
     { email: 'super@beth.com', name: 'Super Admin', role: Role.SUPERADMIN, password: 'SuperPass123' },
     { email: 'admin@beth.com', name: 'Local Admin', role: Role.ADMIN, password: 'AdminPass123' },
     { email: 'agent@beth.com', name: 'Field Agent', role: Role.AGENT, password: 'AgentPass123' },
-    { email: 'painter@beth.com', name: 'Master Painter', role: Role.PAINTER, password: 'PainterPass123' },
   ];
 
   for (const u of users) {
@@ -48,7 +58,58 @@ async function main() {
         organizationId: org.id,
       },
     });
-    console.log(`✅ Created ${u.role}: ${u.email}`);
+    console.log(`✅ Provisioned ${u.role}: ${u.email}`);
+  }
+
+  // CREATE BOOTSTRAP DATA
+  console.log('📦 Provisioning Strategic Initiatives...');
+  const c1 = await prisma.campaign.create({
+    data: {
+      name: 'AURORA OVERLAY PROTOCOL',
+      description: 'Strategic visual branding for regional depots.',
+      rewardPerScan: 15,
+      painterMargin: 0.10,
+      organizationId: org.id
+    }
+  });
+
+  const c2 = await prisma.campaign.create({
+    data: {
+      name: 'MERIDIAN SCAN INITIATIVE',
+      description: 'High-volume technical ID verification pulse.',
+      rewardPerScan: 10,
+      painterMargin: 0.05,
+      organizationId: org.id
+    }
+  });
+
+  const agent = await prisma.user.findFirst({ where: { role: Role.AGENT } });
+
+  console.log('✅ Created Campaigns.');
+
+  const qr = await prisma.qRCode.create({
+    data: {
+      campaignId: c1.id,
+      rewardPoints: 100,
+      locationName: 'District Alpha',
+      painterId: 'META-PAINTER-01',
+      status: 'ACTIVE'
+    }
+  });
+
+  if (agent) {
+    await prisma.scan.create({
+      data: {
+        agentId: agent.id,
+        painterId: 'META-PAINTER-00',
+        campaignId: c1.id,
+        qrId: qr.id,
+        pointsEarned: 15,
+        painterEarned: 1.5,
+        systemRevenue: 3.5
+      }
+    });
+    console.log('✅ Logged Initial Pulse Scan.');
   }
 
   console.log('🚀 Seeding complete!');

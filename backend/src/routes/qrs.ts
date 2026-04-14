@@ -7,7 +7,7 @@ import qrcode from 'qrcode';
 const router = express.Router();
 
 // Generate Single QR
-router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (req, res) => {
+router.post('/', authenticate, authorize([Role.ADMIN]), async (req, res) => {
   const { campaignId, painterId, locationName, gps, rewardPoints, expirationDate } = req.body;
   try {
     const qr = await prisma.qRCode.create({
@@ -32,10 +32,10 @@ router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (
 });
 
 // List QRs
-router.get('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (req, res) => {
+router.get('/', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), async (req, res) => {
   try {
     const qrs = await prisma.qRCode.findMany({
-      include: { campaign: true, painter: { select: { name: true, email: true } } },
+      include: { campaign: true },
     });
     res.json(qrs);
   } catch (error) {

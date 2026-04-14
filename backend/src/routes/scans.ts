@@ -9,6 +9,6 @@ const router = express.Router();
 router.post('/', authenticate, authorize([Role.AGENT]), ScanController.handleScan);
 
 // Get Scan Logs (Admin only)
-router.get('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), ScanController.getLogs);
+router.get('/', authenticate, authorize([Role.ADMIN]), ScanController.getLogs);
 
 export default router;

@@ -94,6 +94,8 @@ export class FinancialService {
       .reduce((sum, c) => sum + c.amount, 0);
 
     return {
+      totalVolume: cashouts.length,
+      totalPayouts: totalDisbursed,
       totalDisbursed,
       pendingLiability,
       requestCount: cashouts.length

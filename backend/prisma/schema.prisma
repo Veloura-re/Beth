@@ -29,10 +29,7 @@ model User {
 
   // Relations
   scans           Scan[]          @relation("AgentScans")
-  painterScans    Scan[]          @relation("PainterScans")
-  qrCodes         QRCode[]
   cashouts        CashoutRequest[]
-  payouts         PainterPayout[]  @relation("PainterReiceved")
   recordedPayouts PainterPayout[]  @relation("AdminRecorded")
 }
 
@@ -40,7 +37,6 @@ enum Role {
   SUPERADMIN
   ADMIN
   AGENT
-  PAINTER
 }
 
 model Campaign {
@@ -64,8 +60,7 @@ model QRCode {
   id             String    @id @default(uuid())
   campaignId     String
   campaign       Campaign  @relation(fields: [campaignId], references: [id])
-  painterId      String
-  painter        User      @relation(fields: [painterId], references: [id])
+  painterId      String?
   rewardPoints   Int
   expirationDate DateTime?
   status         String    @default("ACTIVE")
@@ -82,8 +77,7 @@ model Scan {
   qr             QRCode   @relation(fields: [qrId], references: [id])
   agentId        String
   agent          User     @relation("AgentScans", fields: [agentId], references: [id])
-  painterId      String
-  painter        User     @relation("PainterScans", fields: [painterId], references: [id])
+  painterId      String?
   campaignId     String
   campaign       Campaign @relation(fields: [campaignId], references: [id])
   timestamp      DateTime @default(now())
@@ -108,8 +102,7 @@ model CashoutRequest {
 
 model PainterPayout {
   id          String   @id @default(uuid())
-  painterId   String
-  painter     User     @relation("PainterReiceved", fields: [painterId], references: [id])
+  painterId      String?
   adminId     String
   admin       User     @relation("AdminRecorded", fields: [adminId], references: [id])
   amount      Float

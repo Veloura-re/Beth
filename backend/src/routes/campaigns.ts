@@ -6,9 +6,9 @@ import { Role } from '@prisma/client';
 const router = express.Router();
 
 // Create Campaign
-router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), CampaignController.createCampaign);
+router.post('/', authenticate, authorize([Role.ADMIN]), CampaignController.createCampaign);
 
 // List Campaigns
-router.get('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), CampaignController.listCampaigns);
+router.get('/', authenticate, authorize([Role.ADMIN]), CampaignController.listCampaigns);
 
 export default router;

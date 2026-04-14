@@ -30,6 +30,11 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
 export const authorize = (roles: Role[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
+    // SuperAdmin has global access
+    if (req.user?.role === Role.SUPERADMIN) {
+      return next();
+    }
+
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Access denied' });
     }

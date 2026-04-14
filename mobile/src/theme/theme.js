@@ -1,12 +1,24 @@
 export const Theme = {
-  primary: '#ff0033',
-  secondary: '#0a0a0a',
-  background: '#0a0a0a',
-  surface: '#18181b',
-  text: '#ffffff',
-  muted: '#a1a1aa',
-  border: '#27272a',
-  error: '#ef4444',
-  success: '#10b981',
-  radius: 12,
+  // Architectural Palette
+  primary: '#000000',
+  secondary: '#8C7355',
+  accent: '#F4F1EA',
+  background: '#F4F1EA',
+  surface: '#FFFFFF',
+  text: '#000000',
+  muted: '#8C7355',
+  border: '#E5E2D9',
+
+  // Minimalist Measurements
+  radius: 2, // Sharp structural edges
+  padding: 24,
+
+  // Subtle structural shadow
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  }
 };

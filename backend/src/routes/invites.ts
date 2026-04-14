@@ -17,6 +17,21 @@ router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (
   }
 
   try {
+    const requesterRole = (req as AuthRequest).user?.role;
+
+    // Hierarchy Enforcement
+    if (requesterRole === Role.SUPERADMIN && role !== Role.ADMIN) {
+      return res.status(403).json({ message: 'SuperAdmins can only authorize new Administrative nodes' });
+    }
+
+    if (requesterRole === Role.ADMIN && role === Role.ADMIN) {
+      return res.status(403).json({ message: 'Only SuperAdmins can authorize additional Administrative nodes' });
+    }
+
+    if (role === Role.SUPERADMIN) {
+      return res.status(403).json({ message: 'SuperAdmin nodes must be provisioned manually' });
+    }
+
     const token = uuidv4();
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
@@ -49,7 +64,11 @@ router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (
       });
     }
 
-    res.json({ message: 'Invitation sent successfuly', invitation });
+    res.json({ 
+      message: 'Invitation sent successfully', 
+      invitation,
+      inviteLink 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating invitation' });

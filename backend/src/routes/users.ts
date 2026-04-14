@@ -5,11 +5,11 @@ import { Role } from '@prisma/client';
 
 const router = express.Router();
 
-// List Agents (Admin only)
-router.get('/agents', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), UserController.listAgents);
+// List All (Admin/SuperAdmin)
+router.get('/', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), UserController.listAllUsers);
 
-// List Painters (Admin only)
-router.get('/painters', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), UserController.listPainters);
+// List Agents (Admin only)
+router.get('/agents', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), UserController.listAgents);
 
 // My Profile
 router.get('/me', authenticate, UserController.getProfile);

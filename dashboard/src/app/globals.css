@@ -1,28 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Inter+Tight:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
 
 :root {
-  --primary: #ff0033;
-  --primary-rgb: 255, 0, 51;
-  --primary-gradient: linear-gradient(135deg, #ff0033 0%, #cc0029 100%);
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --card-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-bright: rgba(255, 255, 255, 0.15);
-  --red-glow: 0 0 20px rgba(255, 0, 51, 0.3);
-  --red-glow-strong: 0 0 35px rgba(255, 0, 51, 0.5);
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
+  /* Obsidian / Meridian Palette */
+  --background: #0A0A0A;
+  --foreground: #F5F5F7;
+  --primary: #C62E2E; /* Crimson */
+  --secondary: #111111; /* Navigation surface */
+  --accent: #C62E2E;
+  --card-bg: #161616;
+  --sidebar-bg: #0D0D0D;
+  --border: #262626;
+  --muted: #8E8E93;
+  --muted-surface: #1A1A1A;
   --radius: 12px;
-}
-
-[data-theme='light'] {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --card-bg: rgba(0, 0, 0, 0.03);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -37,83 +31,106 @@ body {
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
 }
 
-h1, h2, h3, h4 {
-  font-family: 'Inter Tight', sans-serif;
-  letter-spacing: -0.02em;
-}
-
-/* Cyber Grid Background */
-.cyber-grid {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.grain-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.02;
-  pointer-events: none;
-  z-index: 1000;
-  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-}
-
-/* Glassmorphism */
-.glass {
-  background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-}
-
-.glass-nav {
-  background: rgba(10, 10, 10, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--glass-border);
-}
-
-/* Animations */
-@keyframes pulse-glow {
-  0% { box-shadow: 0 0 15px rgba(255, 0, 51, 0.2); }
-  50% { box-shadow: 0 0 30px rgba(255, 0, 51, 0.4); }
-  100% { box-shadow: 0 0 15px rgba(255, 0, 51, 0.2); }
-}
-
-.glow-btn {
-  background: var(--primary-gradient);
+/* Elegant Selection */
+::selection {
+  background: var(--primary);
   color: white;
-  border: none;
-  padding: 12px 24px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.label-caps {
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 900;
+  font-size: 0.65rem;
+  color: var(--muted);
+  line-height: 1;
+}
+
+/* Paper Components */
+.card-base {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.card-base:hover {
+  border-color: #D1D1D1;
+  box-shadow: var(--shadow);
+}
+
+.structural-line {
+  background: var(--border);
+  height: 1px;
+  width: 100%;
+}
+
+.arch-btn {
+  background: var(--primary);
+  color: #FFFFFF;
+  border: 1px solid var(--primary);
+  padding: 10px 20px;
   border-radius: var(--radius);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--red-glow);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.glow-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--red-glow-strong);
+.arch-btn:hover {
+  filter: brightness(0.9);
 }
 
-.text-gradient {
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.arch-btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.arch-btn-outline:hover {
+  background: var(--secondary);
+  border-color: var(--muted);
+}
+
+/* Custom Scrollbar for Claude look */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
 }

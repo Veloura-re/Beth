@@ -2,6 +2,26 @@ import { prisma } from '../index';
 import { Role } from '@prisma/client';
 
 export class UserService {
+  static async listAllUsers(organizationId?: string) {
+    const where: any = {};
+    if (organizationId) {
+      where.organizationId = organizationId;
+    }
+
+    return await prisma.user.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        organizationId: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
   static async listUsersByRole(role: Role, organizationId?: string) {
     const where: any = { role };
     if (organizationId) {
@@ -26,14 +46,16 @@ export class UserService {
     });
   }
 
-  static async getUserPerformance(userId: string) {
+  static async getUserPerformance(userId: string, role: Role, organizationId?: string) {
+    const isPrimaryAdmin = role === Role.ADMIN || role === Role.SUPERADMIN;
+    
+    // Condition for global vs personal stats
+    const statsWhere: any = isPrimaryAdmin 
+      ? (organizationId ? { campaign: { organizationId } } : {}) // Global (filtered by org if provided)
+      : { OR: [{ agentId: userId }, { painterId: userId }] }; // Personal
+
     const stats = await prisma.scan.aggregate({
-      where: { 
-        OR: [
-          { agentId: userId },
-          { painterId: userId }
-        ]
-      },
+      where: statsWhere,
       _sum: {
         pointsEarned: true,
         painterEarned: true,
@@ -44,10 +66,9 @@ export class UserService {
     });
 
     const cashouts = await prisma.cashoutRequest.aggregate({
-      where: {
-        agentId: userId,
-        status: { in: ['PENDING', 'APPROVED', 'PAID'] }
-      },
+      where: isPrimaryAdmin
+        ? (organizationId ? { agent: { organizationId } } : {})
+        : { agentId: userId, status: { in: ['PENDING', 'APPROVED', 'PAID'] } },
       _sum: {
         amount: true
       }

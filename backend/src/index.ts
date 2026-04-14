@@ -44,8 +44,8 @@ app.get('/health', (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(Number(PORT), '0.0.0.0' as any, () => {
+  console.log(`Server running on 0.0.0.0:${PORT}`);
 });
 
 export { prisma };
