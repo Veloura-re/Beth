@@ -23,6 +23,8 @@ jobs:
           cache-dependency-path: backend/yarn.lock
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
+      - name: Generate Prisma Client
+        run: npx prisma generate
       - name: Build
         run: yarn build
 

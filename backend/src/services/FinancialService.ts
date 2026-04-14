@@ -1,4 +1,5 @@
 import { prisma } from '../index';
+import { CashoutRequest } from '@prisma/client';
 
 export class FinancialService {
   /**
@@ -18,8 +19,8 @@ export class FinancialService {
 
     if (!user) throw new Error('User not found');
 
-    const totalEarnedPoints = user.scans.reduce((sum, s) => sum + s.pointsEarned, 0);
-    const totalCashoutOutValue = user.cashouts.reduce((sum, c) => sum + (c.amount * 10), 0); // Assuming 10pts per $1
+    const totalEarnedPoints = user.scans.reduce((sum: number, s: any) => sum + s.pointsEarned, 0);
+    const totalCashoutOutValue = user.cashouts.reduce((sum: number, c: CashoutRequest) => sum + (c.amount * 10), 0); // Assuming 10pts per $1
     const availablePoints = totalEarnedPoints - totalCashoutOutValue;
 
     if (availablePoints < (amount * 10)) {
@@ -86,12 +87,12 @@ export class FinancialService {
     });
 
     const totalDisbursed = cashouts
-      .filter(c => c.status === 'PAID')
-      .reduce((sum, c) => sum + c.amount, 0);
-
+      .filter((c: CashoutRequest) => c.status === 'PAID')
+      .reduce((sum: number, c: CashoutRequest) => sum + c.amount, 0);
+  
     const pendingLiability = cashouts
-      .filter(c => c.status === 'PENDING' || c.status === 'APPROVED')
-      .reduce((sum, c) => sum + c.amount, 0);
+      .filter((c: CashoutRequest) => c.status === 'PENDING' || c.status === 'APPROVED')
+      .reduce((sum: number, c: CashoutRequest) => sum + c.amount, 0);
 
     return {
       totalVolume: cashouts.length,
