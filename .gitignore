@@ -25,3 +25,7 @@ prisma/migrations/
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Build Artifacts
+*.apk
+*.aab
