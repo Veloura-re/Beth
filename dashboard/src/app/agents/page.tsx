@@ -21,6 +21,7 @@ export default function AgentsPage() {
   const [inviteLink, setInviteLink] = useState('');
   const [copying, setCopying] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const raw = localStorage.getItem('user');

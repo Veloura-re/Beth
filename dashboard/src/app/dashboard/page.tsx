@@ -8,6 +8,11 @@ import { fetchWithAuth } from '@/lib/api';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import MetricCard from '@/components/MetricCard';
 
+interface DailyScanData {
+  name: string;
+  scans: number;
+}
+
 interface OverviewStats {
   totalScans: number;
   totalRevenue: number;
