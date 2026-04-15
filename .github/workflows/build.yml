@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [ main ]
 
+# Ensure only one build runs per branch/PR at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   backend:
     name: Backend Build
@@ -14,17 +23,22 @@ jobs:
       run:
         working-directory: ./backend
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'yarn'
           cache-dependency-path: backend/yarn.lock
+      
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
+      
       - name: Generate Prisma Client
         run: npx prisma generate
+      
       - name: Build
         run: yarn build
 
@@ -35,45 +49,56 @@ jobs:
       run:
         working-directory: ./dashboard
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'yarn'
           cache-dependency-path: dashboard/yarn.lock
+      
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
+      
       - name: Build
         run: yarn build
 
-  mobile:
-    name: Mobile Build Verification
+  mobile-verification:
+    name: Mobile Export Verification
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./mobile
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'yarn'
           cache-dependency-path: mobile/yarn.lock
+      
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
+      
       - name: Expo Export Verification
         run: npx expo export
 
   mobile-android-apk:
     name: Mobile Android APK Generation
     runs-on: ubuntu-latest
+    needs: [backend, mobile-verification] # Only build APK if basic checks pass
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Optional: only build APK on merge to main
     defaults:
       run:
         working-directory: ./mobile
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -110,3 +135,4 @@ jobs:
           name: Beth-Mobile-APK
           path: mobile/*.apk
           if-no-files-found: error
+

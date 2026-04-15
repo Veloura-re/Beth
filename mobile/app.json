@@ -2,6 +2,8 @@
   "expo": {
     "name": "mobile",
     "slug": "mobile",
+    "owner": "zzz1",
+
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
