@@ -5,10 +5,13 @@ import { Role } from '@prisma/client';
 
 const router = express.Router();
 
-// Dashboard Overview Stats (Admin only)
-router.get('/overview', authenticate, authorize([Role.ADMIN]), AnalyticsController.getOverview);
+// Dashboard Overview Stats (Admin/SuperAdmin)
+router.get('/overview', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), AnalyticsController.getOverview);
 
 // Chart Data (Daily Scans)
-router.get('/charts/daily-scans', authenticate, authorize([Role.ADMIN]), AnalyticsController.getDailyScans);
+router.get('/charts/daily-scans', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), AnalyticsController.getDailyScans);
+
+// Global Census (SuperAdmin only)
+router.get('/census', authenticate, authorize([Role.SUPERADMIN]), AnalyticsController.getPlatformCensus);
 
 export default router;

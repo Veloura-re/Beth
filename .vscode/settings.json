@@ -1,0 +1,5 @@
+{
+    "kide.roslyn.projectOrSolutionFiles": [
+        "mobile/node_modules/@react-native-async-storage/async-storage/windows/ReactNativeAsyncStorage.sln"
+    ]
+}

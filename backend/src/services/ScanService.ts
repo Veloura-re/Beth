@@ -90,4 +90,16 @@ export class ScanService {
       take: 100,
     });
   }
+
+  static async getAgentHistory(agentId: string) {
+    return await prisma.scan.findMany({
+      where: { agentId },
+      include: {
+        qr: true,
+        campaign: { select: { name: true } },
+      },
+      orderBy: { timestamp: 'desc' },
+      take: 50,
+    });
+  }
 }

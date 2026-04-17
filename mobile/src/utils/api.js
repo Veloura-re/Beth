@@ -2,21 +2,22 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const getApiBaseUrl = () => {
+  // Use environment variable if defined (best practice for Expo 49+)
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+
   // If running on Web target in the browser
   if (Platform.OS === 'web') {
     return 'http://localhost:5000/api';
   }
 
-  // If on Android and likely an emulator, return standard alias
-  // Note: We'll try this as a fallback in apiFetch, but this is the default for emulators
+  // Fallbacks for local development
   if (Platform.OS === 'android' && __DEV__) {
-     // We can't easily detect emulator vs device in plain RN without extra libs,
-     // so we provide the primary IP and let the fallback handle the emulator.
-     return 'http://10.121.127.232:5000/api';
+     return 'http://10.0.2.2:5000/api'; // Android Emulator alias
   }
   
-  // Default to the machine's local IP for physical devices
-  return 'http://10.121.127.232:5000/api';
+  return 'http://localhost:5000/api';
 };
 
 const API_BASE_URL = getApiBaseUrl(); 
@@ -106,5 +107,12 @@ export const requestCashout = async (amount) => {
   return await apiFetch('/financial/cashout', {
     method: 'POST',
     body: JSON.stringify({ amount }),
+  });
+};
+
+export const updateCampaign = async (id, data) => {
+  return await apiFetch(`/campaigns/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
   });
 };

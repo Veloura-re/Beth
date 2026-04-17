@@ -1,13 +1,6 @@
-import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  Modal,
-  Dimensions
-} from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Theme } from '../theme/theme';
 import { 
   Menu, 
@@ -21,6 +14,7 @@ import {
   UserPlus,
   Target,
   ChevronRight,
+  Clock,
   X
 } from 'lucide-react-native';
 
@@ -30,22 +24,24 @@ export default function Sidebar({ visible, onClose, navigation, currentRole, onL
   const isAdmin = currentRole === 'ADMIN' || currentRole === 'SUPERADMIN';
 
   const menuItems = [
-    { label: 'System Oversight', icon: LayoutDashboard, route: 'Dashboard', roles: ['ADMIN', 'SUPERADMIN', 'AGENT'] },
+    { label: 'System Oversight', icon: LayoutDashboard, route: 'Dashboard', roles: ['ADMIN', 'SUPERADMIN'] },
+    { label: 'Organization Registry', icon: Users, route: 'Organizations', roles: ['SUPERADMIN'] },
     { label: 'Personnel Registry', icon: UserPlus, route: 'Personnel', roles: ['ADMIN', 'SUPERADMIN'] },
-    { label: 'System Directives', icon: Target, route: 'Campaigns', roles: ['ADMIN', 'SUPERADMIN'] },
-    { label: 'Protocol Registry', icon: QrCode, route: 'Protocols', roles: ['ADMIN', 'SUPERADMIN'] },
-    { label: 'Treasury Ledger', icon: Wallet, route: 'Treasury', roles: ['ADMIN', 'SUPERADMIN'] },
+    { label: 'System Directives', icon: Target, route: 'Campaigns', roles: ['ADMIN'] },
+    { label: 'Protocol Registry', icon: QrCode, route: 'Protocols', roles: ['ADMIN'] },
+    { label: 'Treasury Ledger', icon: Wallet, route: 'Treasury', roles: ['ADMIN'] },
+    { label: 'Activity Registry', icon: Clock, route: 'Activity', roles: ['AGENT'] },
     { label: 'Scanner Protocol', icon: ShieldAlert, route: 'Scanner', roles: ['AGENT'] },
     { label: 'Value Registry', icon: Shapes, route: 'Rewards', roles: ['AGENT'] },
   ];
 
-  const handleNavigate = (item) => {
+  const handleNavigate = (route) => {
     onClose();
-    if (item.route === 'Personnel') {
+    if (route === 'Personnel') {
       const targetRole = currentRole === 'SUPERADMIN' ? 'ADMIN' : 'AGENT';
       navigation.navigate('Personnel', { roleType: targetRole });
     } else {
-      navigation.navigate(item.route);
+      navigation.navigate(route);
     }
   };
 

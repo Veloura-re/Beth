@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
-  ScrollView, 
-  SafeAreaView, 
   TouchableOpacity, 
-  TextInput,
   ActivityIndicator,
-  Alert,
   FlatList,
+  TextInput,
   StatusBar
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import Animated, { FadeInDown, FadeInUp, FadeIn, Layout } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { Menu, UserPlus, Info, Shield, Search, ArrowRight, X, ArrowLeft } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
@@ -19,7 +19,8 @@ import { apiFetch, logout } from '../utils/api';
 import { 
   Modal, 
   KeyboardAvoidingView, 
-  Platform as RNPlatform 
+  Platform,
+  Alert
 } from 'react-native';
 
 export default function PersonnelScreen({ navigation, route }) {
@@ -34,19 +35,35 @@ export default function PersonnelScreen({ navigation, route }) {
   const loadData = async () => {
     try {
       const me = await apiFetch('/users/me');
+      setProfile(me);
+
       if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
         Alert.alert("Access Denied", "Authorized clearance required.");
         navigation.replace('Dashboard');
         return;
       }
       
-      const allUsers = await apiFetch('/users');
+      const [allUsers, orgs] = await Promise.all([
+        apiFetch('/users'),
+        apiFetch('/organizations')
+      ]);
+
+      const orgMap = (Array.isArray(orgs) ? orgs : []).reduce((acc, org) => {
+        acc[org.id] = org.name;
+        return acc;
+      }, {});
+
+      // Determine correct role type to display
+      const effectiveRoleType = route.params?.roleType || (me.role === 'SUPERADMIN' ? 'ADMIN' : 'AGENT');
+
       // Filter based on who we are managing
       const data = Array.isArray(allUsers) ? allUsers : [];
-      const filteredRegistry = data.filter(u => u.role === roleType);
+      const filteredRegistry = data.filter(u => u.role === effectiveRoleType).map(u => ({
+        ...u,
+        organizationName: orgMap[u.organizationId] || 'UNKNOWN'
+      }));
       
       setUsers(filteredRegistry);
-      setProfile(me);
     } catch (error) {
       console.error('Failed to load personnel', error);
     } finally {
@@ -54,9 +71,11 @@ export default function PersonnelScreen({ navigation, route }) {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, [roleType]);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [route.params?.roleType])
+  );
 
   const handleLogout = async () => {
     await logout();
@@ -68,31 +87,36 @@ export default function PersonnelScreen({ navigation, route }) {
     u.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const renderUserItem = ({ item }) => (
-    <View style={styles.userCard}>
+  const renderUserItem = ({ item, index }) => (
+    <Animated.View entering={FadeInDown.delay(100 * index).duration(400).springify()} style={styles.userCard}>
       <View style={styles.userIcon}>
         {item.role === 'ADMIN' ? <Shield color="black" size={16} /> : <Info color="black" size={16} />}
       </View>
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name.toUpperCase()}</Text>
         <View style={styles.userMeta}>
-         <Text style={styles.userEmail}>{item.email || 'NO_CLEARANCE'}</Text>
-         <View style={styles.miniBadge}>
-            <Text style={styles.miniBadgeText}>{item.role || 'AGENT'}</Text>
-         </View>
-      </View>
+          <Text style={styles.userEmail}>{item.email || 'NO_CLEARANCE'}</Text>
+          {profile?.role === 'SUPERADMIN' && (
+            <View style={styles.orgBadge}>
+              <Text style={styles.orgBadgeText}>{item.organizationName?.toUpperCase()}</Text>
+            </View>
+          )}
+          <View style={styles.miniBadge}>
+             <Text style={styles.miniBadgeText}>{item.role || 'AGENT'}</Text>
+          </View>
+       </View>
       </View>
       <View style={styles.userStatus}>
          <View style={styles.statusPulse} />
          <Text style={styles.statusLabel}>OPERATIONAL</Text>
       </View>
-    </View>
+    </Animated.View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -106,7 +130,7 @@ export default function PersonnelScreen({ navigation, route }) {
         >
            <UserPlus color="black" size={20} />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
       <View style={styles.searchContainer}>
         <Search color={Theme.muted} size={16} style={styles.searchIcon} />
@@ -126,7 +150,7 @@ export default function PersonnelScreen({ navigation, route }) {
       ) : (
         <FlatList
           data={filteredUsers}
-          renderItem={renderUserItem}
+          renderItem={({ item, index }) => renderUserItem({ item, index })}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
@@ -305,4 +329,15 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     marginRight: 20,
   },
+  orgBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    backgroundColor: '#000000',
+  },
+  orgBadgeText: {
+    fontSize: 6.5,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+    color: '#FFFFFF',
+  }
 });

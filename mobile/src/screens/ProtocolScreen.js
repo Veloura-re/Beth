@@ -1,23 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  ActivityIndicator,
-  RefreshControl,
-  Modal,
-  TextInput,
-  Alert,
-  Image,
-  StatusBar,
-  FlatList
-} from 'react-native';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, StatusBar } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import Animated, { FadeInDown, FadeInUp, FadeIn, Layout } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { Menu, QrCode, Plus, X, MapPin, Zap, ChevronRight, Barcode, ArrowLeft } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
+import QRStickerModal from '../components/QRStickerModal';
 import { apiFetch, logout } from '../utils/api';
 
 export default function ProtocolScreen({ navigation }) {
@@ -36,6 +25,10 @@ export default function ProtocolScreen({ navigation }) {
     rewardPoints: '10'
   });
   const [creating, setCreating] = useState(false);
+  
+  // Sticker Modal State
+  const [stickerVisible, setStickerVisible] = useState(false);
+  const [selectedProtocol, setSelectedProtocol] = useState(null);
 
   const loadData = async () => {
     try {
@@ -61,9 +54,11 @@ export default function ProtocolScreen({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -95,44 +90,56 @@ export default function ProtocolScreen({ navigation }) {
     }
   };
 
-  const renderProtocolItem = (item) => (
-    <View key={item.id} style={styles.protocolCard}>
-       <View style={styles.protocolHeader}>
-          <View style={styles.protocolType}>
-             <Barcode color="black" size={14} />
-             <Text style={styles.protocolTypeText}>SYSTEM.v1</Text>
-          </View>
-          <Text style={styles.protocolId}>{item.id?.substring(0,8).toUpperCase() || 'REF-####'}</Text>
-       </View>
-       
-       <View style={styles.protocolMain}>
-          <View style={styles.protocolInfo}>
-             <Text style={styles.locationTitle}>{item.locationName?.toUpperCase() || 'UNKNOWN DEPOT'}</Text>
-             <Text style={styles.campaignSubtitle}>{item.campaign?.name || 'GENERIC INITIATIVE'}</Text>
-          </View>
-          <View style={styles.rewardBubble}>
-             <Text style={styles.rewardValue}>{item.rewardPoints || 0}</Text>
-             <Text style={styles.rewardUnit}>PTS</Text>
-          </View>
-       </View>
+  const renderProtocolItem = (item, index) => (
+    <TouchableOpacity 
+      activeOpacity={0.8}
+      onPress={() => {
+        setSelectedProtocol(item);
+        setStickerVisible(true);
+      }}
+    >
+      <Animated.View 
+        key={item.id} 
+        entering={FadeInDown.delay(100 * index).duration(400).springify()}
+        style={styles.protocolCard}
+      >
+         <View style={styles.protocolHeader}>
+            <View style={styles.protocolType}>
+               <Barcode color="black" size={14} />
+               <Text style={styles.protocolTypeText}>SYSTEM.v1</Text>
+            </View>
+            <Text style={styles.protocolId}>{item.id?.substring(0,8).toUpperCase() || 'REF-####'}</Text>
+         </View>
+         
+         <View style={styles.protocolMain}>
+            <View style={styles.protocolInfo}>
+               <Text style={styles.locationTitle}>{item.locationName?.toUpperCase() || 'UNKNOWN DEPOT'}</Text>
+               <Text style={styles.campaignSubtitle}>{item.campaign?.name || 'GENERIC INITIATIVE'}</Text>
+            </View>
+            <View style={styles.rewardBubble}>
+               <Text style={styles.rewardValue}>{item.rewardPoints || 0}</Text>
+               <Text style={styles.rewardUnit}>PTS</Text>
+            </View>
+         </View>
 
-       <View style={styles.protocolFooter}>
-          <View style={styles.metaRow}>
-             <MapPin size={10} color={Theme.muted} />
-             <Text style={styles.metaText}>{item.gps || 'NO GPS LOC'}</Text>
-          </View>
-          <View style={styles.statusIndicator}>
-             <View style={styles.activeDot} />
-             <Text style={styles.statusLabel}>{item.status || 'ACTIVE'}</Text>
-          </View>
-       </View>
-    </View>
+         <View style={styles.protocolFooter}>
+            <View style={styles.metaRow}>
+               <MapPin size={10} color={Theme.muted} />
+               <Text style={styles.metaText}>{item.gps || 'NO GPS LOC'}</Text>
+            </View>
+            <View style={styles.statusIndicator}>
+               <View style={styles.activeDot} />
+               <Text style={styles.statusLabel}>{item.status || 'ACTIVE'}</Text>
+            </View>
+         </View>
+      </Animated.View>
+    </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -143,7 +150,7 @@ export default function ProtocolScreen({ navigation }) {
         <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('CreateProtocol')}>
            <Plus color="white" size={24} />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
       <View style={styles.statsBar}>
          <View style={styles.statMini}>
@@ -163,7 +170,7 @@ export default function ProtocolScreen({ navigation }) {
       ) : (
         <FlatList
           data={protocols}
-          renderItem={({ item }) => renderProtocolItem(item)}
+          renderItem={({ item, index }) => renderProtocolItem(item, index)}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
@@ -183,6 +190,12 @@ export default function ProtocolScreen({ navigation }) {
           await logout();
           navigation.replace('Login');
         }}
+      />
+
+      <QRStickerModal 
+        visible={stickerVisible}
+        protocol={selectedProtocol}
+        onClose={() => setStickerVisible(false)}
       />
     </SafeAreaView>
   );

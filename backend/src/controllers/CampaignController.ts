@@ -29,4 +29,16 @@ export class CampaignController {
       res.status(500).json({ message: 'Error fetching campaigns' });
     }
   }
+  static async updateCampaign(req: AuthRequest, res: Response) {
+    const { id } = req.params;
+    const organizationId = (req.user as any).organizationId;
+    
+    try {
+      const campaign = await CampaignService.updateCampaign(id as string, req.body, organizationId);
+      res.json(campaign);
+    } catch (error: any) {
+      res.status(error.message === 'Unauthorized or campaign not found' ? 403 : 500)
+         .json({ message: error.message || 'Error updating campaign' });
+    }
+  }
 }

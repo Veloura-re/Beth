@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  StatusBar,
-  ActivityIndicator,
-  Alert
-} from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, StatusBar } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ShieldCheck, X, Scan, QrCode } from 'lucide-react-native';
@@ -63,7 +56,7 @@ export default function ScannerScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <X color="white" size={24} />
         </TouchableOpacity>
@@ -71,7 +64,7 @@ export default function ScannerScreen({ navigation }) {
           <Text style={styles.headerSub}>Technical Protocol</Text>
           <Text style={styles.headerTitle}>SCANNER.v1</Text>
         </View>
-      </View>
+      </Animated.View>
 
       <View style={styles.scannerWrapper}>
         <CameraView
@@ -83,7 +76,7 @@ export default function ScannerScreen({ navigation }) {
         />
         
         {/* Architectural Overlay */}
-        <View style={styles.overlay}>
+        <Animated.View entering={FadeIn.delay(300)} style={styles.overlay}>
            <View style={styles.scanFrame}>
               <View style={[styles.corner, styles.topLeft]} />
               <View style={[styles.corner, styles.topRight]} />
@@ -97,14 +90,14 @@ export default function ScannerScreen({ navigation }) {
                 </View>
               )}
            </View>
-        </View>
+        </Animated.View>
 
-        <View style={styles.instructionBox}>
+        <Animated.View entering={FadeInDown.delay(600).duration(400).springify()} style={styles.instructionBox}>
            <View style={styles.indicator} />
            <Text style={styles.instructionText}>
              ALIGN THE TECHNICAL IDENTIFIER WITHIN THE FRAME FOR REGISTRY VERIFICATION.
            </Text>
-        </View>
+        </Animated.View>
       </View>
     </SafeAreaView>
   );

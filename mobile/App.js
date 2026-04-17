@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Theme } from './src/theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, ActivityIndicator } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Placeholder Screens (will implement in next steps)
 import LoginScreen from './src/screens/LoginScreen';
@@ -19,6 +20,8 @@ import ProtocolScreen from './src/screens/ProtocolScreen';
 import InvitationScreen from './src/screens/InvitationScreen';
 import CreateCampaignScreen from './src/screens/CreateCampaignScreen';
 import CreateProtocolScreen from './src/screens/CreateProtocolScreen';
+import OrganizationRegistryScreen from './src/screens/OrganizationRegistryScreen';
+import ActivityLogScreen from './src/screens/ActivityLogScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,37 +54,41 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer theme={{
-      dark: false,
-      colors: {
-        primary: Theme.primary,
-        background: Theme.background,
-        card: Theme.background,
-        text: Theme.text,
-        border: Theme.border,
-        notification: Theme.primary,
-      }
-    }}>
-      <StatusBar style="dark" />
-      <Stack.Navigator 
-        initialRouteName={initialRoute}
-        screenOptions={{
-          headerShown: false,
-          cardStyle: { backgroundColor: Theme.background }
-        }}
-      >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Dashboard" component={DashboardScreen} />
-        <Stack.Screen name="Scanner" component={ScannerScreen} />
-        <Stack.Screen name="Rewards" component={RewardsScreen} />
-        <Stack.Screen name="Personnel" component={PersonnelScreen} />
-        <Stack.Screen name="Campaigns" component={CampaignsScreen} />
-        <Stack.Screen name="Treasury" component={TreasuryScreen} />
-        <Stack.Screen name="Protocols" component={ProtocolScreen} />
-        <Stack.Screen name="Invitation" component={InvitationScreen} />
-        <Stack.Screen name="CreateCampaign" component={CreateCampaignScreen} />
-        <Stack.Screen name="CreateProtocol" component={CreateProtocolScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer theme={{
+        dark: false,
+        colors: {
+          primary: Theme.primary,
+          background: Theme.background,
+          card: Theme.background,
+          text: Theme.text,
+          border: Theme.border,
+          notification: Theme.primary,
+        }
+      }}>
+        <StatusBar style="dark" />
+        <Stack.Navigator 
+          initialRouteName={initialRoute}
+          screenOptions={{
+            headerShown: false,
+            cardStyle: { backgroundColor: Theme.background }
+          }}
+        >
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="Scanner" component={ScannerScreen} />
+          <Stack.Screen name="Rewards" component={RewardsScreen} />
+          <Stack.Screen name="Personnel" component={PersonnelScreen} />
+          <Stack.Screen name="Campaigns" component={CampaignsScreen} />
+          <Stack.Screen name="Treasury" component={TreasuryScreen} />
+          <Stack.Screen name="Protocols" component={ProtocolScreen} />
+          <Stack.Screen name="Invitation" component={InvitationScreen} />
+          <Stack.Screen name="CreateCampaign" component={CreateCampaignScreen} />
+          <Stack.Screen name="CreateProtocol" component={CreateProtocolScreen} />
+          <Stack.Screen name="Organizations" component={OrganizationRegistryScreen} />
+          <Stack.Screen name="Activity" component={ActivityLogScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

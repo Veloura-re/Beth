@@ -1,17 +1,7 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  Alert,
-  StatusBar
-} from 'react-native';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, StatusBar, KeyboardAvoidingView, Platform } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown, SlideInRight } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { login } from '../utils/api';
 import { ArrowRight, ShieldCheck } from 'lucide-react-native';
@@ -39,7 +29,7 @@ export default function LoginScreen({ navigation }) {
         navigation.replace('Dashboard');
       }
     } catch (error) {
-      const targetUrl = 'http://10.40.117.232:5000/api';
+      const targetUrl = process.env.EXPO_PUBLIC_API_URL || 'UNKNOWN';
       Alert.alert(
         "Access Denied", 
         `${error.message}\n\n[DIAGNOSTICS]\nTARGET: ${targetUrl}\nPROTOCOL: HTTP\nPORT: 5000`,
@@ -56,8 +46,8 @@ export default function LoginScreen({ navigation }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <View style={styles.content}>
-          <View style={styles.technicalHeader}>
+        <Animated.View entering={FadeIn.duration(800)} style={styles.content}>
+          <Animated.View entering={FadeInDown.delay(200).duration(600).springify()} style={styles.technicalHeader}>
             <View style={styles.technicalSubHeader}>
               <Text style={styles.versionLabel}>V 16.2.0</Text>
               <Text style={styles.versionLabel}>SECURE LINE</Text>
@@ -65,9 +55,9 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.headerSubtitle}>Authorized Access</Text>
             <Text style={styles.headerTitle}>BETH.ARCH</Text>
             <View style={styles.structuralLine} />
-          </View>
+          </Animated.View>
 
-          <View style={styles.form}>
+          <Animated.View entering={FadeInDown.delay(400).duration(600).springify()} style={styles.form}>
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Identifier</Text>
               <TextInput
@@ -107,13 +97,13 @@ export default function LoginScreen({ navigation }) {
                 </>
               )}
             </TouchableOpacity>
-          </View>
+          </Animated.View>
 
-          <View style={styles.footer}>
+          <Animated.View entering={FadeIn.delay(800)} style={styles.footer}>
             <Text style={styles.footerText}>Project: Beth REW</Text>
             <Text style={styles.footerText}>Loc: 00-HQ</Text>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

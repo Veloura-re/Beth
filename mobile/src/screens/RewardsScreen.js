@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  StatusBar,
-  ActivityIndicator,
-  Alert
-} from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, Alert, StatusBar } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, Shapes, Wallet, Clock, ShieldCheck, ChevronRight } from 'lucide-react-native';
 import { apiFetch, requestCashout } from '../utils/api';
+import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function RewardsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const loadProfile = async () => {
     try {
@@ -48,7 +42,7 @@ export default function RewardsScreen({ navigation }) {
             setProcessing(true);
             try {
               await requestCashout(cashValue);
-              Alert.alert("LOGGED", "REWARD DISPATCHED FOR TREASURY CLEARANCE.");
+              setShowSuccess(true);
               loadProfile();
             } catch (error) {
               Alert.alert("ERROR", error.message || "SYSTEM LATENCY. RETRY LATER.");
@@ -80,7 +74,7 @@ export default function RewardsScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -88,17 +82,17 @@ export default function RewardsScreen({ navigation }) {
           <Text style={styles.headerSub}>Value Registry</Text>
           <Text style={styles.headerTitle}>REWARD.LOG</Text>
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.balanceCard}>
+        <Animated.View entering={FadeInUp.delay(200).duration(500).springify()} style={styles.balanceCard}>
            <Text style={styles.balanceLabel}>Unit Registry Balance</Text>
            <Text style={styles.balanceValue}>{balance.toLocaleString()}</Text>
            <View style={styles.statusRow}>
               <View style={styles.dot} />
               <Text style={styles.statusText}>ALL CLEARANCES STABLE</Text>
            </View>
-        </View>
+        </Animated.View>
 
         <View style={styles.sectionHeader}>
            <Text style={styles.sectionLabel}>Available Values</Text>
@@ -110,24 +104,25 @@ export default function RewardsScreen({ navigation }) {
           const canAfford = balance >= pointsNeeded;
 
           return (
-            <TouchableOpacity 
-              key={i} 
-              style={[styles.rewardCard, !canAfford && styles.disabled]}
-              onPress={() => canAfford && handleRedeem(reward.title, reward.points)}
-              disabled={!canAfford || processing}
-              activeOpacity={0.8}
-            >
-              <View style={styles.rewardIcon}>
-                 <reward.icon color="black" size={20} />
-              </View>
-              <View style={styles.rewardInfo}>
-                 <Text style={styles.rewardTitle}>{reward.title.toUpperCase()}</Text>
-                 <Text style={styles.rewardId}>{reward.id}</Text>
-              </View>
-              <View style={[styles.rewardAction, { backgroundColor: canAfford ? 'black' : Theme.border }]}>
-                 <Text style={[styles.rewardPointText, { color: canAfford ? 'white' : Theme.muted }]}>{reward.points}</Text>
-              </View>
-            </TouchableOpacity>
+            <Animated.View key={i} entering={FadeInDown.delay(300 + (100 * i)).duration(400).springify()}>
+              <TouchableOpacity 
+                style={[styles.rewardCard, !canAfford && styles.disabled]}
+                onPress={() => canAfford && handleRedeem(reward.title, reward.points)}
+                disabled={!canAfford || processing}
+                activeOpacity={0.8}
+              >
+                <View style={styles.rewardIcon}>
+                   <reward.icon color="black" size={20} />
+                </View>
+                <View style={styles.rewardInfo}>
+                   <Text style={styles.rewardTitle}>{reward.title.toUpperCase()}</Text>
+                   <Text style={styles.rewardId}>{reward.id}</Text>
+                </View>
+                <View style={[styles.rewardAction, { backgroundColor: canAfford ? 'black' : Theme.border }]}>
+                   <Text style={[styles.rewardPointText, { color: canAfford ? 'white' : Theme.muted }]}>{reward.points}</Text>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
           );
         })}
 
@@ -137,6 +132,12 @@ export default function RewardsScreen({ navigation }) {
            </Text>
         </View>
       </ScrollView>
+
+      <SuccessOverlay 
+        visible={showSuccess} 
+        message="REWARD DISPATCHED"
+        onClose={() => setShowSuccess(false)}
+      />
     </SafeAreaView>
   );
 }

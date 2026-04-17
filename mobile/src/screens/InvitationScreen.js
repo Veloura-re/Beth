@@ -1,25 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  TextInput,
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
   Platform,
-  StatusBar
+  TouchableOpacity,
+  StatusBar,
+  ActivityIndicator,
+  Modal,
+  KeyboardAvoidingView,
+  TextInput,
+  Alert
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, UserPlus, Info } from 'lucide-react-native';
 import { apiFetch } from '../utils/api';
+import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function InvitationScreen({ navigation, route }) {
   const { targetRole } = route.params || {}; // ADMIN or AGENT
   const [email, setEmail] = useState('');
   const [inviting, setInviting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [organizations, setOrganizations] = useState([]);
+  const [selectedOrgId, setSelectedOrgId] = useState('');
+  const [newOrgName, setNewOrgName] = useState('');
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkRole = async () => {
+      try {
+        const me = await apiFetch('/users/me');
+        if (me.role === 'SUPERADMIN') {
+          setIsSuperAdmin(true);
+          const orgs = await apiFetch('/organizations');
+          setOrganizations(orgs);
+        }
+      } catch (error) {
+        console.error('Failed to load profile for role check', error);
+      }
+    };
+    checkRole();
+  }, []);
 
   const handleInvite = async () => {
     if (!email) {
@@ -29,16 +53,29 @@ export default function InvitationScreen({ navigation, route }) {
 
     setInviting(true);
     try {
+      const payload = { 
+        email: email.toLowerCase(), 
+        role: targetRole 
+      };
+
+      if (isSuperAdmin) {
+        if (newOrgName) {
+          payload.organizationName = newOrgName;
+        } else if (selectedOrgId) {
+          payload.organizationId = selectedOrgId;
+        } else {
+          Alert.alert("Input Error", "Organization target is required for Administrative nodes.");
+          setInviting(false);
+          return;
+        }
+      }
+
       await apiFetch('/invites', {
         method: 'POST',
-        body: JSON.stringify({ email: email.toLowerCase(), role: targetRole })
+        body: JSON.stringify(payload)
       });
       
-      Alert.alert(
-        "Registry Logged", 
-        `INVITATION DISPATCHED TO ${email.toUpperCase()}`,
-        [{ text: "OK", onPress: () => navigation.goBack() }]
-      );
+      setShowSuccess(true);
     } catch (error) {
       Alert.alert("Protocol Error", error.message || "Failed to issue invitation.");
     } finally {
@@ -49,7 +86,7 @@ export default function InvitationScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -57,20 +94,20 @@ export default function InvitationScreen({ navigation, route }) {
           <Text style={styles.headerSub}>PERSONNEL CLEARANCE</Text>
           <Text style={styles.headerTitle}>INVITE {targetRole}</Text>
         </View>
-      </View>
+      </Animated.View>
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
         style={styles.content}
       >
-        <View style={styles.infoCard}>
+        <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.infoCard}>
            <Info size={16} color={Theme.muted} />
            <Text style={styles.infoText}>
              Authorized invitation will grant access to BETH hierarchy under the role of {targetRole}.
            </Text>
-        </View>
+        </Animated.View>
 
-        <View style={styles.form}>
+        <Animated.View entering={FadeInDown.delay(400).duration(400).springify()} style={styles.form}>
            <Text style={styles.label}>TARGET IDENTIFIER (EMAIL)</Text>
            <TextInput 
              style={styles.input}
@@ -88,7 +125,47 @@ export default function InvitationScreen({ navigation, route }) {
                  <Text style={styles.roleBadgeText}>{targetRole}</Text>
               </View>
            </View>
-        </View>
+
+           {isSuperAdmin && targetRole === 'ADMIN' && (
+             <View style={styles.orgSection}>
+               <Text style={styles.label}>TARGET ORGANIZATION</Text>
+               
+               <View style={styles.orgOptions}>
+                 {organizations.map(org => (
+                   <TouchableOpacity 
+                     key={org.id}
+                     style={[styles.orgTab, selectedOrgId === org.id && styles.orgTabActive]}
+                     onPress={() => {
+                       setSelectedOrgId(org.id);
+                       setNewOrgName('');
+                     }}
+                   >
+                     <Text style={[styles.orgText, selectedOrgId === org.id && styles.orgTextActive]}>
+                       {org.name.toUpperCase()}
+                     </Text>
+                   </TouchableOpacity>
+                 ))}
+               </View>
+
+               <View style={styles.divider}>
+                 <View style={styles.dLine} />
+                 <Text style={styles.dText}>OR CREATE NEW</Text>
+                 <View style={styles.dLine} />
+               </View>
+
+               <TextInput 
+                 style={styles.input}
+                 placeholder="NEW COMPANY NAME"
+                 placeholderTextColor={Theme.muted + '44'}
+                 value={newOrgName}
+                 onChangeText={(text) => {
+                   setNewOrgName(text);
+                   setSelectedOrgId('');
+                 }}
+               />
+             </View>
+           )}
+        </Animated.View>
 
         <TouchableOpacity 
           style={[styles.actionBtn, inviting && styles.btnDisabled]} 
@@ -105,6 +182,15 @@ export default function InvitationScreen({ navigation, route }) {
           )}
         </TouchableOpacity>
       </KeyboardAvoidingView>
+
+      <SuccessOverlay 
+        visible={showSuccess} 
+        message="INVITATION SENT"
+        onClose={() => {
+          setShowSuccess(false);
+          navigation.goBack();
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -218,5 +304,48 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '900',
     letterSpacing: 2,
+  },
+  orgSection: {
+    marginTop: 32,
+  },
+  orgOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 24,
+  },
+  orgTab: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: Theme.border,
+  },
+  orgTabActive: {
+    backgroundColor: '#000000',
+    borderColor: '#000000',
+  },
+  orgText: {
+    fontSize: 8,
+    color: Theme.muted,
+    fontWeight: '900',
+  },
+  orgTextActive: {
+    color: '#FFFFFF',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 24,
+  },
+  dLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Theme.border,
+  },
+  dText: {
+    fontSize: 7,
+    fontWeight: '900',
+    color: Theme.muted,
   }
 });

@@ -55,4 +55,20 @@ export class AnalyticsService {
       ORDER BY date ASC
     `;
   }
+
+  static async getPlatformCensus() {
+    const [totalOrgs, totalAdmins, totalAgents, totalScans] = await Promise.all([
+      prisma.organization.count(),
+      prisma.user.count({ where: { role: Role.ADMIN } }),
+      prisma.user.count({ where: { role: Role.AGENT } }),
+      prisma.scan.count()
+    ]);
+
+    return {
+      totalOrgs,
+      totalAdmins,
+      totalAgents,
+      totalScans
+    };
+  }
 }

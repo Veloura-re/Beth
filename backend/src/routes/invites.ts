@@ -36,12 +36,33 @@ router.post('/', authenticate, authorize([Role.SUPERADMIN, Role.ADMIN]), async (
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
 
+    let organizationId = (req as AuthRequest).user?.organizationId;
+
+    // SuperAdmin can specify organizationId or Name for new Admins
+    if (requesterRole === Role.SUPERADMIN) {
+      if (req.body.organizationId) {
+        organizationId = req.body.organizationId;
+      } else if (req.body.organizationName) {
+        // Create new organization on-the-fly
+        const newOrg = await prisma.organization.create({
+          data: { name: req.body.organizationName }
+        });
+        organizationId = newOrg.id;
+      } else {
+        return res.status(400).json({ message: 'Organization target (ID or Name) required for Administrative nodes' });
+      }
+    }
+
+    if (!organizationId) {
+      return res.status(400).json({ message: 'Organization context missing' });
+    }
+
     const invitation = await prisma.invitation.create({
       data: {
         email,
         token,
         role: role as Role,
-        organizationId: (req as AuthRequest).user?.organizationId || '',
+        organizationId,
         expiresAt,
       },
     });

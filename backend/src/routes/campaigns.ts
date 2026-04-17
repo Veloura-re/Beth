@@ -8,7 +8,7 @@ const router = express.Router();
 // Create Campaign
 router.post('/', authenticate, authorize([Role.ADMIN]), CampaignController.createCampaign);
 
-// List Campaigns
-router.get('/', authenticate, authorize([Role.ADMIN]), CampaignController.listCampaigns);
+// Update Campaign
+router.patch('/:id', authenticate, authorize([Role.ADMIN]), CampaignController.updateCampaign);
 
 export default router;

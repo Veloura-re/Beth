@@ -49,4 +49,26 @@ export class CampaignService {
 
     return campaign;
   }
+  static async updateCampaign(id: string, data: Partial<{
+    name: string;
+    description: string;
+    budget: number;
+    rewardPerScan: number;
+    painterMargin: number;
+    systemRevenue: number;
+  }>, organizationId?: string) {
+    if (organizationId) {
+      const existing = await prisma.campaign.findUnique({ where: { id } });
+      if (!existing || existing.organizationId !== organizationId) {
+        throw new Error('Unauthorized or campaign not found');
+      }
+    }
+
+    return await prisma.campaign.update({
+      where: { id },
+      data: {
+        ...data
+      },
+    });
+  }
 }

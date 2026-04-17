@@ -1,31 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  TextInput,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
   Platform,
-  StatusBar
+  TouchableOpacity,
+  StatusBar,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  TextInput,
+  ScrollView,
+  Alert
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, Zap, Info } from 'lucide-react-native';
-import { apiFetch } from '../utils/api';
+import { apiFetch, updateCampaign } from '../utils/api';
+import SuccessOverlay from '../components/SuccessOverlay';
 
-export default function CreateCampaignScreen({ navigation }) {
+export default function CreateCampaignScreen({ navigation, route }) {
+  const editData = route.params?.campaign;
+  const isEditing = !!editData;
+
   const [form, setForm] = useState({
-    name: '',
-    description: '',
-    budget: '',
-    rewardPerScan: '',
-    painterMargin: '0.05'
+    name: editData?.name || '',
+    description: editData?.description || '',
+    budget: editData?.budget?.toString() || '',
+    rewardPerScan: editData?.rewardPerScan?.toString() || '',
+    painterMargin: editData?.painterMargin?.toString() || '0.05'
   });
   const [busy, setBusy] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleCreate = async () => {
     if (!form.name || !form.rewardPerScan) {
@@ -35,23 +41,25 @@ export default function CreateCampaignScreen({ navigation }) {
 
     setBusy(true);
     try {
-      await apiFetch('/campaigns', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...form,
-          budget: parseFloat(form.budget) || 0,
-          rewardPerScan: parseInt(form.rewardPerScan),
-          painterMargin: parseFloat(form.painterMargin)
-        })
-      });
+      const payload = {
+        ...form,
+        budget: parseFloat(form.budget) || 0,
+        rewardPerScan: parseInt(form.rewardPerScan),
+        painterMargin: parseFloat(form.painterMargin)
+      };
+
+      if (isEditing) {
+        await updateCampaign(editData.id, payload);
+      } else {
+        await apiFetch('/campaigns', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+      }
       
-      Alert.alert(
-        "Directive Live", 
-        "STRATEGIC INITIATIVE SUCCESSFULLY REGISTERED.",
-        [{ text: "OK", onPress: () => navigation.goBack() }]
-      );
+      setShowSuccess(true);
     } catch (error) {
-      Alert.alert("Deployment Error", error.message || "Failed to initialize directive.");
+      Alert.alert("System Error", error.message || "Operation failed.");
     } finally {
       setBusy(false);
     }
@@ -62,22 +70,22 @@ export default function CreateCampaignScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerText}>
           <Text style={styles.headerSub}>SYSTEM OVERLAY</Text>
-          <Text style={styles.headerTitle}>NEW DIRECTIVE</Text>
+          <Text style={styles.headerTitle}>{isEditing ? 'EDIT' : 'NEW'} DIRECTIVE</Text>
         </View>
-      </View>
+      </Animated.View>
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.section}>
+          <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.section}>
             <Text style={styles.label}>CORE IDENTIFIER</Text>
             <TextInput 
               style={styles.input}
@@ -97,9 +105,9 @@ export default function CreateCampaignScreen({ navigation }) {
               value={form.description}
               onChangeText={(v) => updateForm('description', v)}
             />
-          </View>
+          </Animated.View>
 
-          <View style={styles.row}>
+          <Animated.View entering={FadeInDown.delay(300).duration(400).springify()} style={styles.row}>
             <View style={styles.col}>
                <Text style={styles.label}>SCAN REWARD (POINTS)</Text>
                <TextInput 
@@ -120,23 +128,25 @@ export default function CreateCampaignScreen({ navigation }) {
                  onChangeText={(v) => updateForm('painterMargin', v)}
                />
             </View>
-          </View>
+          </Animated.View>
 
-          <Text style={styles.label}>TOTAL BUDGETARY ALLOCATION (UNITS)</Text>
-          <TextInput 
-            style={styles.input}
-            placeholder="5000"
-            keyboardType="numeric"
-            value={form.budget}
-            onChangeText={(v) => updateForm('budget', v)}
-          />
+          <Animated.View entering={FadeInDown.delay(400).duration(400).springify()}>
+            <Text style={styles.label}>TOTAL BUDGETARY ALLOCATION (UNITS)</Text>
+            <TextInput 
+              style={styles.input}
+              placeholder="5000"
+              keyboardType="numeric"
+              value={form.budget}
+              onChangeText={(v) => updateForm('budget', v)}
+            />
 
-          <View style={styles.infoCard}>
-             <Zap size={16} color={Theme.muted} />
-             <Text style={styles.infoText}>
-                Directive activation will immediately update registry protocols across active devices.
-             </Text>
-          </View>
+            <View style={styles.infoCard}>
+               <Zap size={16} color={Theme.muted} />
+               <Text style={styles.infoText}>
+                  Directive activation will immediately update registry protocols across active devices.
+               </Text>
+            </View>
+          </Animated.View>
         </ScrollView>
 
         <TouchableOpacity 
@@ -148,12 +158,21 @@ export default function CreateCampaignScreen({ navigation }) {
             <ActivityIndicator color="white" />
           ) : (
             <>
-              <Text style={styles.actionBtnText}>DEPLOY DIRECTIVE</Text>
+              <Text style={styles.actionBtnText}>{isEditing ? 'UPDATE' : 'DEPLOY'} DIRECTIVE</Text>
               <ArrowRight color="white" size={18} />
             </>
           )}
         </TouchableOpacity>
       </KeyboardAvoidingView>
+
+      <SuccessOverlay 
+        visible={showSuccess} 
+        message={isEditing ? "DIRECTIVE UPDATED" : "DIRECTIVE REGISTERED"}
+        onClose={() => {
+          setShowSuccess(false);
+          navigation.goBack();
+        }}
+      />
     </SafeAreaView>
   );
 }

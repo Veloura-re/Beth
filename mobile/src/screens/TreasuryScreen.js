@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  Alert,
-  StatusBar
-} from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl, StatusBar, Alert } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { Menu, Wallet, LineChart, BadgeCheck, Clock, ArrowRight, ArrowLeft } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
@@ -79,14 +69,14 @@ export default function TreasuryScreen({ navigation }) {
     }
   };
 
-  const renderPayoutItem = ({ item }) => (
-    <View style={styles.payoutCard}>
+  const renderPayoutItem = ({ item, index }) => (
+    <Animated.View entering={FadeInDown.delay(100 * index).duration(400).springify()} style={styles.payoutCard}>
        <View style={styles.payoutIcon}>
           <Clock color={Theme.muted} size={16} />
        </View>
        <View style={styles.payoutInfo}>
           <Text style={styles.payoutTarget}>{item.agent?.name?.toUpperCase() || 'SYSTEM'}</Text>
-          <Text style={styles.payoutMeta}>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '####'} // ID: {item.id?.substring(0,8) || '####'}</Text>
+          <Text style={styles.payoutMeta}>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'} // ID: {item.id?.substring(0,8).toUpperCase() || 'REF-LOG'}</Text>
           {item.status === 'PENDING' && (
             <View style={styles.actionRow}>
               <TouchableOpacity 
@@ -118,13 +108,13 @@ export default function TreasuryScreen({ navigation }) {
              <Text style={[styles.statusText, item.status === 'PAID' && { color: 'white' }]}>{item.status}</Text>
           </View>
        </View>
-    </View>
+    </Animated.View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.menuBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -132,13 +122,13 @@ export default function TreasuryScreen({ navigation }) {
           <Text style={styles.headerSub}>Fiscal Oversight</Text>
           <Text style={styles.headerTitle}>TREASURY</Text>
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView 
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <View style={styles.statsCard}>
+        <Animated.View entering={FadeInUp.delay(200).duration(500).springify()} style={styles.statsCard}>
            <View style={styles.statLine}>
               <Text style={styles.statLabel}>Total Platform Volume</Text>
               <Text style={styles.statValue}>{financials?.totalVolume || 0}</Text>
@@ -148,7 +138,7 @@ export default function TreasuryScreen({ navigation }) {
               <Text style={styles.statLabel}>Total Payouts Issued</Text>
               <Text style={styles.statValue}>${financials?.totalPayouts || 0}</Text>
            </View>
-        </View>
+        </Animated.View>
 
         <View style={styles.sectionHeader}>
            <Text style={styles.sectionLabel}>Pending Clearances</Text>
@@ -160,7 +150,7 @@ export default function TreasuryScreen({ navigation }) {
         ) : (
           (payouts || []).map((item, i) => (
             <View key={i}>
-              {renderPayoutItem({ item })}
+              {renderPayoutItem({ item, index: i })}
             </View>
           ))
         )}

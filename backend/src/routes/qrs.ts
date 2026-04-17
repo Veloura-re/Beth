@@ -1,15 +1,26 @@
 import express from 'express';
 import { prisma } from '../index';
-import { authenticate, authorize } from '../middleware/auth';
+import { authenticate, authorize, AuthRequest } from '../middleware/auth';
 import { Role } from '@prisma/client';
 import qrcode from 'qrcode';
 
 const router = express.Router();
 
 // Generate Single QR
-router.post('/', authenticate, authorize([Role.ADMIN]), async (req, res) => {
+router.post('/', authenticate, authorize([Role.ADMIN]), async (req: AuthRequest, res) => {
   const { campaignId, painterId, locationName, gps, rewardPoints, expirationDate } = req.body;
+  const organizationId = (req.user as any).organizationId;
+
   try {
+    // Verify campaign belongs to same organization
+    const campaign = await prisma.campaign.findUnique({
+      where: { id: campaignId }
+    });
+
+    if (!campaign || campaign.organizationId !== organizationId) {
+      return res.status(403).json({ message: 'Directive mismatch or unauthorized organization' });
+    }
+
     const qr = await prisma.qRCode.create({
       data: {
         campaignId,
@@ -22,7 +33,6 @@ router.post('/', authenticate, authorize([Role.ADMIN]), async (req, res) => {
     });
 
     // Generate QR Data URL
-    // The QR contains just the ID for security and simplicity
     const qrData = await qrcode.toDataURL(qr.id);
 
     res.json({ ...qr, qrData });
@@ -32,10 +42,17 @@ router.post('/', authenticate, authorize([Role.ADMIN]), async (req, res) => {
 });
 
 // List QRs
-router.get('/', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), async (req, res) => {
+router.get('/', authenticate, authorize([Role.ADMIN, Role.SUPERADMIN]), async (req: AuthRequest, res) => {
   try {
+    const requesterRole = req.user?.role;
+    const organizationId = (req.user as any).organizationId;
+
     const qrs = await prisma.qRCode.findMany({
+      where: (requesterRole === Role.ADMIN) ? {
+        campaign: { organizationId }
+      } : {},
       include: { campaign: true },
+      orderBy: { createdAt: 'desc' }
     });
     res.json(qrs);
   } catch (error) {

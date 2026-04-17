@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  TextInput,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
   Platform,
-  StatusBar
+  TouchableOpacity,
+  StatusBar,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  TextInput,
+  ScrollView,
+  Alert
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, QrCode, Info, ChevronDown } from 'lucide-react-native';
 import { apiFetch } from '../utils/api';
+import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function CreateProtocolScreen({ navigation }) {
   const [campaigns, setCampaigns] = useState([]);
@@ -27,6 +29,7 @@ export default function CreateProtocolScreen({ navigation }) {
     locationName: '',
     painterId: '' // Metadata for physical painter identification
   });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     const loadCampaigns = async () => {
@@ -59,13 +62,9 @@ export default function CreateProtocolScreen({ navigation }) {
         })
       });
       
-      Alert.alert(
-        "Protocol Registered", 
-        "NEW TECHNICAL IDENTIFIER GENERATED.",
-        [{ text: "OK", onPress: () => navigation.goBack() }]
-      );
+      setShowSuccess(true);
     } catch (error) {
-      Alert.alert("Registry Error", error.message || "Failed to generate protocol.");
+      Alert.alert("Registry failure", error.message || "Failed to finalize unit deployment.");
     } finally {
       setBusy(false);
     }
@@ -75,7 +74,7 @@ export default function CreateProtocolScreen({ navigation }) {
 
   if (loading) {
      return (
-       <View style={[styles.container, styles.center]}>
+       <View style={[styles.container, styles.center, { backgroundColor: Theme.background }]}>
          <ActivityIndicator color="black" />
        </View>
      );
@@ -84,7 +83,7 @@ export default function CreateProtocolScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -92,21 +91,21 @@ export default function CreateProtocolScreen({ navigation }) {
           <Text style={styles.headerSub}>TECHNICAL REGISTRY</Text>
           <Text style={styles.headerTitle}>GENERATE PROTOCOL</Text>
         </View>
-      </View>
+      </Animated.View>
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.infoCard}>
+          <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.infoCard}>
              <Info size={16} color={Theme.muted} />
              <Text style={styles.infoText}>
                 Identify the target directive and physical painter for record synchronization.
              </Text>
-          </View>
+          </Animated.View>
 
-          <View style={styles.form}>
+          <Animated.View entering={FadeInDown.delay(400).duration(400).springify()} style={styles.form}>
              <Text style={styles.label}>TARGET SYSTEM DIRECTIVE</Text>
              <View style={styles.selectBox}>
                 <Text style={styles.selectText}>
@@ -141,7 +140,7 @@ export default function CreateProtocolScreen({ navigation }) {
                value={form.painterId}
                onChangeText={(v) => updateForm('painterId', v)}
              />
-          </View>
+          </Animated.View>
         </ScrollView>
 
         <TouchableOpacity 
@@ -159,6 +158,15 @@ export default function CreateProtocolScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </KeyboardAvoidingView>
+
+      <SuccessOverlay 
+        visible={showSuccess} 
+        message="PROTOCOL GENERATED"
+        onClose={() => {
+          setShowSuccess(false);
+          navigation.goBack();
+        }}
+      />
     </SafeAreaView>
   );
 }

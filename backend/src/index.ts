@@ -16,6 +16,7 @@ import scanRoutes from './routes/scans';
 import analyticsRoutes from './routes/analytics';
 import userRoutes from './routes/users';
 import financialRoutes from './routes/financial';
+import organizationRoutes from './routes/organizations';
 
 const pool = new Pool({ 
   connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
@@ -38,6 +39,7 @@ app.use('/api/scans', scanRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/financial', financialRoutes);
+app.use('/api/organizations', organizationRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

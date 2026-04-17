@@ -31,4 +31,16 @@ export class ScanController {
       res.status(500).json({ message: 'Error fetching scan logs' });
     }
   }
+
+  static async getMyScans(req: AuthRequest, res: Response) {
+    try {
+      const agentId = req.user?.id;
+      if (!agentId) return res.status(401).json({ message: 'Unauthorized' });
+      
+      const scans = await ScanService.getAgentHistory(agentId);
+      res.json(scans);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching personal history' });
+    }
+  }
 }

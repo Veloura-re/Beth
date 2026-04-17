@@ -8,7 +8,7 @@ const router = express.Router();
 // Scan QR (Agent only)
 router.post('/', authenticate, authorize([Role.AGENT]), ScanController.handleScan);
 
-// Get Scan Logs (Admin only)
-router.get('/', authenticate, authorize([Role.ADMIN]), ScanController.getLogs);
+// Get Personal Scan Logs (Agent only)
+router.get('/me', authenticate, authorize([Role.AGENT]), ScanController.getMyScans);
 
 export default router;

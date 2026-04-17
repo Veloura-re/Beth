@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
-  ScrollView, 
-  SafeAreaView, 
   TouchableOpacity, 
   ActivityIndicator,
   FlatList,
@@ -12,8 +10,11 @@ import {
   TextInput,
   StatusBar
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import Animated, { FadeInDown, FadeInUp, FadeIn, Layout } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
-import { Menu, Zap, Target, Layers, ArrowRight, X, ArrowLeft, Plus } from 'lucide-react-native';
+import { Menu, Zap, Target, Layers, ArrowRight, X, ArrowLeft, Plus, Pencil } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
 import { apiFetch, logout } from '../utils/api';
 
@@ -38,9 +39,11 @@ export default function CampaignsScreen({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
 
 
   const handleLogout = async () => {
@@ -48,8 +51,8 @@ export default function CampaignsScreen({ navigation }) {
     navigation.replace('Login');
   };
 
-  const renderCampaignItem = ({ item }) => (
-    <View style={styles.campaignCard}>
+  const renderCampaignItem = ({ item, index }) => (
+    <Animated.View entering={FadeInDown.delay(100 * index).duration(400).springify()} style={styles.campaignCard}>
       <View style={styles.campaignHeader}>
          <View style={styles.campaignIcon}>
             <Zap color="black" size={16} />
@@ -74,17 +77,23 @@ export default function CampaignsScreen({ navigation }) {
          </View>
       </View>
 
-      <TouchableOpacity style={styles.detailsBtn}>
-         <Text style={styles.detailsBtnText}>VIEW DIRECTIVE DETAILS</Text>
+      <TouchableOpacity 
+        style={styles.detailsBtn} 
+        onPress={() => navigation.navigate('CreateCampaign', { campaign: item })}
+      >
+         <View style={styles.detailsBtnContent}>
+            <Pencil color="black" size={14} />
+            <Text style={styles.detailsBtnText}>EDIT SYSTEM DIRECTIVE</Text>
+         </View>
          <ArrowRight color="black" size={12} />
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
+      <Animated.View entering={FadeIn.duration(400)} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.menuBtn}>
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
@@ -95,7 +104,7 @@ export default function CampaignsScreen({ navigation }) {
         <TouchableOpacity style={styles.deployBtn} onPress={() => navigation.navigate('CreateCampaign')}>
            <Plus color="white" size={24} />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
       {loading ? (
         <View style={styles.center}>
@@ -104,7 +113,7 @@ export default function CampaignsScreen({ navigation }) {
       ) : (
         <FlatList
           data={campaigns}
-          renderItem={renderCampaignItem}
+          renderItem={({ item, index }) => renderCampaignItem({ item, index })}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
@@ -255,16 +264,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderTopWidth: 1,
     borderTopColor: Theme.border,
-    marginTop: 8,
+  },
+  detailsBtnContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   detailsBtnText: {
     fontSize: 9,
     fontWeight: '900',
+    letterSpacing: 2,
     color: '#000000',
-    letterSpacing: 1,
   },
   empty: {
     alignItems: 'center',

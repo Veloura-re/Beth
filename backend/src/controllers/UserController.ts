@@ -40,10 +40,18 @@ export class UserController {
     if (!userId) return res.status(401).json({ message: 'Unauthorized' });
     
     try {
+      const requesterRole = req.user?.role as Role;
+      let organizationId = (req.user as any).organizationId;
+
+      // SuperAdmin override for global/specific view
+      if (requesterRole === Role.SUPERADMIN && req.query.organizationId) {
+        organizationId = req.query.organizationId as string;
+      }
+
       const performance = await UserService.getUserPerformance(
         userId, 
-        req.user?.role as Role, 
-        req.user?.organizationId
+        requesterRole, 
+        organizationId
       );
       res.json({ ...req.user, performance });
     } catch (error) {
