@@ -23,11 +23,7 @@ export default function LoginScreen({ navigation }) {
       const role = data.user.role;
       console.info(`[AUTH] Successful login. Finalized Role: ${role}`);
 
-      if (role === 'AGENT') {
-        navigation.replace('Scanner');
-      } else {
-        navigation.replace('Dashboard');
-      }
+      navigation.replace('Dashboard');
     } catch (error) {
       const targetUrl = process.env.EXPO_PUBLIC_API_URL || 'UNKNOWN';
       Alert.alert(
@@ -96,6 +92,13 @@ export default function LoginScreen({ navigation }) {
                   <ArrowRight color="white" size={16} />
                 </>
               )}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.registerLink}
+              onPress={() => navigation.navigate('Register')}
+            >
+               <Text style={styles.registerLinkText}>INCOMING CLEARANCE? REGISTER PHASE.</Text>
             </TouchableOpacity>
           </Animated.View>
 
@@ -197,6 +200,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '900',
     letterSpacing: 3,
+    textTransform: 'uppercase',
+  },
+  registerLink: {
+    marginTop: 24,
+    alignItems: 'center',
+  },
+  registerLinkText: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: Theme.muted,
+    letterSpacing: 2,
     textTransform: 'uppercase',
   },
   footer: {

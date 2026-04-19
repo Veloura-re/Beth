@@ -53,10 +53,12 @@ export default function ActivityLogScreen({ navigation }) {
           <Text style={styles.campaignName}>{item.campaign?.name?.toUpperCase() || 'CORE_DIRECTIVE'}</Text>
           <Text style={styles.points}>+{item.pointsEarned} PTS</Text>
         </View>
-        <Text style={styles.timestamp}>{new Date(item.timestamp).toLocaleString().toUpperCase()}</Text>
+        <Text style={styles.timestamp}>
+          {item.timestamp ? new Date(item.timestamp).toLocaleString().toUpperCase() : 'TIME_UNKNOWN'}
+        </Text>
         <View style={styles.qrRow}>
            <QrCode color={Theme.muted} size={12} />
-           <Text style={styles.qrId}>{item.qrId.substring(0, 16)}...</Text>
+           <Text style={styles.qrId}>{item.qrId?.substring(0, 16) || 'ID_UNKNOWN'}...</Text>
         </View>
       </View>
     </Animated.View>

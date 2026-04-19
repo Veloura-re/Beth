@@ -8,13 +8,15 @@ import {
   FlatList,
   Modal,
   TextInput,
-  StatusBar
+  StatusBar,
+  Alert,
+  Platform
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import Animated, { FadeInDown, FadeInUp, FadeIn, Layout } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
-import { Menu, Zap, Target, Layers, ArrowRight, X, ArrowLeft, Plus, Pencil } from 'lucide-react-native';
+import { Menu, Zap, Target, Layers, ArrowRight, X, ArrowLeft, Plus, Pencil, Trash2, ShieldAlert } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
 import { apiFetch, logout } from '../utils/api';
 
@@ -23,6 +25,9 @@ export default function CampaignsScreen({ navigation }) {
   const [profile, setProfile] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const loadData = async () => {
     try {
@@ -49,6 +54,30 @@ export default function CampaignsScreen({ navigation }) {
   const handleLogout = async () => {
     await logout();
     navigation.replace('Login');
+  };
+
+  const handleDelete = (id) => {
+    setDeletingId(id);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingId) return;
+    setDeleting(true);
+    try {
+      await apiFetch(`/campaigns/${deletingId}`, { method: 'DELETE' });
+      setCampaigns(prev => prev.filter(c => c.id !== deletingId));
+      setDeleteModalVisible(false);
+      setDeletingId(null);
+    } catch (error) {
+       if (Platform.OS === 'web') {
+         window.alert(error.message || "Failed to purge directive.");
+       } else {
+         Alert.alert("Registry Error", error.message || "Failed to purge directive.");
+       }
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const renderCampaignItem = ({ item, index }) => (
@@ -87,6 +116,14 @@ export default function CampaignsScreen({ navigation }) {
          </View>
          <ArrowRight color="black" size={12} />
       </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.deleteBtn} 
+        onPress={() => handleDelete(item.id)}
+      >
+         <Trash2 color={Theme.danger || '#FF3B30'} size={14} />
+         <Text style={styles.deleteBtnText}>PERMANENTLY PURGE DIRECTIVE</Text>
+      </TouchableOpacity>
     </Animated.View>
   );
 
@@ -112,6 +149,7 @@ export default function CampaignsScreen({ navigation }) {
         </View>
       ) : (
         <FlatList
+          style={{ flex: 1 }}
           data={campaigns}
           renderItem={({ item, index }) => renderCampaignItem({ item, index })}
           keyExtractor={item => item.id}
@@ -131,6 +169,48 @@ export default function CampaignsScreen({ navigation }) {
         currentRole={profile?.role}
         onLogout={handleLogout}
       />
+
+      {/* Custom Purge Modal */}
+      <Modal 
+        visible={deleteModalVisible} 
+        transparent 
+        animationType="fade"
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View entering={FadeIn.duration(200)} style={styles.modalContent}>
+            <View style={styles.modalHeaderIcon}>
+               <ShieldAlert color="#FF3B30" size={32} strokeWidth={1.5} />
+            </View>
+            <Text style={styles.modalTitleText}>INITIATE SYSTEM PURGE?</Text>
+            <Text style={styles.modalBodyText}>
+               You are about to permanently erase this technical directive. This operation is <Text style={{ fontWeight: '900' }}>IRREVERSIBLE</Text> and will cascade to all associated QR protocols.
+            </Text>
+            
+            <View style={styles.modalActions}>
+              <TouchableOpacity 
+                style={[styles.confirmBtn, deleting && { opacity: 0.5 }]} 
+                onPress={confirmDelete}
+                disabled={deleting}
+              >
+                {deleting ? (
+                  <ActivityIndicator color="white" size="small" />
+                ) : (
+                  <Text style={styles.confirmBtnText}>CONFIRM PURGE</Text>
+                )}
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.cancelBtn} 
+                onPress={() => setDeleteModalVisible(false)}
+                disabled={deleting}
+              >
+                <Text style={styles.cancelBtnText}>ABORT OPERATION</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -279,6 +359,21 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     color: '#000000',
   },
+  deleteBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: Theme.border + '33',
+    marginTop: 8,
+  },
+  deleteBtnText: {
+    fontSize: 8,
+    fontWeight: '900',
+    letterSpacing: 2,
+    color: Theme.danger || '#FF3B30',
+  },
   empty: {
     alignItems: 'center',
     padding: 48,
@@ -290,4 +385,71 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textAlign: 'center',
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    width: '100%',
+    maxWidth: 400,
+    padding: 32,
+    borderWidth: 1,
+    borderColor: '#00000010',
+    alignItems: 'center',
+  },
+  modalHeaderIcon: {
+    marginBottom: 24,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#FF3B3010',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalTitleText: {
+    fontSize: 14,
+    fontWeight: '900',
+    letterSpacing: 3,
+    color: '#000000',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalBodyText: {
+    fontSize: 10,
+    color: Theme.muted,
+    textAlign: 'center',
+    lineHeight: 18,
+    marginBottom: 32,
+    fontWeight: '500',
+  },
+  modalActions: {
+    width: '100%',
+    gap: 12,
+  },
+  confirmBtn: {
+    backgroundColor: '#000000',
+    paddingVertical: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  confirmBtnText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 2,
+  },
+  cancelBtn: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  cancelBtnText: {
+    color: Theme.muted,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 1,
+  }
 });

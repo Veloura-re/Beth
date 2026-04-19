@@ -17,6 +17,7 @@ import {
   Clock,
   X
 } from 'lucide-react-native';
+import { logout } from '../utils/api';
 
 const { width } = Dimensions.get('window');
 
@@ -42,6 +43,16 @@ export default function Sidebar({ visible, onClose, navigation, currentRole, onL
       navigation.navigate('Personnel', { roleType: targetRole });
     } else {
       navigation.navigate(route);
+    }
+  };
+
+  const handleInternalLogout = async () => {
+    if (onLogout) {
+      await onLogout();
+    } else {
+      await logout();
+      onClose();
+      navigation.replace('Login');
     }
   };
 
@@ -98,7 +109,7 @@ export default function Sidebar({ visible, onClose, navigation, currentRole, onL
           </View>
 
           <View style={styles.footer}>
-            <TouchableOpacity style={styles.logoutBtn} onPress={onLogout}>
+            <TouchableOpacity style={styles.logoutBtn} onPress={handleInternalLogout}>
               <LogOut color={Theme.muted} size={16} />
               <Text style={styles.logoutText}>TERMINATE SESSION</Text>
             </TouchableOpacity>

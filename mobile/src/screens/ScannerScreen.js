@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Sta
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as Location from 'expo-location';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ShieldCheck, X, Scan, QrCode } from 'lucide-react-native';
 import { scanQRCode } from '../utils/api';
@@ -22,10 +23,26 @@ export default function ScannerScreen({ navigation }) {
     setLoading(true);
 
     try {
-      const response = await scanQRCode(data);
+      // Get current location for geo-verification
+      let lat, lng;
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const location = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Balanced,
+          });
+          lat = location.coords.latitude;
+          lng = location.coords.longitude;
+        }
+      } catch (locError) {
+        console.log('Location not available:', locError);
+        // Continue without location - backend will handle it
+      }
+
+      const response = await scanQRCode(data, lat, lng);
       Alert.alert(
         "Verification Successful", 
-        `IDENTIFIER: ${data.substring(0, 12)}...\nSTATUS: LOGGED\nREWARD: ${response.rewardPoints} UNITS`,
+        `IDENTIFIER: ${data.substring(0, 12)}...\nSTATUS: LOGGED\nREWARD: ${response.points} UNITS`,
         [{ text: "CONTINUE", onPress: () => {
           setScanned(false);
           setLoading(false);

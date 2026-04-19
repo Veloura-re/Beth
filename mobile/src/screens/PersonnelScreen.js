@@ -45,7 +45,7 @@ export default function PersonnelScreen({ navigation, route }) {
       
       const [allUsers, orgs] = await Promise.all([
         apiFetch('/users'),
-        apiFetch('/organizations')
+        me.role === 'SUPERADMIN' ? apiFetch('/organizations') : Promise.resolve([])
       ]);
 
       const orgMap = (Array.isArray(orgs) ? orgs : []).reduce((acc, org) => {
@@ -83,8 +83,8 @@ export default function PersonnelScreen({ navigation, route }) {
   };
 
   const filteredUsers = users.filter(u => 
-    u.name.toLowerCase().includes(search.toLowerCase()) || 
-    u.email.toLowerCase().includes(search.toLowerCase())
+    (u.name || "").toLowerCase().includes(search.toLowerCase()) || 
+    (u.email || "").toLowerCase().includes(search.toLowerCase())
   );
 
   const renderUserItem = ({ item, index }) => (
@@ -93,7 +93,7 @@ export default function PersonnelScreen({ navigation, route }) {
         {item.role === 'ADMIN' ? <Shield color="black" size={16} /> : <Info color="black" size={16} />}
       </View>
       <View style={styles.userInfo}>
-        <Text style={styles.userName}>{item.name.toUpperCase()}</Text>
+        <Text style={styles.userName}>{item.name?.toUpperCase() || 'IDENTITY_PENDING'}</Text>
         <View style={styles.userMeta}>
           <Text style={styles.userEmail}>{item.email || 'NO_CLEARANCE'}</Text>
           {profile?.role === 'SUPERADMIN' && (

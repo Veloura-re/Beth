@@ -2,22 +2,12 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const getApiBaseUrl = () => {
-  // Use environment variable if defined (best practice for Expo 49+)
   if (process.env.EXPO_PUBLIC_API_URL) {
     return process.env.EXPO_PUBLIC_API_URL;
   }
 
-  // If running on Web target in the browser
-  if (Platform.OS === 'web') {
-    return 'http://localhost:5000/api';
-  }
-
-  // Fallbacks for local development
-  if (Platform.OS === 'android' && __DEV__) {
-     return 'http://10.0.2.2:5000/api'; // Android Emulator alias
-  }
-  
-  return 'http://localhost:5000/api';
+  // Local development fallback only if no env exists
+  return 'http://172.20.14.207:5000/api'; 
 };
 
 const API_BASE_URL = getApiBaseUrl(); 
@@ -35,45 +25,40 @@ export const apiFetch = async (endpoint, options = {}) => {
     ...options.headers,
   };
 
-  const getUrl = (baseUrl) => `${baseUrl}${endpoint}`;
+  const url = `${API_BASE_URL}${endpoint}`;
 
   try {
-    const response = await fetch(getUrl(API_BASE_URL), {
+    const response = await fetch(url, {
       ...options,
       headers,
     });
     
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Something went wrong');
+    if (!response.ok) {
+      const detail = data.error || (data.diagnostic ? JSON.stringify(data.diagnostic) : (data.details ? JSON.stringify(data.details) : ''));
+      const errMsg = data.message || 'REGISTRY_REJECTION';
+      throw new Error(detail ? `${errMsg}: ${detail}` : errMsg);
+    }
     return data;
   } catch (err) {
-    // If primary failed and we're on Android, try emulator alias
-    if (Platform.OS === 'android') {
-      console.log(`[NETWORK] Primary failed, attempting emulator fallback: ${ANDROID_EMULATOR_URL}`);
+    // Web platform fallback: if primary IP fails, try localhost (common for same-machine dev)
+    if (Platform.OS === 'web' && !url.includes('localhost')) {
+      console.warn(`[NETWORK] Primary failed, attempting Web fallback: ${LOCALHOST_URL}${endpoint}`);
       try {
-        const response = await fetch(getUrl(ANDROID_EMULATOR_URL), {
+        const response = await fetch(`${LOCALHOST_URL}${endpoint}`, {
           ...options,
           headers,
         });
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Something went wrong');
+        if (!response.ok) throw new Error(data.message || 'REGISTRY_REJECTION');
         return data;
-      } catch (innerErr) {
-        console.log(`[NETWORK] Emulator fallback failed, attempting localhost fallback: ${LOCALHOST_URL}`);
-        try {
-          const response = await fetch(getUrl(LOCALHOST_URL), {
-            ...options,
-            headers,
-          });
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.message || 'Something went wrong');
-          return data;
-        } catch (thirdErr) {
-          throw new Error(`NETWORK_ERROR: Unable to reach registry at ${API_BASE_URL} or ${ANDROID_EMULATOR_URL} or ${LOCALHOST_URL}`);
-        }
+      } catch (fallbackErr) {
+        console.error(`[NETWORK_FAILURE] Both primary and local fallbacks failed`, fallbackErr);
       }
     }
-    throw err;
+
+    console.error(`[NETWORK_FAILURE] Failed to reach registry at ${url}`, err);
+    throw new Error(`BETH_NETWORK_ERROR: Unable to communicate with registry at ${API_BASE_URL}. Ensure your device is on the correct network and the backend is active.`);
   }
 };
 
@@ -91,15 +76,29 @@ export const login = async (email, password) => {
   return data;
 };
 
+export const register = async (name, email, password, token) => {
+  const data = await apiFetch('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, password, token }),
+  });
+
+  if (data.token) {
+    await AsyncStorage.setItem('token', data.token);
+    await AsyncStorage.setItem('user', JSON.stringify(data.user));
+  }
+
+  return data;
+};
+
 export const logout = async () => {
   await AsyncStorage.removeItem('token');
   await AsyncStorage.removeItem('user');
 };
 
-export const scanQRCode = async (code) => {
-  return await apiFetch('/qrs/scan', {
+export const scanQRCode = async (qrId, lat, lng) => {
+  return await apiFetch('/scans', {
     method: 'POST',
-    body: JSON.stringify({ code }),
+    body: JSON.stringify({ qrId, lat, lng }),
   });
 };
 

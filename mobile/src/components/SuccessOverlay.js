@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, Modal, Dimensions } from 'react-native';
 import Animated, { 
   FadeIn, 
   FadeOut, 
-  ScaleInDown, 
-  ScaleOutUp
+  ZoomInDown, 
+  ZoomOutUp
 } from 'react-native-reanimated';
 import { CheckCircle2 } from 'lucide-react-native';
 import { Theme } from '../theme/theme';
@@ -32,8 +32,8 @@ export default function SuccessOverlay({ visible, message, onClose }) {
           style={styles.backdrop} 
         />
         <Animated.View 
-          entering={ScaleInDown.duration(600).springify()}
-          exiting={ScaleOutUp.duration(400)}
+          entering={ZoomInDown.duration(600).springify()}
+          exiting={ZoomOutUp.duration(400)}
           style={styles.content}
         >
           <View style={styles.iconContainer}>

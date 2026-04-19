@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
-import * as Sharing from 'expo-sharing';
-import { X, Share2, ShieldCheck } from 'lucide-react-native';
+import * as Print from 'expo-print';
+import { X, Share2, ShieldCheck, Printer } from 'lucide-react-native';
 import { Theme } from '../theme/theme';
 
 const { width, height } = Dimensions.get('window');
@@ -21,6 +21,26 @@ export default function QRStickerModal({ visible, protocol, onClose }) {
       });
     } catch (error) {
       console.error('Sharing failed', error);
+    }
+  };
+
+  const handlePrint = async () => {
+    try {
+      const uri = await viewShotRef.current.capture();
+      
+      const htmlContent = `
+        <html>
+          <body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 0;">
+            <img src="${uri}" style="width: 80%; height: auto;" />
+          </body>
+        </html>
+      `;
+
+      await Print.printAsync({
+        html: htmlContent,
+      });
+    } catch (error) {
+      console.error('Printing failed', error);
     }
   };
 
@@ -74,10 +94,17 @@ export default function QRStickerModal({ visible, protocol, onClose }) {
             </ViewShot>
           </View>
 
-          <TouchableOpacity style={styles.shareBtn} onPress={handleShare}>
-            <Share2 color="white" size={20} />
-            <Text style={styles.shareBtnText}>EXPORT PROTOCOL STICKER</Text>
-          </TouchableOpacity>
+          <View style={styles.actionRow}>
+            <TouchableOpacity style={styles.shareBtn} onPress={handleShare}>
+              <Share2 color="white" size={20} />
+              <Text style={styles.shareBtnText}>SHARE</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={[styles.shareBtn, styles.printBtn]} onPress={handlePrint}>
+              <Printer color="white" size={20} />
+              <Text style={styles.shareBtnText}>PRINT</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -189,12 +216,20 @@ const styles = StyleSheet.create({
   },
   shareBtn: {
     backgroundColor: '#000000',
-    marginHorizontal: 32,
+    flex: 1,
     padding: 24,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 16,
+    gap: 12,
+  },
+  printBtn: {
+    backgroundColor: Theme.muted,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 32,
+    gap: 12,
   },
   shareBtnText: {
     color: '#FFFFFF',

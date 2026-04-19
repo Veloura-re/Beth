@@ -15,6 +15,7 @@ import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { Menu, Search, ArrowLeft, MoreVertical, Edit2, Trash2, X, Plus } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
+import SuccessOverlay from '../components/SuccessOverlay';
 import { apiFetch } from '../utils/api';
 
 export default function OrganizationRegistryScreen({ navigation }) {
@@ -23,6 +24,8 @@ export default function OrganizationRegistryScreen({ navigation }) {
   const [search, setSearch] = useState('');
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const loadData = async () => {
     try {
@@ -46,8 +49,8 @@ export default function OrganizationRegistryScreen({ navigation }) {
   );
 
   const filteredOrgs = organizations.filter(o => 
-    o.name.toLowerCase().includes(search.toLowerCase()) ||
-    o.id.toLowerCase().includes(search.toLowerCase())
+    (o.name || "").toLowerCase().includes(search.toLowerCase()) ||
+    (o.id || "").toLowerCase().includes(search.toLowerCase())
   );
 
   const handleDelete = (id, name) => {
@@ -60,10 +63,12 @@ export default function OrganizationRegistryScreen({ navigation }) {
           text: "DECOMMISSION", 
           style: "destructive",
           onPress: async () => {
-            try {
-              await apiFetch(`/organizations/${id}`, { method: 'DELETE' });
-              loadData();
-            } catch (error) {
+             try {
+               await apiFetch(`/organizations/${id}`, { method: 'DELETE' });
+               setSuccessMsg('NODE_DECOMMISSIONED');
+               setShowSuccess(true);
+               loadData();
+             } catch (error) {
               Alert.alert("Error", "Failed to decommission organization.");
             }
           }
@@ -82,13 +87,15 @@ export default function OrganizationRegistryScreen({ navigation }) {
           text: "RENAME", 
           onPress: async (newName) => {
             if (!newName) return;
-            try {
-              await apiFetch(`/organizations/${id}`, { 
-                method: 'PATCH',
-                body: JSON.stringify({ name: newName }) 
-              });
-              loadData();
-            } catch (error) {
+             try {
+               await apiFetch(`/organizations/${id}`, { 
+                 method: 'PATCH',
+                 body: JSON.stringify({ name: newName }) 
+               });
+               setSuccessMsg('NODE_RENAMED');
+               setShowSuccess(true);
+               loadData();
+             } catch (error) {
               Alert.alert("Error", "Failed to rename organization.");
             }
           }
@@ -102,16 +109,16 @@ export default function OrganizationRegistryScreen({ navigation }) {
   const renderOrgItem = ({ item, index }) => (
     <Animated.View entering={FadeInDown.delay(100 * index).duration(400).springify()} style={styles.orgCard}>
       <View style={styles.orgInfo}>
-        <Text style={styles.orgName}>{item.name.toUpperCase()}</Text>
-        <Text style={styles.orgId}>{item.id}</Text>
-        <div style={styles.statsRow}>
-           <View style={styles.miniBadge}>
-             <Text style={styles.miniBadgeText}>{item._count?.users || 0} MEMBERS</Text>
-           </View>
-           <View style={styles.miniBadge}>
-             <Text style={styles.miniBadgeText}>{item._count?.campaigns || 0} DIRECTIVES</Text>
-           </View>
-        </div>
+        <Text style={styles.orgName}>{item.name?.toUpperCase() || 'NODE_PENDING'}</Text>
+         <Text style={styles.orgId}>{item.id}</Text>
+         <View style={styles.statsRow}>
+            <View style={styles.miniBadge}>
+              <Text style={styles.miniBadgeText}>{item._count?.users || 0} MEMBERS</Text>
+            </View>
+            <View style={styles.miniBadge}>
+              <Text style={styles.miniBadgeText}>{item._count?.campaigns || 0} DIRECTIVES</Text>
+            </View>
+         </View>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity onPress={() => handleRename(item.id, item.name)} style={styles.actionBtn}>
@@ -180,6 +187,12 @@ export default function OrganizationRegistryScreen({ navigation }) {
         navigation={navigation}
         currentRole={profile?.role}
         onLogout={() => {}}
+      />
+
+      <SuccessOverlay 
+        visible={showSuccess}
+        message={successMsg}
+        onClose={() => setShowSuccess(false)}
       />
     </SafeAreaView>
   );

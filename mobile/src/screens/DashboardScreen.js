@@ -25,7 +25,8 @@ import {
   UserPlus,
   Target,
   ArrowUpRight,
-  Shield
+  Shield,
+  Clock
 } from 'lucide-react-native';
 import { apiFetch, logout } from '../utils/api';
 import Sidebar from '../components/Sidebar';
@@ -39,32 +40,57 @@ export default function DashboardScreen({ navigation }) {
   const [selectedOrgId, setSelectedOrgId] = useState(null);
   const [census, setCensus] = useState(null);
 
-  const loadData = async (orgId = selectedOrgId) => {
+  const organizationsRef = React.useRef([]);
+  const hasInitiallyLoaded = React.useRef(false);
+
+  const loadData = useCallback(async (orgId = selectedOrgId) => {
     try {
       const url = orgId ? `/users/me?organizationId=${orgId}` : '/users/me';
-      const data = await apiFetch(url);
-      setProfile(data);
+      const userData = await apiFetch(url);
+      
+      // PROGRESSIVE RENDER: Immediately flush base profile to drop the loading screen fast
+      setProfile(userData);
+      setLoading(false);
 
-      if (data.role === 'SUPERADMIN') {
-        const [orgs, censusData] = await Promise.all([
-          organizations.length === 0 ? apiFetch('/organizations') : Promise.resolve(organizations),
-          apiFetch('/analytics/census')
-        ]);
-        setOrganizations(orgs);
-        setCensus(censusData);
+      if (userData.role === 'SUPERADMIN') {
+        let newOrgs = organizationsRef.current;
+        
+        const fetchTasks = [apiFetch('/analytics/census')];
+        if (newOrgs.length === 0) {
+          fetchTasks.push(apiFetch('/organizations'));
+        }
+
+        const results = await Promise.all(fetchTasks);
+        
+        // Cascading updates
+        setCensus(results[0]);
+        if (results.length > 1) {
+          organizationsRef.current = results[1];
+          setOrganizations(results[1]);
+        }
       }
     } catch (error) {
       console.error('Failed to load dashboard data', error);
+      setLoading(false); // Ensure unblock on error
     } finally {
-      setLoading(false);
       setRefreshing(false);
+      hasInitiallyLoaded.current = true;
     }
-  };
+  }, [selectedOrgId, census]);
 
+  // Use a dedicated effect for mounting and selectedOrgId filtering to prevent infinite focus triggers
+  useEffect(() => {
+    loadData(selectedOrgId);
+  }, [selectedOrgId]);
+
+  // Optional: Background sync strictly on focus without triggering full loading states
   useFocusEffect(
     useCallback(() => {
-      loadData();
-    }, [])
+      if (hasInitiallyLoaded.current) {
+        // Silent background fetch to update any external changes (e.g., scan points)
+        loadData(selectedOrgId);
+      }
+    }, [selectedOrgId, loadData])
   );
 
   const onRefresh = () => {
@@ -75,7 +101,6 @@ export default function DashboardScreen({ navigation }) {
   const handleOrgSelect = (orgId) => {
     setSelectedOrgId(orgId);
     setLoading(true);
-    loadData(orgId);
   };
 
   const handleLogout = async () => {
@@ -129,7 +154,7 @@ export default function DashboardScreen({ navigation }) {
           <Menu color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>{profile?.name?.toUpperCase()}</Text>
+          <Text style={styles.headerTitle}>{profile?.name?.toUpperCase() || 'OPERATOR'}</Text>
           <View style={[styles.roleBadge, { backgroundColor: isAdmin ? '#000000' : Theme.border }]}>
             <Text style={[styles.roleBadgeText, { color: isAdmin ? '#FFFFFF' : '#000000' }]}>
               {profile?.role || 'FETCHING'}
@@ -215,7 +240,7 @@ export default function DashboardScreen({ navigation }) {
                           onPress={() => handleOrgSelect(org.id)}
                           style={[styles.filterTab, selectedOrgId === org.id && styles.filterTabActive]}
                         >
-                          <Text style={[styles.filterTabText, selectedOrgId === org.id && styles.filterTabActiveText]}>{org.name.toUpperCase()}</Text>
+                          <Text style={[styles.filterTabText, selectedOrgId === org.id && styles.filterTabActiveText]}>{org.name?.toUpperCase() || 'COMPANY'}</Text>
                         </TouchableOpacity>
                       ))}
                     </ScrollView>
@@ -297,6 +322,25 @@ export default function DashboardScreen({ navigation }) {
                 <View style={styles.actionInfo}>
                   <Text style={styles.actionTitle}>VALUE REGISTRY</Text>
                   <Text style={styles.actionDesc}>Live Reward and Performance Pulse</Text>
+                </View>
+                <View style={styles.actionBtn}>
+                   <ArrowUpRight color="black" size={16} />
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+
+            <Animated.View entering={FadeInDown.delay(300).duration(300).springify()}>
+              <TouchableOpacity 
+                style={styles.actionCard}
+                onPress={() => navigation.navigate('Activity')}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+                  <Clock color="black" size={24} />
+                </View>
+                <View style={styles.actionInfo}>
+                  <Text style={styles.actionTitle}>ACTIVITY REGISTRY</Text>
+                  <Text style={styles.actionDesc}>Historical Capture and Log Stream</Text>
                 </View>
                 <View style={styles.actionBtn}>
                    <ArrowUpRight color="black" size={16} />
