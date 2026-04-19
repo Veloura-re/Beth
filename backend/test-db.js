@@ -1,23 +1,13 @@
-const { Client } = require('pg');
-
-async function testConnection() {
-  const rawUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
-  const cleanUrl = rawUrl.split('?')[0]; 
-  const client = new Client({
-    connectionString: cleanUrl,
-    ssl: { rejectUnauthorized: false }
-  });
-
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+async function main() {
   try {
-    await client.connect();
-    console.log('Successfully connected to DB');
-    const res = await client.query('SELECT NOW()');
-    console.log('Query result:', res.rows);
-  } catch (err) {
-    console.error('Connection error:', err);
+    const res = await prisma.qRCode.findFirst();
+    console.log("Success! Columns:", Object.keys(res || {}));
+  } catch (e) {
+    console.error("DB Error:", e.message);
   } finally {
-    await client.end();
+    await prisma.$disconnect();
   }
 }
-
-testConnection();
+main();

@@ -41,4 +41,17 @@ export class CampaignController {
          .json({ message: error.message || 'Error updating campaign' });
     }
   }
+
+  static async deleteCampaign(req: AuthRequest, res: Response) {
+    const { id } = req.params;
+    const organizationId = (req.user as any).organizationId;
+    
+    try {
+      await CampaignService.deleteCampaign(id as string, organizationId);
+      res.json({ message: 'Campaign and all associated protocols deleted successfully' });
+    } catch (error: any) {
+      res.status(error.message === 'Unauthorized or campaign not found' ? 403 : 500)
+         .json({ message: error.message || 'Error deleting campaign' });
+    }
+  }
 }

@@ -12,7 +12,15 @@ export class ScanController {
     }
 
     try {
-      const scan = await ScanService.processScan(qrId, agentId, Number(lat), Number(lng));
+      const parsedLat = lat ? Number(lat) : null;
+      const parsedLng = lng ? Number(lng) : null;
+      
+      const scan = await ScanService.processScan(
+        qrId, 
+        agentId, 
+        isNaN(parsedLat as number) ? undefined : (parsedLat as number), 
+        isNaN(parsedLng as number) ? undefined : (parsedLng as number)
+      );
       res.json({
         message: 'Scan successful! Points awarded.',
         points: scan.pointsEarned,

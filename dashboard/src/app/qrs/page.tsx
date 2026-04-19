@@ -4,8 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { fetchWithAuth } from '@/lib/api';
-import { Plus, Loader2, Download, QrCode, Trash2, Printer, Search, ShieldCheck, Activity } from 'lucide-react';
-import QRCode from 'react-qr-code';
+import { Plus, Loader2, Printer, QrCode, Trash2, Search, ShieldCheck, Activity } from 'lucide-react';
 
 interface QRCodeData {
   id: string; code?: string; status: string; rewardPoints: number;
@@ -16,8 +15,140 @@ interface QRCodeData {
 export default function QRsPage() {
   const [loading, setLoading] = useState(true);
   const [qrs, setQrs] = useState<QRCodeData[]>([]);
-  const [showBatch, setShowBatch] = useState(false);
-  const [batchSize] = useState(10);
+  const [selectedQs, setSelectedQs] = useState<string[]>([]);
+
+  const toggleSelection = (id: string) => {
+    setSelectedQs(prev => prev.includes(id) ? prev.filter(q => q !== id) : [...prev, id]);
+  };
+
+  const printSingle = (qr: QRCodeData) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>QR Code - ${qr.id}</title>
+          <style>
+            body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; background: white; }
+            .qr-container { padding: 40px; border: 2px solid #C62E2E; border-radius: 24px; text-align: center; }
+            .id { margin-top: 20px; font-size: 14px; font-weight: bold; color: #0A0A0A; letter-spacing: 2px; }
+            .campaign { margin-top: 8px; font-size: 12px; color: #666; }
+            @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+          </style>
+        </head>
+        <body>
+          <div class="qr-container">
+            <div id="qr"></div>
+            <div class="id">ID: ${qr.id.toUpperCase()}</div>
+            <div class="campaign">${qr.campaign?.name || 'BETH PROTOCOL'}</div>
+          </div>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+          <script>
+            new QRCode(document.getElementById('qr'), {
+              text: "${qr.id}",
+              width: 200,
+              height: 200,
+              colorDark: "#0A0A0A",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.H
+            });
+            setTimeout(() => window.print(), 100);
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const printBatch = () => {
+    const codesToPrint = selectedQs.length > 0 ? qrs.filter(q => selectedQs.includes(q.id)) : qrs;
+    if (codesToPrint.length === 0) return;
+    
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const gridHtml = codesToPrint.map(qr => `
+      <div class="qr-card">
+        <div id="qr-${qr.id}"></div>
+        <div class="id">${qr.id.slice(0, 8).toUpperCase()}</div>
+        <div class="campaign">${qr.campaign?.name || 'BETH'}</div>
+      </div>
+    `).join('');
+
+    const qrScripts = codesToPrint.map(qr => `
+      new QRCode(document.getElementById('qr-${qr.id}'), {
+        text: "${qr.id}",
+        width: 140,
+        height: 140,
+        colorDark: "#0A0A0A",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    `).join('\n');
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>QR Codes Batch Print</title>
+          <style>
+            body { margin: 0; padding: 20px; font-family: sans-serif; background: white; }
+            .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
+            .qr-card { 
+              background: white; 
+              border: 3px solid #0A0A0A; 
+              border-radius: 16px; 
+              padding: 24px; 
+              text-align: center;
+              page-break-inside: avoid;
+            }
+            .qr-card > div:first-child { margin: 0 auto; }
+            .id { margin-top: 16px; font-size: 12px; font-weight: 900; color: #0A0A0A; letter-spacing: 1px; }
+            .campaign { margin-top: 4px; font-size: 10px; color: #C62E2E; font-weight: 700; text-transform: uppercase; }
+            @media print { 
+              body { padding: 0; }
+              .no-print { display: none; } 
+            }
+            .controls { 
+              position: sticky; top: 0; 
+              background: #0A0A0A; 
+              padding: 16px 24px; 
+              margin: -20px -20px 20px -20px;
+              display: flex; justify-content: space-between; align-items: center;
+              border-bottom: 1px solid #262626;
+            }
+            .btn { 
+              background: #C62E2E; color: white; border: none; 
+              padding: 12px 24px; border-radius: 8px; 
+              font-weight: 700; cursor: pointer; font-size: 11px;
+              text-transform: uppercase; letter-spacing: 1px;
+            }
+            .btn-secondary {
+              background: transparent; border: 1px solid #666; color: #999;
+            }
+            .info { color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="controls no-print">
+            <span class="info">Ready to print ${codesToPrint.length} QR codes</span>
+            <div style="display: flex; gap: 12px;">
+              <button class="btn btn-secondary" onclick="window.close()">Cancel</button>
+              <button class="btn" onclick="window.print()">Print Now</button>
+            </div>
+          </div>
+          <div class="grid">
+            ${gridHtml}
+          </div>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+          <script>
+            ${qrScripts}
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
   const [search, setSearch] = useState('');
 
   const loadQrs = async () => {
@@ -43,42 +174,6 @@ export default function QRsPage() {
     );
   }
 
-  if (showBatch) {
-    return (
-      <div className="bg-[#0A0A0A] min-h-screen p-8 lg:p-12 print:p-0 font-sans text-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-[#161616] border border-[#262626] p-8 rounded-3xl mb-12 flex items-center justify-between shadow-2xl print:hidden animate-in fade-in slide-in-from-top-4 duration-500">
-            <div>
-              <h2 className="text-3xl font-sans font-bold tracking-tight">Identifier Batch Preview</h2>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mt-1">Printing sequence: {batchSize} Secure Protocols</p>
-            </div>
-            <div className="flex gap-4">
-              <button onClick={() => window.print()} className="flex items-center gap-2 px-6 py-3 bg-[#C62E2E] text-white rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
-                 <Printer size={18} /> <span>EXECUTE PRINT</span>
-              </button>
-              <button onClick={() => setShowBatch(false)} className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-bold shadow-sm hover:bg-white/10 transition-all text-[#8E8E93]">
-                 CLOSE PREVIEW
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array.from({ length: batchSize }).map((_, i) => (
-              <div key={i} className="bg-white p-10 rounded-3xl flex flex-col items-center text-center shadow-2xl relative overflow-hidden group border-4 border-[#0A0A0A]">
-                <div className="mb-8 p-6 bg-[#F5F5F7] rounded-2xl border border-black/5 group-hover:border-[#C62E2E]/20 transition-all shadow-inner">
-                  <QRCode value={`BETH-TX-${1000 + i}`} size={140} fgColor="#0A0A0A" />
-                </div>
-                <div className="space-y-1">
-                   <p className="text-sm font-mono font-bold tracking-tighter text-[#0A0A0A]">BETH_PROTO_{1000 + i}</p>
-                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#C62E2E]">SECURITY VERIFIED</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <ProtectedRoute allowedRoles={['ADMIN']}>
       <div className="flex bg-[#0A0A0A] min-h-screen font-sans text-[#F5F5F7]">
@@ -92,8 +187,13 @@ export default function QRsPage() {
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">Secure identifier & Token management</p>
             </div>
             <div className="flex gap-4">
-              <button onClick={() => setShowBatch(true)} className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-bold shadow-sm hover:bg-white/10 transition-all text-xs text-[#8E8E93] uppercase tracking-widest">
-                <Download size={18} /> <span>BATCH PROVISIONS</span>
+              <button 
+                onClick={printBatch} 
+                disabled={qrs.length === 0}
+                className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-bold shadow-sm hover:bg-white/10 transition-all text-xs text-[#8E8E93] uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Printer size={18} /> 
+                <span>{selectedQs.length > 0 ? `Print Selected (${selectedQs.length})` : 'Print All'}</span>
               </button>
               <button className="flex items-center gap-2 px-6 py-3 bg-[#C62E2E] text-white rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
                 <Plus size={18} /> <span>CREATE IDENTIFIER</span>
@@ -144,23 +244,45 @@ export default function QRsPage() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="bg-white/2">
-                      <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Identifier</th>
-                      <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Initiative Context</th>
-                      <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Throughput</th>
-                      <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Reward Weight</th>
-                      <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Protocol State</th>
-                      <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Oversight</th>
+                      <th className="px-6 py-5">
+                        <input
+                          type="checkbox"
+                          checked={selectedQs.length === filtered.length && filtered.length > 0}
+                          onChange={() => {
+                            if (selectedQs.length === filtered.length) {
+                              setSelectedQs([]);
+                            } else {
+                              setSelectedQs(filtered.map(q => q.id));
+                            }
+                          }}
+                          className="w-4 h-4 accent-[#C62E2E] cursor-pointer"
+                        />
+                      </th>
+                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Identifier</th>
+                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Initiative Context</th>
+                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Throughput</th>
+                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Reward Weight</th>
+                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Protocol State</th>
+                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {filtered.length === 0 ? (
-                      <tr><td colSpan={6} className="px-10 py-24 text-center">
+                      <tr><td colSpan={7} className="px-10 py-24 text-center">
                         <QrCode size={32} className="mx-auto mb-4 text-white/10" />
                         <p className="text-lg font-sans italic text-white/40 uppercase tracking-tight opacity-60">No identifiers identified in registry.</p>
                       </td></tr>
                     ) : filtered.map((qr) => (
                       <tr key={qr.id} className="hover:bg-white/2 transition-colors group/row">
-                        <td className="px-10 py-6">
+                        <td className="px-6 py-6">
+                          <input
+                            type="checkbox"
+                            checked={selectedQs.includes(qr.id)}
+                            onChange={() => toggleSelection(qr.id)}
+                            className="w-4 h-4 accent-[#C62E2E] cursor-pointer"
+                          />
+                        </td>
+                        <td className="px-6 py-6">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 bg-black rounded-xl border border-white/5 flex items-center justify-center group-hover/row:bg-[#C62E2E] transition-all shadow-inner">
                               <QrCode size={18} className="text-[#8E8E93] group-hover/row:text-white transition-colors" />
@@ -168,15 +290,15 @@ export default function QRsPage() {
                             <span className="text-sm font-mono font-bold text-white tracking-tighter opacity-80">{qr.id.slice(0, 14).toUpperCase()}</span>
                           </div>
                         </td>
-                        <td className="px-10 py-6">
+                        <td className="px-6 py-6">
                           <div className="flex flex-col">
                              <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#C62E2E] transition-colors">{qr.campaign?.name ?? 'General Protocol'}</span>
                              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#8E8E93]">Active Initiative</span>
                           </div>
                         </td>
-                        <td className="px-10 py-6 text-center font-sans font-bold text-xl text-white">{qr.scanCount ?? 0}</td>
-                        <td className="px-10 py-6 text-center font-sans font-bold text-xl text-[#C62E2E]">{qr.rewardPoints}</td>
-                        <td className="px-10 py-6 text-center">
+                        <td className="px-6 py-6 text-center font-sans font-bold text-xl text-white">{qr.scanCount ?? 0}</td>
+                        <td className="px-6 py-6 text-center font-sans font-bold text-xl text-[#C62E2E]">{qr.rewardPoints}</td>
+                        <td className="px-6 py-6 text-center">
                           <span className={`text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1 rounded-full border ${
                              qr.status === 'ACTIVE' 
                                ? 'bg-[#C62E2E]/10 text-[#C62E2E] border-[#C62E2E]/20' 
@@ -185,10 +307,19 @@ export default function QRsPage() {
                             {qr.status}
                           </span>
                         </td>
-                        <td className="px-10 py-6 text-right">
-                          <button className="w-10 h-10 rounded-xl bg-[#C62E2E]/10 text-[#C62E2E] hover:bg-[#C62E2E] hover:text-white flex items-center justify-center transition-all opacity-0 group-hover/row:opacity-100 translate-x-4 group-hover/row:translate-x-0 border border-[#C62E2E]/20 shadow-lg">
-                            <Trash2 size={18} />
-                          </button>
+                        <td className="px-6 py-6 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => printSingle(qr)}
+                              className="w-10 h-10 rounded-xl bg-white/5 text-white/60 hover:bg-[#C62E2E] hover:text-white flex items-center justify-center transition-all border border-white/5"
+                              title="Print QR Code"
+                            >
+                              <Printer size={16} />
+                            </button>
+                            <button className="w-10 h-10 rounded-xl bg-[#C62E2E]/10 text-[#C62E2E] hover:bg-[#C62E2E] hover:text-white flex items-center justify-center transition-all border border-[#C62E2E]/20 shadow-lg">
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

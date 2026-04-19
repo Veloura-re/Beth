@@ -70,6 +70,7 @@ model QRCode {
   status         String    @default("ACTIVE")
   locationName   String?
   gps            String?
+  batchId        String?
   createdAt      DateTime  @default(now())
   
   scans          Scan[]

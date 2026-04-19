@@ -71,4 +71,31 @@ export class CampaignService {
       },
     });
   }
+
+  static async deleteCampaign(id: string, organizationId?: string) {
+    if (organizationId) {
+      const existing = await prisma.campaign.findUnique({ where: { id } });
+      if (!existing || existing.organizationId !== organizationId) {
+        throw new Error('Unauthorized or campaign not found');
+      }
+    }
+
+    // Cascade delete dependents in a transaction
+    return await prisma.$transaction(async (tx) => {
+      // 1. Delete all scans linked to this campaign
+      await tx.scan.deleteMany({
+        where: { campaignId: id }
+      });
+
+      // 2. Delete all QR codes linked to this campaign
+      await tx.qRCode.deleteMany({
+        where: { campaignId: id }
+      });
+
+      // 3. Finally delete the campaign
+      return await tx.campaign.delete({
+        where: { id }
+      });
+    });
+  }
 }

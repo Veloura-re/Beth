@@ -45,6 +45,16 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Global Error Handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('[SERVER_ERROR]', err);
+  res.status(500).json({ 
+    message: 'Internal Portal Error', 
+    error: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+  });
+});
+
 // Start Server
 app.listen(Number(PORT), '0.0.0.0' as any, () => {
   console.log(`Server running on 0.0.0.0:${PORT}`);
