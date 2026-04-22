@@ -1,0 +1,326 @@
+
+> dashboard@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.183.172.232:3000
+- Environments: .env
+✓ Ready in 347ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/liora/Videos/beth/yarn.lock as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/liora/Videos/beth/dashboard/yarn.lock
+
+
+○ Compiling / ...
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/liora/Videos/beth'
+    [2m[at finishWithoutResolve (/home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:587:18)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:679:14][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/liora/Videos/beth/dashboard/node_modules/enhanced-resolve/lib/Resolver.js:740:5][0m
+    [2m[at eval (eval at create (/home/liora/Videos/beth/dashboard/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in '/home/liora/Videos/beth'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in /home/liora/Videos/beth or above\n' +
+    '  resolve as module\n' +
+    '    looking for modules in /home/liora/Videos/beth/node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in /home/liora/Videos/beth/node_modules or above\n' +
+    '        no extension\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          /home/liora/Videos/beth/node_modules/tailwindcss.css doesn't exist\n" +
+    "      /home/liora/Videos/beth/node_modules/tailwindcss doesn't exist\n" +
+    "    /home/liora/Videos/node_modules doesn't exist or is not a directory\n" +
+    "    /home/liora/node_modules doesn't exist or is not a directory\n" +
+    "    /home/node_modules doesn't exist or is not a directory\n" +
+    "    /node_modules doesn't exist or is not a directory"
+}

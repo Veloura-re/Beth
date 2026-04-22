@@ -92,7 +92,7 @@ async function main() {
       campaignId: c1.id,
       rewardPoints: 100,
       locationName: 'District Alpha',
-      painterId: 'META-PAINTER-01',
+      // painterId: 'META-PAINTER-01', // This was causing a foreign key violation
       status: 'ACTIVE'
     }
   });
@@ -101,7 +101,7 @@ async function main() {
     await prisma.scan.create({
       data: {
         agentId: agent.id,
-        painterId: 'META-PAINTER-00',
+        // painterId: 'META-PAINTER-00',
         campaignId: c1.id,
         qrId: qr.id,
         pointsEarned: 15,
