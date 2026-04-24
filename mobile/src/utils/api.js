@@ -7,7 +7,7 @@ const getApiBaseUrl = () => {
   }
 
   // Local development fallback only if no env exists
-  return 'http://10.183.172.232:5000/api'; 
+  return 'http://172.27.57.74:5000/api'; 
 };
 
 const API_BASE_URL = getApiBaseUrl(); 

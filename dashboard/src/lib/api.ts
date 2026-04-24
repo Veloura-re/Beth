@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://10.183.172.232:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://172.27.57.74:5000/api';
 
 export async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;

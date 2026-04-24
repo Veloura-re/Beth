@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = new Pool({ 
-  connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
+  connectionString: "postgresql://postgres.oyrwfniokiokbztepzeg:Amsocookd2133@db.oyrwfniokiokbztepzeg.supabase.co:5432/postgres?sslmode=require",
   ssl: { rejectUnauthorized: false }
 });
 const adapter = new PrismaPg(pool);

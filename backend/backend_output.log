@@ -2,16 +2,6 @@
 > backend@1.0.0 dev
 > ts-node-dev --respawn --transpile-only src/index.ts
 
-[INFO] 02:54:30 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 6.0.2)
+[INFO] 07:33:28 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 6.0.2)
 ◇ injected env (5) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 Server running on 0.0.0.0:5000
-(node:6628) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
-In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
-
-To prepare for this change:
-- If you want the current behavior, explicitly use 'sslmode=verify-full'
-- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
-
-See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:6628) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
