@@ -3,13 +3,14 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown, SlideInRight } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
-import { login } from '../utils/api';
+import { login, API_BASE_URL } from '../utils/api';
 import { ArrowRight, ShieldCheck } from 'lucide-react-native';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -18,19 +19,18 @@ export default function LoginScreen({ navigation }) {
     }
 
     setLoading(true);
+    setError(null);
     try {
       const data = await login(email, password);
       const role = data.user.role;
       console.info(`[AUTH] Successful login. Finalized Role: ${role}`);
 
       navigation.replace('Dashboard');
-    } catch (error) {
-      const targetUrl = process.env.EXPO_PUBLIC_API_URL || 'UNKNOWN';
-      Alert.alert(
-        "Access Denied", 
-        `${error.message}\n\n[DIAGNOSTICS]\nTARGET: ${targetUrl}\nPROTOCOL: HTTP\nPORT: 5000`,
-        [{ text: "DISMISS" }]
-      );
+    } catch (err) {
+      setError({
+        message: err.message,
+        diagnostics: `TARGET: ${API_BASE_URL}\nPROTOCOL: ${API_BASE_URL.startsWith('https') ? 'HTTPS' : 'HTTP'}\nPORT: ${API_BASE_URL.includes(':') ? API_BASE_URL.split(':').pop().split('/')[0] : (API_BASE_URL.startsWith('https') ? '443' : '80')}`
+      });
     } finally {
       setLoading(false);
     }
@@ -78,8 +78,29 @@ export default function LoginScreen({ navigation }) {
               />
             </View>
 
+            {error && (
+              <Animated.View entering={FadeIn.duration(400)} style={styles.errorContainer}>
+                <View style={styles.errorHeader}>
+                  <Text style={styles.errorTitle}>Access Denied</Text>
+                </View>
+                <Text style={styles.errorMessage}>{error.message}</Text>
+                <View style={styles.diagnosticContainer}>
+                  <Text style={styles.diagnosticLabel}>[DIAGNOSTICS]</Text>
+                  <Text style={styles.diagnosticText}>{error.diagnostics}</Text>
+                </View>
+                <View style={styles.errorActions}>
+                  <TouchableOpacity onPress={() => setError(null)} style={styles.dismissBtn}>
+                    <Text style={styles.dismissBtnText}>DISMISS</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleLogin} style={styles.retryBtn}>
+                    <Text style={styles.retryBtnText}>RETRY</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            )}
+
             <TouchableOpacity
-              style={styles.loginBtn}
+              style={[styles.loginBtn, error && styles.loginBtnError]}
               onPress={handleLogin}
               disabled={loading}
               activeOpacity={0.9}
@@ -227,5 +248,73 @@ const styles = StyleSheet.create({
     color: Theme.muted,
     opacity: 0.4,
     textTransform: 'uppercase',
+  },
+  errorContainer: {
+    backgroundColor: '#FFF5F5',
+    borderWidth: 1,
+    borderColor: '#FF000033',
+    padding: 16,
+    marginBottom: 24,
+  },
+  errorHeader: {
+    marginBottom: 8,
+  },
+  errorTitle: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#FF0000',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  errorMessage: {
+    fontSize: 12,
+    color: '#333333',
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  diagnosticContainer: {
+    backgroundColor: '#00000008',
+    padding: 12,
+    marginBottom: 16,
+  },
+  diagnosticLabel: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: Theme.muted,
+    marginBottom: 4,
+  },
+  diagnosticText: {
+    fontSize: 9,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    color: Theme.muted,
+    opacity: 0.7,
+  },
+  dismissBtn: {
+    paddingVertical: 8,
+  },
+  dismissBtnText: {
+    fontSize: 9,
+    fontWeight: '900',
+    color: Theme.muted,
+    letterSpacing: 2,
+  },
+  errorActions: {
+    flexDirection: 'row',
+    gap: 24,
+    alignItems: 'center',
+  },
+  retryBtn: {
+    backgroundColor: '#000000',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  retryBtnText: {
+    fontSize: 9,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: 2,
+  },
+  loginBtnError: {
+    opacity: 0.5,
   }
 });

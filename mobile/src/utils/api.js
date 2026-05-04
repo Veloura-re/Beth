@@ -6,11 +6,17 @@ const getApiBaseUrl = () => {
     return process.env.EXPO_PUBLIC_API_URL;
   }
 
-  // Local development fallback only if no env exists
+  // Local development fallback: 
+  // If you are on an emulator, use http://10.0.2.2:5000/api
+  // If you are on a physical device, use your machine's local IP (e.g. http://192.168.1.x:5000/api)
+  // For web development, http://localhost:5000/api works.
+  
+  // Defaulting to Render production for convenience, but logging a warning
+  console.warn('[NETWORK] EXPO_PUBLIC_API_URL not found. Falling back to Production Registry.');
   return 'https://beth-backend.onrender.com/api'; 
 };
 
-const API_BASE_URL = getApiBaseUrl(); 
+export const API_BASE_URL = getApiBaseUrl(); 
 console.log(`[NETWORK] Target Registry: ${API_BASE_URL}`);
 
 const ANDROID_EMULATOR_URL = 'http://10.0.2.2:5000/api';
