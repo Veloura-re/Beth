@@ -20,7 +20,7 @@ export const API_BASE_URL = getApiBaseUrl();
 console.log(`[NETWORK] Target Registry: ${API_BASE_URL}`);
 
 const ANDROID_EMULATOR_URL = 'http://10.0.2.2:5000/api';
-const LOCALHOST_URL = 'http://localhost:5000/api';
+const LOCALHOST_URL = 'http://127.0.0.1:5000/api';
 
 export const apiFetch = async (endpoint, options = {}) => {
   const token = await AsyncStorage.getItem('token');
@@ -49,17 +49,19 @@ export const apiFetch = async (endpoint, options = {}) => {
   } catch (err) {
     // Web platform fallback: if primary IP fails, try localhost (common for same-machine dev)
     if (Platform.OS === 'web' && !url.includes('localhost')) {
-      console.warn(`[NETWORK] Primary failed, attempting Web fallback: ${LOCALHOST_URL}${endpoint}`);
       try {
+        console.log(`[NETWORK] Attempting Web fallback: ${LOCALHOST_URL}${endpoint}`);
         const response = await fetch(`${LOCALHOST_URL}${endpoint}`, {
           ...options,
           headers,
         });
+        console.log(`[NETWORK] Fallback status: ${response.status}`);
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || 'REGISTRY_REJECTION');
         return data;
       } catch (fallbackErr) {
-        console.error(`[NETWORK_FAILURE] Both primary and local fallbacks failed`, fallbackErr);
+        console.error(`[NETWORK_FAILURE] Both primary and local fallbacks failed. Local target was ${LOCALHOST_URL}${endpoint}`, fallbackErr);
+        throw new Error(`BETH_NETWORK_ERROR: Both primary and local registries are unreachable.`);
       }
     }
 
