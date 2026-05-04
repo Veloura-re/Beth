@@ -54,25 +54,26 @@ export class UserService {
       ? (organizationId ? { campaign: { organizationId } } : {}) // Global (filtered by org if provided)
       : { OR: [{ agentId: userId }, { painterId: userId }] }; // Personal
 
-    const stats = await prisma.scan.aggregate({
-      where: statsWhere,
-      _sum: {
-        pointsEarned: true,
-        painterEarned: true,
-      },
-      _count: {
-        _all: true
-      }
-    });
-
-    const cashouts = await prisma.cashoutRequest.aggregate({
-      where: isPrimaryAdmin
-        ? (organizationId ? { agent: { organizationId } } : {})
-        : { agentId: userId, status: { in: ['PENDING', 'APPROVED', 'PAID'] } },
-      _sum: {
-        amount: true
-      }
-    });
+    const [stats, cashouts] = await Promise.all([
+      prisma.scan.aggregate({
+        where: statsWhere,
+        _sum: {
+          pointsEarned: true,
+          painterEarned: true,
+        },
+        _count: {
+          _all: true
+        }
+      }),
+      prisma.cashoutRequest.aggregate({
+        where: isPrimaryAdmin
+          ? (organizationId ? { agent: { organizationId } } : {})
+          : { agentId: userId, status: { in: ['PENDING', 'APPROVED', 'PAID'] } },
+        _sum: {
+          amount: true
+        }
+      })
+    ]);
 
     const totalEarned = stats._sum.pointsEarned || stats._sum.painterEarned || 0;
     const totalCashoutValue = (cashouts._sum.amount || 0) * 10; // 10 pts per $1

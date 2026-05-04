@@ -22,6 +22,10 @@ console.log(`[NETWORK] Target Registry: ${API_BASE_URL}`);
 const ANDROID_EMULATOR_URL = 'http://10.0.2.2:5000/api';
 const LOCALHOST_URL = 'http://127.0.0.1:5000/api';
 
+let primaryIsDown = false;
+let lastFailureTime = 0;
+const FAILURE_THRESHOLD = 30000; // 30 seconds
+
 export const apiFetch = async (endpoint, options = {}) => {
   const token = await AsyncStorage.getItem('token');
   
@@ -32,42 +36,75 @@ export const apiFetch = async (endpoint, options = {}) => {
   };
 
   const url = `${API_BASE_URL}${endpoint}`;
+  const isLocalWeb = Platform.OS === 'web' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-  try {
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
-    
-    const data = await response.json();
-    if (!response.ok) {
-      const detail = data.error || (data.diagnostic ? JSON.stringify(data.diagnostic) : (data.details ? JSON.stringify(data.details) : ''));
-      const errMsg = data.message || 'REGISTRY_REJECTION';
-      throw new Error(detail ? `${errMsg}: ${detail}` : errMsg);
+  // If we're on local web, try local backend first to avoid any timeout penalty
+  if (isLocalWeb) {
+    try {
+      const response = await fetch(`${LOCALHOST_URL}${endpoint}`, {
+        ...options,
+        headers,
+      });
+      if (response.ok) return await response.json();
+    } catch (e) {
+      console.log(`[NETWORK] Local first failed, falling back to primary/sticky logic`);
     }
-    return data;
-  } catch (err) {
-    // Web platform fallback: if primary IP fails, try localhost (common for same-machine dev)
-    if (Platform.OS === 'web' && !url.includes('localhost')) {
-      try {
-        console.log(`[NETWORK] Attempting Web fallback: ${LOCALHOST_URL}${endpoint}`);
-        const response = await fetch(`${LOCALHOST_URL}${endpoint}`, {
-          ...options,
-          headers,
-        });
-        console.log(`[NETWORK] Fallback status: ${response.status}`);
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'REGISTRY_REJECTION');
-        return data;
-      } catch (fallbackErr) {
-        console.error(`[NETWORK_FAILURE] Both primary and local fallbacks failed. Local target was ${LOCALHOST_URL}${endpoint}`, fallbackErr);
-        throw new Error(`BETH_NETWORK_ERROR: Both primary and local registries are unreachable.`);
+  }
+
+  // Circuit breaker: skip primary if known to be down
+  const now = Date.now();
+  const shouldSkipPrimary = primaryIsDown && (now - lastFailureTime < FAILURE_THRESHOLD);
+
+  if (!shouldSkipPrimary) {
+    // Controller for timing out the primary request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // Reduced to 2 seconds
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      const data = await response.json();
+      if (!response.ok) {
+        const detail = data.error || (data.diagnostic ? JSON.stringify(data.diagnostic) : (data.details ? JSON.stringify(data.details) : ''));
+        const errMsg = data.message || 'REGISTRY_REJECTION';
+        throw new Error(detail ? `${errMsg}: ${detail}` : errMsg);
+      }
+      primaryIsDown = false; 
+      return data;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      
+      if (err.name === 'AbortError' || err.message.includes('Network request failed') || err.message.includes('CORS')) {
+        primaryIsDown = true;
+        lastFailureTime = Date.now();
+        console.warn(`[NETWORK] Primary registry unreachable. Activating 30s sticky fallback.`);
       }
     }
-
-    console.error(`[NETWORK_FAILURE] Failed to reach registry at ${url}`, err);
-    throw new Error(`BETH_NETWORK_ERROR: Unable to communicate with registry at ${API_BASE_URL}. Ensure your device is on the correct network and the backend is active.`);
   }
+
+  // Web platform fallback (non-localhost or if local-first failed)
+  if (Platform.OS === 'web') {
+    try {
+      console.log(`[NETWORK] Using Web fallback: ${LOCALHOST_URL}${endpoint}`);
+      const response = await fetch(`${LOCALHOST_URL}${endpoint}`, {
+        ...options,
+        headers,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'REGISTRY_REJECTION');
+      return data;
+    } catch (fallbackErr) {
+      console.error(`[NETWORK_FAILURE] Both primary and local fallbacks failed.`, fallbackErr);
+      throw new Error(`BETH_NETWORK_ERROR: Both primary and local registries are unreachable.`);
+    }
+  }
+
+  throw new Error(`BETH_NETWORK_ERROR: Unable to communicate with registry at ${API_BASE_URL}.`);
 };
 
 export const login = async (email, password) => {
