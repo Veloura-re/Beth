@@ -7,7 +7,7 @@ const getApiBaseUrl = () => {
   }
 
   // Local development fallback only if no env exists
-  return 'http://172.20.33.232:5000/api'; 
+  return 'https://beth-backend.onrender.com/api'; 
 };
 
 const API_BASE_URL = getApiBaseUrl(); 
