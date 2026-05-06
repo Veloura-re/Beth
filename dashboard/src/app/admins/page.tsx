@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { ShieldCheck, Plus, Loader2, Copy, Check, X, Shield, Mail, User } from 'lucide-react';
-import { fetchWithAuth } from '@/lib/api';
+import { getUsers, createInvitation } from '@/lib/api';
 
 interface AdminUser {
   id: string; name: string; email: string; role: string; createdAt: string;
@@ -24,7 +24,7 @@ export default function AdminsPage() {
 
   const loadAdmins = async () => {
     try {
-      const data = await fetchWithAuth('/users');
+      const data = await getUsers() as any[];
       const list = Array.isArray(data) ? data : [];
       setAdmins(list.filter((u: AdminUser) => u.role === 'ADMIN' || u.role === 'SUPERADMIN'));
     } catch (e: unknown) {
@@ -47,10 +47,7 @@ export default function AdminsPage() {
     if (!newEmail) return;
     setSubmitting(true); setError('');
     try {
-      const data = await fetchWithAuth('/invites', {
-        method: 'POST',
-        body: JSON.stringify({ email: newEmail, role: 'ADMIN', name: newName }),
-      });
+      const data = await createInvitation({ email: newEmail, role: 'ADMIN', name: newName });
       setInviteLink(data?.inviteLink || '');
       setIsAdding(false);
       setNewEmail(''); setNewName('');

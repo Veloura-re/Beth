@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { fetchWithAuth } from '@/lib/api';
+import { getCashoutRequests, updateCashoutStatus } from '@/lib/api';
 import { Loader2, Download, Wallet, Clock, CheckCircle, Search, X } from 'lucide-react';
 
 interface PayoutRequest {
@@ -25,12 +25,11 @@ export default function PayoutsPage() {
 
   const loadData = async () => {
     try {
-      const [reqs, sum] = await Promise.all([
-        fetchWithAuth('/financial/requests'),
-        fetchWithAuth('/financial/summary'),
-      ]);
+      const reqs = await getCashoutRequests();
       setRequests(Array.isArray(reqs) ? reqs : []);
-      setSummary(sum || null);
+      const pendingLiability = reqs.filter((r: any) => r.status === 'PENDING').reduce((acc: number, r: any) => acc + Number(r.amount), 0);
+      const totalDisbursed = reqs.filter((r: any) => r.status === 'PAID').reduce((acc: number, r: any) => acc + Number(r.amount), 0);
+      setSummary({ pendingLiability, totalDisbursed });
     } catch (e: unknown) {
       console.error(e);
     } finally {
@@ -44,10 +43,7 @@ export default function PayoutsPage() {
 
   const handleUpdate = async (id: string, status: string) => {
     try {
-      await fetchWithAuth(`/financial/requests/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status }),
-      });
+      await updateCashoutStatus(id, status);
       loadData();
     } catch (e) {
       console.error(e);

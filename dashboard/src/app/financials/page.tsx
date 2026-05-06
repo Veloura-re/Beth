@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { fetchWithAuth } from '@/lib/api';
+import { getAnalyticsOverview, getAllScans } from '@/lib/api';
 import { Loader2, Download, ArrowUpRight, ArrowDownLeft, Search, TrendingUp, BarChart3, Receipt } from 'lucide-react';
 import RevenueChart from '@/components/RevenueChart';
 
@@ -32,8 +32,8 @@ export default function FinancialsPage() {
     const load = async () => {
       try {
         const [overview, scans] = await Promise.all([
-          fetchWithAuth('/analytics/overview'),
-          fetchWithAuth('/scans'),
+          getAnalyticsOverview(null),
+          getAllScans(),
         ]);
         setStats(overview || {});
         setTransactions(Array.isArray(scans) ? scans.map((s: RawScan) => ({

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { fetchWithAuth } from '@/lib/api';
+import { getUsers, createInvitation } from '@/lib/api';
 import { Plus, Loader2, Copy, Check, X, Users, UserPlus, Mail, Shield, Activity, Target } from 'lucide-react';
 
 interface Agent {
@@ -27,8 +27,8 @@ export default function AgentsPage() {
     const raw = localStorage.getItem('user');
     if (raw) setCurrentUser(JSON.parse(raw));
 
-    fetchWithAuth('/users/agents')
-      .then(data => setAgents(Array.isArray(data) ? data : []))
+    getUsers()
+      .then((data: any) => setAgents((Array.isArray(data) ? data : []).filter(u => u.role === 'AGENT')))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -39,10 +39,7 @@ export default function AgentsPage() {
     if (!newEmail) return;
     setSubmitting(true);
     try {
-      const data = await fetchWithAuth('/invites', {
-        method: 'POST',
-        body: JSON.stringify({ email: newEmail, role: 'AGENT', name: newName }),
-      });
+      const data = await createInvitation({ email: newEmail, role: 'AGENT', name: newName });
       setInviteLink(data?.inviteLink || '');
       setIsAdding(false);
       setNewEmail(''); setNewName('');

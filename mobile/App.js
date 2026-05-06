@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { Theme } from './src/theme/theme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from './src/utils/supabase';
 import { View, ActivityIndicator, LogBox } from 'react-native';
 
 LogBox.ignoreLogs(['props.pointerEvents is deprecated']);
@@ -35,8 +35,8 @@ export default function App() {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        if (token) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
           setInitialRoute('Dashboard');
         }
       } catch (e) {
@@ -46,6 +46,14 @@ export default function App() {
       }
     };
     checkAuthStatus();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        // App will unmount if user signs out from a child component, usually handled by navigation.replace
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   if (!isReady) {

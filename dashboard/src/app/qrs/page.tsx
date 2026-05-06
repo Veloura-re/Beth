@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { fetchWithAuth } from '@/lib/api';
+import { getQRCodes } from '@/lib/api';
 import { Plus, Loader2, Printer, QrCode, Trash2, Search, ShieldCheck, Activity } from 'lucide-react';
 
 interface QRCodeData {
@@ -30,31 +30,38 @@ export default function QRsPage() {
         <head>
           <title>QR Code - ${qr.id}</title>
           <style>
-            body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; background: white; }
-            .qr-container { padding: 40px; border: 2px solid #C62E2E; border-radius: 24px; text-align: center; }
-            .id { margin-top: 20px; font-size: 14px; font-weight: bold; color: #0A0A0A; letter-spacing: 2px; }
-            .campaign { margin-top: 8px; font-size: 12px; color: #666; }
+            body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: 'Courier New', monospace; background: white; }
+            .qr-container { padding: 40px; border: 2px solid #0A0A0A; text-align: center; }
+            .brand { font-size: 10px; font-weight: 900; letter-spacing: 4px; color: #C62E2E; margin-bottom: 24px; text-transform: uppercase; }
+            .qr-wrap { display: inline-block; padding: 16px; border: 1px solid #e5e5e5; }
+            .id { margin-top: 20px; font-size: 11px; font-weight: bold; color: #0A0A0A; letter-spacing: 3px; text-transform: uppercase; }
+            .campaign { margin-top: 6px; font-size: 10px; color: #666; letter-spacing: 1px; }
+            .footer { margin-top: 16px; font-size: 8px; color: #999; letter-spacing: 2px; }
             @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
           </style>
         </head>
         <body>
           <div class="qr-container">
-            <div id="qr"></div>
+            <div class="brand">BETH.ARCH // PROTOCOL REGISTRY</div>
+            <div class="qr-wrap"><div id="qr"></div></div>
             <div class="id">ID: ${qr.id.toUpperCase()}</div>
             <div class="campaign">${qr.campaign?.name || 'BETH PROTOCOL'}</div>
+            <div class="footer">SCAN TO VERIFY — MERSI ARCHITECTURE STANDARDS V16.2</div>
           </div>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
           <script>
-            new QRCode(document.getElementById('qr'), {
-              text: "${qr.id}",
-              width: 200,
-              height: 200,
-              colorDark: "#0A0A0A",
-              colorLight: "#ffffff",
-              correctLevel: QRCode.CorrectLevel.H
-            });
-            setTimeout(() => window.print(), 100);
-          </script>
+            function loadQR() {
+              new QRCode(document.getElementById('qr'), {
+                text: "${qr.id}",
+                width: 200,
+                height: 200,
+                colorDark: "#0A0A0A",
+                colorLight: "#ffffff",
+                correctLevel: 2
+              });
+              setTimeout(() => window.print(), 400);
+            }
+          <\/script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onload="loadQR()"></script>
         </body>
       </html>
     `);
@@ -70,6 +77,7 @@ export default function QRsPage() {
 
     const gridHtml = codesToPrint.map(qr => `
       <div class="qr-card">
+        <div class="brand">BETH.ARCH</div>
         <div id="qr-${qr.id}"></div>
         <div class="id">${qr.id.slice(0, 8).toUpperCase()}</div>
         <div class="campaign">${qr.campaign?.name || 'BETH'}</div>
@@ -90,24 +98,26 @@ export default function QRsPage() {
     printWindow.document.write(`
       <html>
         <head>
-          <title>QR Codes Batch Print</title>
+          <title>QR Codes Batch Print — BETH</title>
           <style>
-            body { margin: 0; padding: 20px; font-family: sans-serif; background: white; }
+            body { margin: 0; padding: 20px; font-family: 'Courier New', monospace; background: white; }
             .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
             .qr-card { 
               background: white; 
-              border: 3px solid #0A0A0A; 
-              border-radius: 16px; 
-              padding: 24px; 
+              border: 2px solid #0A0A0A; 
+              padding: 20px; 
               text-align: center;
               page-break-inside: avoid;
+              break-inside: avoid;
             }
-            .qr-card > div:first-child { margin: 0 auto; }
-            .id { margin-top: 16px; font-size: 12px; font-weight: 900; color: #0A0A0A; letter-spacing: 1px; }
-            .campaign { margin-top: 4px; font-size: 10px; color: #C62E2E; font-weight: 700; text-transform: uppercase; }
+            .brand { font-size: 7px; font-weight: 900; letter-spacing: 3px; color: #C62E2E; margin-bottom: 12px; }
+            .qr-card > div:nth-child(2) { margin: 0 auto; }
+            .id { margin-top: 12px; font-size: 9px; font-weight: 900; color: #0A0A0A; letter-spacing: 2px; }
+            .campaign { margin-top: 4px; font-size: 8px; color: #C62E2E; font-weight: 700; text-transform: uppercase; }
             @media print { 
               body { padding: 0; }
-              .no-print { display: none; } 
+              .no-print { display: none !important; }
+              @page { margin: 10mm; }
             }
             .controls { 
               position: sticky; top: 0; 
@@ -119,7 +129,7 @@ export default function QRsPage() {
             }
             .btn { 
               background: #C62E2E; color: white; border: none; 
-              padding: 12px 24px; border-radius: 8px; 
+              padding: 12px 24px;
               font-weight: 700; cursor: pointer; font-size: 11px;
               text-transform: uppercase; letter-spacing: 1px;
             }
@@ -140,10 +150,13 @@ export default function QRsPage() {
           <div class="grid">
             ${gridHtml}
           </div>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
           <script>
-            ${qrScripts}
-          </script>
+            function renderAll() {
+              ${qrScripts}
+              setTimeout(() => {/* ready */}, 100);
+            }
+          <\/script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onload="renderAll()"></script>
         </body>
       </html>
     `);
@@ -153,7 +166,7 @@ export default function QRsPage() {
 
   const loadQrs = async () => {
     try {
-      const data = await fetchWithAuth('/qrs');
+      const data = await getQRCodes(null);
       setQrs(Array.isArray(data) ? data : []);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }

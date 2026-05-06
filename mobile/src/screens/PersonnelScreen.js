@@ -15,7 +15,7 @@ import Animated, { FadeInDown, FadeInUp, FadeIn, Layout } from 'react-native-rea
 import { Theme } from '../theme/theme';
 import { Menu, UserPlus, Info, Shield, Search, ArrowRight, X, ArrowLeft } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
-import { apiFetch, logout } from '../utils/api';
+import { getMyProfile, getUsers, getOrganizations, logout } from '../utils/api';
 import { 
   Modal, 
   KeyboardAvoidingView, 
@@ -34,7 +34,7 @@ export default function PersonnelScreen({ navigation, route }) {
 
   const loadData = async () => {
     try {
-      const me = await apiFetch('/users/me');
+      const me = await getMyProfile();
       setProfile(me);
 
       if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
@@ -44,8 +44,8 @@ export default function PersonnelScreen({ navigation, route }) {
       }
       
       const [allUsers, orgs] = await Promise.all([
-        apiFetch('/users'),
-        me.role === 'SUPERADMIN' ? apiFetch('/organizations') : Promise.resolve([])
+        getUsers(),
+        me.role === 'SUPERADMIN' ? getOrganizations() : Promise.resolve([])
       ]);
 
       const orgMap = (Array.isArray(orgs) ? orgs : []).reduce((acc, org) => {

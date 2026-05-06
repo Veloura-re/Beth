@@ -8,7 +8,7 @@ import { Menu, QrCode, Plus, X, MapPin, Zap, ChevronRight, Barcode, ArrowLeft, P
 import Sidebar from '../components/Sidebar';
 import QRStickerModal from '../components/QRStickerModal';
 import SuccessOverlay from '../components/SuccessOverlay';
-import { apiFetch, logout } from '../utils/api';
+import { getMyProfile, getQRCodes, getCampaigns, logout } from '../utils/api';
 import QRCode from 'react-native-qrcode-svg';
 import * as Print from 'expo-print';
 
@@ -39,7 +39,7 @@ export default function ProtocolScreen({ navigation }) {
 
   const loadData = async () => {
     try {
-      const me = await apiFetch('/users/me');
+      const me = await getMyProfile();
       if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
         Alert.alert("Access Denied", "Authorized protocol clearance required.");
         navigation.replace('Dashboard');
@@ -48,8 +48,8 @@ export default function ProtocolScreen({ navigation }) {
       setProfile(me);
 
       const [list, ops] = await Promise.all([
-        apiFetch('/qrs'),
-        apiFetch('/campaigns')
+        getQRCodes(),
+        getCampaigns()
       ]);
       setProtocols(Array.isArray(list) ? list : []);
       setCampaigns(Array.isArray(ops) ? ops : []);

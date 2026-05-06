@@ -18,7 +18,7 @@ import Animated, { FadeInDown, FadeInUp, FadeIn, Layout } from 'react-native-rea
 import { Theme } from '../theme/theme';
 import { Menu, Zap, Target, Layers, ArrowRight, X, ArrowLeft, Plus, Pencil, Trash2, ShieldAlert } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
-import { apiFetch, logout } from '../utils/api';
+import { getCampaigns, getMyPerformance, deleteCampaign, logout } from '../utils/api';
 
 export default function CampaignsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
@@ -32,8 +32,8 @@ export default function CampaignsScreen({ navigation }) {
   const loadData = async () => {
     try {
       const [allCampaigns, me] = await Promise.all([
-        apiFetch('/campaigns'),
-        apiFetch('/users/me')
+        getCampaigns(),
+        getMyPerformance()
       ]);
       setCampaigns(Array.isArray(allCampaigns) ? allCampaigns : []);
       setProfile(me);
@@ -65,7 +65,7 @@ export default function CampaignsScreen({ navigation }) {
     if (!deletingId) return;
     setDeleting(true);
     try {
-      await apiFetch(`/campaigns/${deletingId}`, { method: 'DELETE' });
+      await deleteCampaign(deletingId);
       setCampaigns(prev => prev.filter(c => c.id !== deletingId));
       setDeleteModalVisible(false);
       setDeletingId(null);

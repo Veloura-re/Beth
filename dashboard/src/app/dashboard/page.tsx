@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { DollarSign, TrendingUp, Loader2, QrCode } from 'lucide-react';
 import ScanChart from '@/components/ScanChart';
-import { fetchWithAuth } from '@/lib/api';
+import { getAnalyticsOverview, getDailyScans, getCashoutRequests } from '@/lib/api';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import MetricCard from '@/components/MetricCard';
 
@@ -46,14 +46,18 @@ export default function DashboardPage() {
 
     const load = async () => {
       try {
-        const [overview, daily, finance] = await Promise.all([
-          fetchWithAuth('/analytics/overview'),
-          fetchWithAuth('/analytics/charts/daily-scans'),
-          fetchWithAuth('/financial/summary'),
+        const [overview, daily, cashoutRequests] = await Promise.all([
+          getAnalyticsOverview(),
+          getDailyScans(),
+          getCashoutRequests(),
         ]);
         setStats(overview || {});
         setDailyData(Array.isArray(daily) ? daily : []);
-        setFinancials(finance || {});
+        
+        const pending = Array.isArray(cashoutRequests) ? cashoutRequests.filter((r: any) => r.status === 'PENDING') : [];
+        const pendingLiability = pending.reduce((s: number, r: any) => s + Number(r.amount), 0);
+        const requestCount = pending.length;
+        setFinancials({ pendingLiability, requestCount });
       } catch (e: unknown) {
         console.error(e);
       } finally {

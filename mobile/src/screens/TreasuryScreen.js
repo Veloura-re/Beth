@@ -5,7 +5,7 @@ import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated'
 import { Theme } from '../theme/theme';
 import { Menu, Wallet, LineChart, BadgeCheck, Clock, ArrowRight, ArrowLeft } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
-import { apiFetch, logout } from '../utils/api';
+import { getMyProfile, getAnalyticsOverview, getCashoutRequests, updateCashoutStatus, logout } from '../utils/api';
 
 export default function TreasuryScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ export default function TreasuryScreen({ navigation }) {
 
   const loadData = async () => {
     try {
-      const me = await apiFetch('/users/me');
+      const me = await getMyProfile();
       if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
         Alert.alert("Access Denied", "Authorized fiscal clearance required.");
         navigation.replace('Dashboard');
@@ -25,8 +25,8 @@ export default function TreasuryScreen({ navigation }) {
       }
 
       const [stats, list] = await Promise.all([
-        apiFetch('/financial/summary'),
-        apiFetch('/financial/requests')
+        getAnalyticsOverview(),
+        getCashoutRequests()
       ]);
       setFinancials(stats || {});
       setPayouts(Array.isArray(list) ? list : []);
@@ -56,10 +56,7 @@ export default function TreasuryScreen({ navigation }) {
   const handleUpdateStatus = async (id, status) => {
     try {
       setLoading(true);
-      await apiFetch(`/financial/requests/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status })
-      });
+      await updateCashoutStatus(id, status);
       loadData();
     } catch (error) {
       console.error('Clearance failure', error);

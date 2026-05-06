@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, Shapes, Wallet, Clock, ShieldCheck, ChevronRight } from 'lucide-react-native';
-import { apiFetch, requestCashout } from '../utils/api';
+import { getMyPerformance, requestCashout } from '../utils/api';
 import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function RewardsScreen({ navigation }) {
@@ -15,7 +15,7 @@ export default function RewardsScreen({ navigation }) {
 
   const loadProfile = async () => {
     try {
-      const data = await apiFetch('/users/me');
+      const data = await getMyPerformance();
       setProfile(data);
     } catch (error) {
       console.error('Failed to load profile', error);
@@ -63,7 +63,7 @@ export default function RewardsScreen({ navigation }) {
     );
   }
 
-  const balance = profile?.performance?.availableBalance || 0;
+  const balance = profile?.availablePoints || profile?.performance?.availableBalance || 0;
 
   const rewards = [
     { title: 'Global Credit', points: '5,000', id: 'VAL-50', icon: Wallet },

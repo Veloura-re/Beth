@@ -16,7 +16,7 @@ import { Theme } from '../theme/theme';
 import { Menu, Search, ArrowLeft, MoreVertical, Edit2, Trash2, X, Plus } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
 import SuccessOverlay from '../components/SuccessOverlay';
-import { apiFetch } from '../utils/api';
+import { getMyProfile, getOrganizations, createOrganization, deleteOrganization, updateOrganization } from '../utils/api';
 
 export default function OrganizationRegistryScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
@@ -30,8 +30,8 @@ export default function OrganizationRegistryScreen({ navigation }) {
   const loadData = async () => {
     try {
       const [me, orgs] = await Promise.all([
-        apiFetch('/users/me'),
-        apiFetch('/organizations')
+        getMyProfile(),
+        getOrganizations()
       ]);
       setProfile(me);
       setOrganizations(orgs);
@@ -64,7 +64,7 @@ export default function OrganizationRegistryScreen({ navigation }) {
           style: "destructive",
           onPress: async () => {
              try {
-               await apiFetch(`/organizations/${id}`, { method: 'DELETE' });
+               await deleteOrganization(id);
                setSuccessMsg('NODE_DECOMMISSIONED');
                setShowSuccess(true);
                loadData();
@@ -88,10 +88,7 @@ export default function OrganizationRegistryScreen({ navigation }) {
           onPress: async (newName) => {
             if (!newName) return;
              try {
-               await apiFetch(`/organizations/${id}`, { 
-                 method: 'PATCH',
-                 body: JSON.stringify({ name: newName }) 
-               });
+               await updateOrganization(id, { name: newName });
                setSuccessMsg('NODE_RENAMED');
                setShowSuccess(true);
                loadData();

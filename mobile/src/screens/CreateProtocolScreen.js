@@ -18,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, QrCode, Info, ChevronDown, User, X } from 'lucide-react-native';
-import { apiFetch } from '../utils/api';
+import { getCampaigns, getUsers, createQRCodes } from '../utils/api';
 import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function CreateProtocolScreen({ navigation }) {
@@ -41,12 +41,12 @@ export default function CreateProtocolScreen({ navigation }) {
     const loadRegistry = async () => {
       try {
         const [campaignData, agentData] = await Promise.all([
-          apiFetch('/campaigns'),
-          apiFetch('/users/agents')
+          getCampaigns(),
+          getUsers()
         ]);
         
         setCampaigns(campaignData);
-        setAgents(agentData);
+        setAgents(agentData.filter(u => u.role === 'AGENT'));
         
         if (campaignData.length > 0) updateForm('campaignId', campaignData[0].id);
       } catch (error) {
@@ -74,14 +74,11 @@ export default function CreateProtocolScreen({ navigation }) {
     setBusy(true);
 
     try {
-      const response = await apiFetch('/qrs', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...form,
-          painterId: form.painterId || null,
-          rewardPoints: points,
-          quantity: parseInt(form.quantity || '1', 10),
-        })
+      const response = await createQRCodes({
+        ...form,
+        painterId: form.painterId || null,
+        rewardPoints: points,
+        quantity: parseInt(form.quantity || '1', 10),
       });
       
       console.log('[REGISTRY_SUCCESS]', response);

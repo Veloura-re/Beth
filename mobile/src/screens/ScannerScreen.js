@@ -42,7 +42,7 @@ export default function ScannerScreen({ navigation }) {
       const response = await scanQRCode(data, lat, lng);
       Alert.alert(
         "Verification Successful", 
-        `IDENTIFIER: ${data.substring(0, 12)}...\nSTATUS: LOGGED\nREWARD: ${response.points} UNITS`,
+        `IDENTIFIER: ${data.substring(0, 12)}...\nSTATUS: LOGGED\nREWARD: ${response?.points_earned ?? response?.pointsEarned ?? '+'} UNITS`,
         [{ text: "CONTINUE", onPress: () => {
           setScanned(false);
           setLoading(false);

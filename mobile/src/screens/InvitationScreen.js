@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, UserPlus, Info } from 'lucide-react-native';
-import { apiFetch } from '../utils/api';
+import { getMyProfile, getOrganizations, createInvitation } from '../utils/api';
 import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function InvitationScreen({ navigation, route }) {
@@ -32,10 +32,10 @@ export default function InvitationScreen({ navigation, route }) {
   useEffect(() => {
     const checkRole = async () => {
       try {
-        const me = await apiFetch('/users/me');
+        const me = await getMyProfile();
         if (me.role === 'SUPERADMIN') {
           setIsSuperAdmin(true);
-          const orgs = await apiFetch('/organizations');
+          const orgs = await getOrganizations();
           setOrganizations(orgs);
         }
       } catch (error) {
@@ -53,26 +53,11 @@ export default function InvitationScreen({ navigation, route }) {
 
     setInviting(true);
     try {
-      const payload = { 
-        email: email.toLowerCase(), 
-        role: targetRole 
-      };
-
-      if (isSuperAdmin) {
-        if (newOrgName) {
-          payload.organizationName = newOrgName;
-        } else if (selectedOrgId) {
-          payload.organizationId = selectedOrgId;
-        } else {
-          Alert.alert("Input Error", "Organization target is required for Administrative nodes.");
-          setInviting(false);
-          return;
-        }
-      }
-
-      await apiFetch('/invites', {
-        method: 'POST',
-        body: JSON.stringify(payload)
+      await createInvitation({
+        email: email.toLowerCase(),
+        role: targetRole,
+        organizationName: isSuperAdmin && newOrgName ? newOrgName : undefined,
+        organizationId: isSuperAdmin && selectedOrgId ? selectedOrgId : undefined
       });
       
       setShowSuccess(true);

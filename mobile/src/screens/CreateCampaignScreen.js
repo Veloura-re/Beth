@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, Zap, Info } from 'lucide-react-native';
-import { apiFetch, updateCampaign } from '../utils/api';
+import { createCampaign, updateCampaign } from '../utils/api';
 import SuccessOverlay from '../components/SuccessOverlay';
 
 export default function CreateCampaignScreen({ navigation, route }) {
@@ -51,10 +51,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
       if (isEditing) {
         await updateCampaign(editData.id, payload);
       } else {
-        await apiFetch('/campaigns', {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
+        await createCampaign(payload);
       }
       
       setShowSuccess(true);

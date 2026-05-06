@@ -3,6 +3,7 @@
 import React, { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ShieldCheck, ArrowRight, Loader2, Lock, User, Key, Check } from 'lucide-react';
+import { register } from '@/lib/api';
 
 function OnboardingForm() {
   const searchParams = useSearchParams();
@@ -28,16 +29,9 @@ function OnboardingForm() {
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, token })
-      });
+      const data = await register(name, email, password, token);
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.session.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
       router.push('/dashboard');
     } catch (err: unknown) {

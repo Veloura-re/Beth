@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { fetchWithAuth } from '@/lib/api';
+import { getCampaigns } from '@/lib/api';
 import { Plus, Loader2, Shapes, ChevronRight, Target, Activity } from 'lucide-react';
 
 interface Campaign {
@@ -17,8 +17,8 @@ export default function CampaignsPage() {
    const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
    useEffect(() => {
-      fetchWithAuth('/campaigns')
-         .then(data => setCampaigns(Array.isArray(data) ? data : []))
+      getCampaigns()
+         .then((data: any) => setCampaigns(Array.isArray(data) ? data : []))
          .catch(console.error)
          .finally(() => setLoading(false));
    }, []);

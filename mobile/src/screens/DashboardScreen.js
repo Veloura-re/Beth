@@ -28,7 +28,7 @@ import {
   Shield,
   Clock
 } from 'lucide-react-native';
-import { apiFetch, logout } from '../utils/api';
+import { getMyPerformance, getPlatformCensus, getOrganizations, logout } from '../utils/api';
 import Sidebar from '../components/Sidebar';
 
 export default function DashboardScreen({ navigation }) {
@@ -45,8 +45,8 @@ export default function DashboardScreen({ navigation }) {
 
   const loadData = useCallback(async (orgId = selectedOrgId) => {
     try {
-      const url = orgId ? `/users/me?organizationId=${orgId}` : '/users/me';
-      const userData = await apiFetch(url);
+      // getMyPerformance automatically scopes by auth.uid()
+      const userData = await getMyPerformance();
       
       // PROGRESSIVE RENDER: Immediately flush base profile to drop the loading screen fast
       setProfile(userData);
@@ -55,9 +55,9 @@ export default function DashboardScreen({ navigation }) {
       if (userData.role === 'SUPERADMIN') {
         let newOrgs = organizationsRef.current;
         
-        const fetchTasks = [apiFetch('/analytics/census')];
+        const fetchTasks = [getPlatformCensus()];
         if (newOrgs.length === 0) {
-          fetchTasks.push(apiFetch('/organizations'));
+          fetchTasks.push(getOrganizations());
         }
 
         const results = await Promise.all(fetchTasks);
@@ -142,8 +142,8 @@ export default function DashboardScreen({ navigation }) {
   );
 
   const stats = [
-    { label: isAdmin ? 'Platform Volume' : 'Volume', value: profile?.performance?.totalScans || 0, id: '01' },
-    { label: isAdmin ? 'Total Units' : 'Units', value: profile?.performance?.availableBalance || 0, id: '02' },
+    { label: isAdmin ? 'Platform Volume' : 'Volume', value: profile?.totalScans || 0, id: '01' },
+    { label: isAdmin ? 'Total Units' : 'Units', value: profile?.availablePoints || 0, id: '02' },
   ];
 
   return (

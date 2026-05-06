@@ -14,7 +14,7 @@ import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { Menu, ArrowLeft, Clock, QrCode, CheckCircle2, ChevronRight } from 'lucide-react-native';
 import Sidebar from '../components/Sidebar';
-import { apiFetch } from '../utils/api';
+import { getMyProfile, getScanHistory } from '../utils/api';
 
 export default function ActivityLogScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
@@ -25,8 +25,8 @@ export default function ActivityLogScreen({ navigation }) {
   const loadData = async () => {
     try {
       const [me, logs] = await Promise.all([
-        apiFetch('/users/me'),
-        apiFetch('/scans/me')
+        getMyProfile(),
+        getScanHistory()
       ]);
       setProfile(me);
       setActivities(logs);

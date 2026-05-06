@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, StatusBar, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, StatusBar, KeyboardAvoidingView, Platform, Image, ScrollView } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { FadeIn, FadeInDown, SlideInRight } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
-import { login, API_BASE_URL } from '../utils/api';
-import { ArrowRight, ShieldCheck } from 'lucide-react-native';
+import { login } from '../utils/api';
+import { ArrowRight, RefreshCw, X, Wifi, WifiOff } from 'lucide-react-native';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -29,7 +29,7 @@ export default function LoginScreen({ navigation }) {
     } catch (err) {
       setError({
         message: err.message,
-        diagnostics: `TARGET: ${API_BASE_URL}\nPROTOCOL: ${API_BASE_URL.startsWith('https') ? 'HTTPS' : 'HTTP'}\nPORT: ${API_BASE_URL.includes(':') ? API_BASE_URL.split(':').pop().split('/')[0] : (API_BASE_URL.startsWith('https') ? '443' : '80')}`
+        diagnostics: `TARGET: SUPABASE\nPROTOCOL: HTTPS`
       });
     } finally {
       setLoading(false);
@@ -48,8 +48,17 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.versionLabel}>V 16.2.0</Text>
               <Text style={styles.versionLabel}>SECURE LINE</Text>
             </View>
-            <Text style={styles.headerSubtitle}>Authorized Access</Text>
-            <Text style={styles.headerTitle}>BETH.ARCH</Text>
+            <View style={styles.logoRow}>
+              <Image
+                source={require('../../assets/beth-logo.png')}
+                style={styles.logoMark}
+                resizeMode="contain"
+              />
+              <View>
+                <Text style={styles.headerSubtitle}>Authorized Access</Text>
+                <Text style={styles.headerTitle}>BETH.ARCH</Text>
+              </View>
+            </View>
             <View style={styles.structuralLine} />
           </Animated.View>
 
@@ -81,7 +90,11 @@ export default function LoginScreen({ navigation }) {
             {error && (
               <Animated.View entering={FadeIn.duration(400)} style={styles.errorContainer}>
                 <View style={styles.errorHeader}>
-                  <Text style={styles.errorTitle}>Access Denied</Text>
+                  <WifiOff color="#C62E2E" size={16} />
+                  <Text style={styles.errorTitle}>ACCESS DENIED</Text>
+                  <TouchableOpacity onPress={() => setError(null)} style={styles.errorCloseBtn}>
+                    <X color={Theme.muted} size={14} />
+                  </TouchableOpacity>
                 </View>
                 <Text style={styles.errorMessage}>{error.message}</Text>
                 <View style={styles.diagnosticContainer}>
@@ -93,6 +106,7 @@ export default function LoginScreen({ navigation }) {
                     <Text style={styles.dismissBtnText}>DISMISS</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={handleLogin} style={styles.retryBtn}>
+                    <RefreshCw color="#FFFFFF" size={10} />
                     <Text style={styles.retryBtnText}>RETRY</Text>
                   </TouchableOpacity>
                 </View>
@@ -147,7 +161,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   technicalHeader: {
-    marginBottom: 64,
+    marginBottom: 48,
+  },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 16,
+  },
+  logoMark: {
+    width: 52,
+    height: 52,
   },
   technicalSubHeader: {
     flexDirection: 'row',
@@ -257,7 +281,14 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   errorHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 8,
+  },
+  errorCloseBtn: {
+    marginLeft: 'auto',
+    padding: 2,
   },
   errorTitle: {
     fontSize: 10,
@@ -307,6 +338,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     paddingHorizontal: 16,
     paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   retryBtnText: {
     fontSize: 9,
