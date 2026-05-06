@@ -16,33 +16,6 @@ permissions:
   id-token: write
 
 jobs:
-  backend:
-    name: Backend Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: ./backend
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-          cache: 'yarn'
-          cache-dependency-path: backend/yarn.lock
-      
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
-      
-      - name: Generate Prisma Client
-        run: npx prisma generate
-      
-      - name: Build
-        run: yarn build
-
   dashboard:
     name: Dashboard Build
     runs-on: ubuntu-latest
@@ -95,7 +68,7 @@ jobs:
     name: Mobile Android APK Generation
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    needs: [backend, mobile-verification]
+    needs: [mobile-verification]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     defaults:
       run:
