@@ -27,7 +27,7 @@ export default function AgentsPage() {
     const raw = localStorage.getItem('user');
     if (raw) setCurrentUser(JSON.parse(raw));
 
-    getUsers()
+    getUsers(null)
       .then((data: any) => setAgents((Array.isArray(data) ? data : []).filter(u => u.role === 'AGENT')))
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -39,7 +39,7 @@ export default function AgentsPage() {
     if (!newEmail) return;
     setSubmitting(true);
     try {
-      const data = await createInvitation({ email: newEmail, role: 'AGENT', name: newName });
+      const data = await createInvitation({ email: newEmail, role: 'AGENT' });
       setInviteLink(data?.inviteLink || '');
       setIsAdding(false);
       setNewEmail(''); setNewName('');

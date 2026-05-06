@@ -47,12 +47,12 @@ export default function DashboardPage() {
     const load = async () => {
       try {
         const [overview, daily, cashoutRequests] = await Promise.all([
-          getAnalyticsOverview(),
+          getAnalyticsOverview(null),
           getDailyScans(),
-          getCashoutRequests(),
+          getCashoutRequests(null),
         ]);
         setStats(overview || {});
-        setDailyData(Array.isArray(daily) ? daily : []);
+        setDailyData(daily);
         
         const pending = Array.isArray(cashoutRequests) ? cashoutRequests.filter((r: any) => r.status === 'PENDING') : [];
         const pendingLiability = pending.reduce((s: number, r: any) => s + Number(r.amount), 0);

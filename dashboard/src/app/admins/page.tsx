@@ -24,7 +24,7 @@ export default function AdminsPage() {
 
   const loadAdmins = async () => {
     try {
-      const data = await getUsers() as any[];
+      const data = await getUsers(null);
       const list = Array.isArray(data) ? data : [];
       setAdmins(list.filter((u: AdminUser) => u.role === 'ADMIN' || u.role === 'SUPERADMIN'));
     } catch (e: unknown) {
@@ -47,7 +47,7 @@ export default function AdminsPage() {
     if (!newEmail) return;
     setSubmitting(true); setError('');
     try {
-      const data = await createInvitation({ email: newEmail, role: 'ADMIN', name: newName });
+      const data = await createInvitation({ email: newEmail, role: 'ADMIN' });
       setInviteLink(data?.inviteLink || '');
       setIsAdding(false);
       setNewEmail(''); setNewName('');

@@ -25,7 +25,7 @@ export default function PayoutsPage() {
 
   const loadData = async () => {
     try {
-      const reqs = await getCashoutRequests();
+      const reqs = await getCashoutRequests(null);
       setRequests(Array.isArray(reqs) ? reqs : []);
       const pendingLiability = reqs.filter((r: any) => r.status === 'PENDING').reduce((acc: number, r: any) => acc + Number(r.amount), 0);
       const totalDisbursed = reqs.filter((r: any) => r.status === 'PAID').reduce((acc: number, r: any) => acc + Number(r.amount), 0);

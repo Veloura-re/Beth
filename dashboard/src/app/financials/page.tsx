@@ -19,7 +19,7 @@ interface Transaction {
 
 interface RawScan {
   id: string; pointsEarned: number; timestamp: string;
-  agent: { name: string };
+  agent?: { name: string };
 }
 
 export default function FinancialsPage() {
@@ -33,7 +33,7 @@ export default function FinancialsPage() {
       try {
         const [overview, scans] = await Promise.all([
           getAnalyticsOverview(null),
-          getAllScans(),
+          getAllScans(null),
         ]);
         setStats(overview || {});
         setTransactions(Array.isArray(scans) ? scans.map((s: RawScan) => ({

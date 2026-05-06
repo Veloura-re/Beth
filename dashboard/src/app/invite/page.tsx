@@ -29,9 +29,11 @@ function OnboardingForm() {
     setError('');
 
     try {
-      const data = await register(name, email, password, token);
+      const data = await register(name, email!, password, token);
 
-      localStorage.setItem('token', data.session.access_token);
+      if (data.session) {
+        localStorage.setItem('token', data.session.access_token);
+      }
       localStorage.setItem('user', JSON.stringify(data.user));
       router.push('/dashboard');
     } catch (err: unknown) {

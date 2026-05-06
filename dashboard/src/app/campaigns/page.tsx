@@ -17,7 +17,7 @@ export default function CampaignsPage() {
    const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
    useEffect(() => {
-      getCampaigns()
+      getCampaigns(null)
          .then((data: any) => setCampaigns(Array.isArray(data) ? data : []))
          .catch(console.error)
          .finally(() => setLoading(false));
