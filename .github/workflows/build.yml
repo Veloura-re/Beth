@@ -39,6 +39,9 @@ jobs:
       
       - name: Build
         run: yarn build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: "https://placeholder-url.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-key"
 
   mobile-verification:
     name: Mobile Export Verification
@@ -63,6 +66,9 @@ jobs:
       
       - name: Expo Export Verification
         run: npx expo export
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: "https://placeholder-url.supabase.co"
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: "placeholder-key"
 
   mobile-android-apk:
     name: Mobile Android APK Generation
@@ -105,6 +111,10 @@ jobs:
 
       - name: Build Android APK (Local)
         run: eas build --platform android --profile release --local --non-interactive --output app-release.apk
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_SUPABASE_URL: "https://placeholder-url.supabase.co"
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: "placeholder-key"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
