@@ -1,4 +1,4 @@
-name: Beth Platform CI
+name: Beth Platform CI # Triggering new run
 
 on:
   push:
