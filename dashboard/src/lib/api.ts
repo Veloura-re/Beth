@@ -220,7 +220,7 @@ export const getAllScans = async (organizationId?: string | null): Promise<Scan[
 export const getCampaigns = async (organizationId?: string | null): Promise<Campaign[]> => {
   let q = supabase.from('campaigns').select('*, qr_codes(count), scans(count)');
   if (organizationId) q = q.eq('organization_id', organizationId);
-  const { data, error } = await q.order('created_at', { ascending: false });
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(50);
   if (error) throw new Error(error.message);
   return (data ?? []).map((c: any) => ({
     ...c,
@@ -277,7 +277,7 @@ export const getQRCodes = async (organizationId?: string | null) => {
   if (organizationId) {
     q = q.eq('campaigns.organization_id', organizationId);
   }
-  const { data, error } = await q.order('created_at', { ascending: false });
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(100);
   if (error) throw new Error(error.message);
   return (data ?? []).map((qr: any) => ({
     ...qr,
@@ -320,7 +320,7 @@ export const createQRCodes = async (payload: {
 export const getUsers = async (organizationId?: string | null): Promise<Profile[]> => {
   let q = supabase.from('profiles').select('*, organization:organizations(name)');
   if (organizationId) q = q.eq('organization_id', organizationId);
-  const { data, error } = await q.order('created_at', { ascending: false });
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(100);
   if (error) throw new Error(error.message);
   return (data ?? []).map((p: any) => ({
     ...p,
@@ -485,7 +485,12 @@ export interface DailyScanData {
 }
 
 export const getDailyScans = async (): Promise<DailyScanData[]> => {
-  const { data, error } = await supabase.from('scans').select('timestamp').order('timestamp', { ascending: false });
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const { data, error } = await supabase.from('scans')
+    .select('timestamp')
+    .gte('timestamp', sevenDaysAgo.toISOString())
+    .order('timestamp', { ascending: false });
   if (error) throw new Error(error.message);
   const daily: Record<string, number> = {};
   for (let i = 6; i >= 0; i--) {

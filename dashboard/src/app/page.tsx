@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { CurvyLines } from '@/components/Decoration';
+import { supabase } from '@/lib/supabase';
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -19,20 +20,26 @@ export default function Home() {
     setError('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      const data = await response.json();
+      if (authError) throw new Error(authError.message);
+      if (!data.user) throw new Error('No user data returned');
 
-      if (!response.ok) throw new Error(data.message || 'Access Denied');
+      // Fetch profile for role
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      if (profileError) throw new Error('Profile lookup failed');
 
-      const role = data.user.role;
+      localStorage.setItem('user', JSON.stringify({ ...data.user, ...profile }));
+
+      const role = profile.role;
       if (role === 'SUPERADMIN') router.push('/admins');
       else if (role === 'ADMIN') router.push('/dashboard');
       else if (role === 'AGENT') router.push('/agents');

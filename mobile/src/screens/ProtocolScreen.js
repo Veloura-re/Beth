@@ -8,23 +8,18 @@ import { Menu, QrCode, Plus, X, MapPin, Zap, ChevronRight, Barcode, ArrowLeft, P
 import Sidebar from '../components/Sidebar';
 import QRStickerModal from '../components/QRStickerModal';
 import SuccessOverlay from '../components/SuccessOverlay';
-import { getMyProfile, getQRCodes, getCampaigns, logout } from '../utils/api';
+import { getMyProfile, getMyPerformance, getQRCodes, getCampaigns, logout } from '../utils/api';
 import QRCode from 'react-native-qrcode-svg';
 import * as Print from 'expo-print';
+import { useData } from '../hooks/useData';
+import { Skeleton } from '../components/Skeleton';
 
 export default function ProtocolScreen({ navigation }) {
-  const [loading, setLoading] = useState(true);
-  const [protocols, setProtocols] = useState([]);
-  const [campaigns, setCampaigns] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [profile, setProfile] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  
-  // Sticker Modal State
   const [stickerVisible, setStickerVisible] = useState(false);
   const [selectedProtocol, setSelectedProtocol] = useState(null);
-
-  // Print Selection State
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedQueue, setSelectedQueue] = useState([]);
 
@@ -37,37 +32,24 @@ export default function ProtocolScreen({ navigation }) {
     });
   };
 
-  const loadData = async () => {
-    try {
-      const me = await getMyProfile();
-      if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
-        Alert.alert("Access Denied", "Authorized protocol clearance required.");
-        navigation.replace('Dashboard');
-        return;
-      }
-      setProfile(me);
+  const { data: profile, loading: profileLoading } = useData('user_performance', getMyPerformance);
+  const { data: protocolsData, loading: protocolsLoading, refetch: refetchProtocols } = useData('qr_codes', getQRCodes, {
+    enabled: profile?.role === 'ADMIN' || profile?.role === 'SUPERADMIN'
+  });
+  const { data: campaignsData, loading: campaignsLoading, refetch: refetchCampaigns } = useData('campaigns', getCampaigns, {
+    enabled: profile?.role === 'ADMIN' || profile?.role === 'SUPERADMIN'
+  });
 
-      const [list, ops] = await Promise.all([
-        getQRCodes(),
-        getCampaigns()
-      ]);
-      setProtocols(Array.isArray(list) ? list : []);
-      setCampaigns(Array.isArray(ops) ? ops : []);
-    } catch (error) {
-      console.error('Failed to load protocols', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const protocols = protocolsData || [];
+  const campaigns = campaignsData || [];
 
-  useFocusEffect(
-    useCallback(() => {
-      loadData();
-    }, [])
-  );
-
-  const onRefresh = () => {
-    loadData();
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([
+      refetchProtocols(),
+      refetchCampaigns()
+    ]);
+    setRefreshing(false);
   };
 
 
@@ -325,9 +307,11 @@ export default function ProtocolScreen({ navigation }) {
          </View>
       </View>
 
-      {loading ? (
-        <View style={styles.center}>
-          <ActivityIndicator color="black" />
+      {protocolsLoading && !protocolsData ? (
+        <View style={styles.list}>
+          <Skeleton width="100%" height={150} style={{ marginBottom: 16 }} />
+          <Skeleton width="100%" height={150} style={{ marginBottom: 16 }} />
+          <Skeleton width="100%" height={150} style={{ marginBottom: 16 }} />
         </View>
       ) : (
         <FlatList

@@ -1,5 +1,5 @@
 import './globals.css';
-import { Inter, Source_Serif_4 } from 'next/font/google';
+import { Inter, Outfit } from 'next/font/google';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -7,9 +7,9 @@ const inter = Inter({
   display: 'swap',
 });
 
-const sourceSerif = Source_Serif_4({
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-serif',
+  variable: '--font-outfit',
   display: 'swap',
 });
 
@@ -24,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${sourceSerif.variable}`}>
-      <body className={`${inter.className} antialiased bg-[#FBF9F7] text-[#1B1B1B]`}>
+    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+      <body className={`${inter.className} antialiased`}>
         {children}
       </body>
     </html>

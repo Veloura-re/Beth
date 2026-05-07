@@ -16,34 +16,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Theme } from '../theme/theme';
 import { ArrowLeft, ArrowRight, UserPlus, Info } from 'lucide-react-native';
-import { getMyProfile, getOrganizations, createInvitation } from '../utils/api';
+import { getMyProfile, getMyPerformance, getOrganizations, createInvitation } from '../utils/api';
 import SuccessOverlay from '../components/SuccessOverlay';
+import { useData } from '../hooks/useData';
+import { Skeleton } from '../components/Skeleton';
 
 export default function InvitationScreen({ navigation, route }) {
   const { targetRole } = route.params || {}; // ADMIN or AGENT
   const [email, setEmail] = useState('');
   const [inviting, setInviting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [organizations, setOrganizations] = useState([]);
   const [selectedOrgId, setSelectedOrgId] = useState('');
   const [newOrgName, setNewOrgName] = useState('');
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
-  useEffect(() => {
-    const checkRole = async () => {
-      try {
-        const me = await getMyProfile();
-        if (me.role === 'SUPERADMIN') {
-          setIsSuperAdmin(true);
-          const orgs = await getOrganizations();
-          setOrganizations(orgs);
-        }
-      } catch (error) {
-        console.error('Failed to load profile for role check', error);
-      }
-    };
-    checkRole();
-  }, []);
+  const { data: profile } = useData('user_performance', getMyPerformance); 
+  const { data: orgsData, loading: orgsLoading } = useData('organizations', getOrganizations, { 
+    enabled: profile?.role === 'SUPERADMIN' 
+  });
+
+  const isSuperAdmin = profile?.role === 'SUPERADMIN';
+  const organizations = orgsData || [];
 
   const handleInvite = async () => {
     if (!email) {

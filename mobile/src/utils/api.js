@@ -126,7 +126,7 @@ export const getAllScans = async (organizationId) => {
 export const getCampaigns = async (organizationId) => {
   let q = supabase.from('campaigns').select('*, qr_codes(count), scans(count)');
   if (organizationId) q = q.eq('organization_id', organizationId);
-  const { data, error } = await q.order('created_at', { ascending: false });
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(50);
   if (error) throw new Error(error.message);
   return data ?? [];
 };
@@ -155,7 +155,7 @@ export const getQRCodes = async (organizationId) => {
   if (organizationId) {
     q = q.eq('campaigns.organization_id', organizationId);
   }
-  const { data, error } = await q.order('created_at', { ascending: false });
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(100);
   if (error) throw new Error(error.message);
   return data ?? [];
 };
@@ -183,7 +183,7 @@ export const createQRCodes = async (payload) => {
 export const getUsers = async (organizationId) => {
   let q = supabase.from('profiles').select('*, organization:organizations(name)');
   if (organizationId) q = q.eq('organization_id', organizationId);
-  const { data, error } = await q.order('created_at', { ascending: false });
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(100);
   if (error) throw new Error(error.message);
   return data ?? [];
 };

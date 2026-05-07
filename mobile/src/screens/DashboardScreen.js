@@ -30,77 +30,39 @@ import {
 } from 'lucide-react-native';
 import { getMyPerformance, getPlatformCensus, getOrganizations, logout } from '../utils/api';
 import Sidebar from '../components/Sidebar';
+import { useData } from '../hooks/useData';
+import { Skeleton } from '../components/Skeleton';
 
 export default function DashboardScreen({ navigation }) {
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [organizations, setOrganizations] = useState([]);
   const [selectedOrgId, setSelectedOrgId] = useState(null);
-  const [census, setCensus] = useState(null);
 
-  const organizationsRef = React.useRef([]);
-  const hasInitiallyLoaded = React.useRef(false);
+  const { data: userData, loading: userLoading, refetch: refetchUser } = useData('user_performance', getMyPerformance);
+  const { data: censusData, loading: censusLoading, refetch: refetchCensus } = useData('platform_census', getPlatformCensus, { 
+    enabled: userData?.role === 'SUPERADMIN' 
+  });
+  const { data: orgsData, loading: orgsLoading, refetch: refetchOrgs } = useData('organizations', getOrganizations, { 
+    enabled: userData?.role === 'SUPERADMIN' 
+  });
 
-  const loadData = useCallback(async (orgId = selectedOrgId) => {
-    try {
-      // getMyPerformance automatically scopes by auth.uid()
-      const userData = await getMyPerformance();
-      
-      // PROGRESSIVE RENDER: Immediately flush base profile to drop the loading screen fast
-      setProfile(userData);
-      setLoading(false);
+  const profile = userData;
+  const census = censusData;
+  const organizations = orgsData || [];
 
-      if (userData.role === 'SUPERADMIN') {
-        let newOrgs = organizationsRef.current;
-        
-        const fetchTasks = [getPlatformCensus()];
-        if (newOrgs.length === 0) {
-          fetchTasks.push(getOrganizations());
-        }
-
-        const results = await Promise.all(fetchTasks);
-        
-        // Cascading updates
-        setCensus(results[0]);
-        if (results.length > 1) {
-          organizationsRef.current = results[1];
-          setOrganizations(results[1]);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load dashboard data', error);
-      setLoading(false); // Ensure unblock on error
-    } finally {
-      setRefreshing(false);
-      hasInitiallyLoaded.current = true;
-    }
-  }, [selectedOrgId, census]);
-
-  // Use a dedicated effect for mounting and selectedOrgId filtering to prevent infinite focus triggers
-  useEffect(() => {
-    loadData(selectedOrgId);
-  }, [selectedOrgId]);
-
-  // Optional: Background sync strictly on focus without triggering full loading states
-  useFocusEffect(
-    useCallback(() => {
-      if (hasInitiallyLoaded.current) {
-        // Silent background fetch to update any external changes (e.g., scan points)
-        loadData(selectedOrgId);
-      }
-    }, [selectedOrgId, loadData])
-  );
-
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    loadData(selectedOrgId);
+    await Promise.all([
+      refetchUser(),
+      userData?.role === 'SUPERADMIN' ? refetchCensus() : Promise.resolve(),
+      userData?.role === 'SUPERADMIN' ? refetchOrgs() : Promise.resolve(),
+    ]);
+    setRefreshing(false);
   };
 
   const handleOrgSelect = (orgId) => {
     setSelectedOrgId(orgId);
-    setLoading(true);
+    // In a real app, we might want to refetch other data based on orgId
   };
 
   const handleLogout = async () => {
@@ -108,11 +70,39 @@ export default function DashboardScreen({ navigation }) {
     navigation.replace('Login');
   };
 
-  if (loading) {
+  // Only show full loading if we have NO data at all (not even from cache)
+  const isInitialLoading = userLoading && !profile;
+
+  if (isInitialLoading) {
     return (
-      <View style={[styles.container, styles.center]}>
-        <ActivityIndicator color={Theme.primary} />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+           <Skeleton width={48} height={48} />
+           <View style={styles.headerTextContainer}>
+             <Skeleton width={120} height={24} style={{ marginBottom: 8 }} />
+             <Skeleton width={60} height={16} />
+           </View>
+           <View style={styles.placeholder} />
+        </View>
+        <View style={styles.content}>
+           <Skeleton width={100} height={12} style={{ marginBottom: 24 }} />
+           <View style={styles.statsGrid}>
+             <View style={[styles.statCard, styles.borderRight]}>
+                <Skeleton width={30} height={20} style={{ marginBottom: 12 }} />
+                <Skeleton width={80} height={10} style={{ marginBottom: 8 }} />
+                <Skeleton width={60} height={32} />
+             </View>
+             <View style={styles.statCard}>
+                <Skeleton width={30} height={20} style={{ marginBottom: 12 }} />
+                <Skeleton width={80} height={10} style={{ marginBottom: 8 }} />
+                <Skeleton width={60} height={32} />
+             </View>
+           </View>
+           <Skeleton width={150} height={12} style={{ marginBottom: 24 }} />
+           <Skeleton width="100%" height={100} style={{ marginBottom: 12 }} />
+           <Skeleton width="100%" height={100} style={{ marginBottom: 12 }} />
+        </View>
+      </SafeAreaView>
     );
   }
 
