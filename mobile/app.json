@@ -24,7 +24,6 @@
     },
     "android": {
       "package": "com.zzz1.beth",
-      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0A0A"
