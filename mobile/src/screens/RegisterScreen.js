@@ -27,7 +27,7 @@ export default function RegisterScreen({ navigation }) {
 
   const handleRegister = async () => {
     if (!name || !email || !password || !token) {
-      Alert.alert("Registry Error", "All clearance parameters must be satisfied.");
+      Alert.alert("Error", "Please fill in all fields.");
       return;
     }
 
@@ -38,9 +38,9 @@ export default function RegisterScreen({ navigation }) {
       navigation.replace('Dashboard');
     } catch (error) {
       Alert.alert(
-        "Clearance Rejected", 
-        error.message || "Invalid or expired invitation token.",
-        [{ text: "DISMISS" }]
+        "Registration Failed", 
+        error.message || "Invalid or expired invite code.",
+        [{ text: "Dismiss" }]
       );
     } finally {
       setLoading(false);
@@ -55,8 +55,8 @@ export default function RegisterScreen({ navigation }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerText}>
-          <Text style={styles.headerSub}>PERSONNEL REGISTRY</Text>
-          <Text style={styles.headerTitle}>INITIALIZATION</Text>
+          <Text style={styles.headerSub}>Join Beth</Text>
+          <Text style={styles.headerTitle}>Create Account</Text>
         </View>
       </Animated.View>
 
@@ -67,14 +67,14 @@ export default function RegisterScreen({ navigation }) {
         <ScrollView contentContainerStyle={styles.content}>
           <Animated.View entering={FadeInDown.delay(200).duration(600).springify()} style={styles.formCard}>
             <Text style={styles.instruction}>
-              Submit authorized clearance parameters to claim your network node.
+              Fill in your details to create your account and join the team.
             </Text>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>OPERATOR NAME</Text>
+              <Text style={styles.label}>FULL NAME</Text>
               <TextInput
                 style={styles.input}
-                placeholder="YOUR NAME"
+                placeholder="John Doe"
                 placeholderTextColor={Theme.muted + '66'}
                 value={name}
                 onChangeText={setName}
@@ -82,10 +82,10 @@ export default function RegisterScreen({ navigation }) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>IDENTIFIER (EMAIL)</Text>
+              <Text style={styles.label}>EMAIL ADDRESS</Text>
               <TextInput
                 style={styles.input}
-                placeholder="operator@beth.arch"
+                placeholder="john@example.com"
                 placeholderTextColor={Theme.muted + '66'}
                 value={email}
                 onChangeText={setEmail}
@@ -95,7 +95,7 @@ export default function RegisterScreen({ navigation }) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>NEW ACCESS KEY (PASSWORD)</Text>
+              <Text style={styles.label}>PASSWORD</Text>
               <TextInput
                 style={styles.input}
                 placeholder="••••••••"
@@ -107,10 +107,10 @@ export default function RegisterScreen({ navigation }) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>CLEARANCE TOKEN (INVITE CODE)</Text>
+              <Text style={styles.label}>INVITE CODE</Text>
               <TextInput
                 style={styles.input}
-                placeholder="TOKEN STRING"
+                placeholder="Enter code"
                 placeholderTextColor={Theme.muted + '66'}
                 value={token}
                 onChangeText={setToken}
@@ -126,7 +126,7 @@ export default function RegisterScreen({ navigation }) {
           disabled={loading}
           activeOpacity={0.9}
         >
-          <Text style={styles.registerBtnText}>AUTHORIZE NODE</Text>
+          <Text style={styles.registerBtnText}>CREATE ACCOUNT</Text>
           <ArrowRight color="white" size={16} />
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -134,7 +134,7 @@ export default function RegisterScreen({ navigation }) {
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator color={Theme.primary} size="large" />
-          <Text style={styles.loadingText}>AUTHORIZING CLEARANCE...</Text>
+          <Text style={styles.loadingText}>CREATING ACCOUNT...</Text>
         </View>
       )}
     </SafeAreaView>
@@ -162,12 +162,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   headerText: {
     flex: 1,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   instruction: {
-    fontSize: 10,
+    fontSize: 12,
     color: Theme.muted,
     fontWeight: '700',
     marginBottom: 32,
@@ -196,12 +197,13 @@ const styles = StyleSheet.create({
     padding: 32,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: Theme.radius,
   },
   inputGroup: {
     marginBottom: 32,
   },
   label: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 3,
     color: Theme.muted,
@@ -227,10 +229,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    borderRadius: Theme.radius,
   },
   registerBtnText: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '900',
     letterSpacing: 3,
     textTransform: 'uppercase',
@@ -244,7 +247,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 24,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 4,
     color: '#000000',

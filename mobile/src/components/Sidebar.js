@@ -25,15 +25,15 @@ export default function Sidebar({ visible, onClose, navigation, currentRole, onL
   const isAdmin = currentRole === 'ADMIN' || currentRole === 'SUPERADMIN';
 
   const menuItems = [
-    { label: 'System Oversight', icon: LayoutDashboard, route: 'Dashboard', roles: ['ADMIN', 'SUPERADMIN'] },
-    { label: 'Organization Registry', icon: Users, route: 'Organizations', roles: ['SUPERADMIN'] },
-    { label: 'Personnel Registry', icon: UserPlus, route: 'Personnel', roles: ['ADMIN', 'SUPERADMIN'] },
-    { label: 'System Directives', icon: Target, route: 'Campaigns', roles: ['ADMIN'] },
-    { label: 'Protocol Registry', icon: QrCode, route: 'Protocols', roles: ['ADMIN'] },
-    { label: 'Treasury Ledger', icon: Wallet, route: 'Treasury', roles: ['ADMIN'] },
-    { label: 'Activity Registry', icon: Clock, route: 'Activity', roles: ['AGENT'] },
-    { label: 'Scanner Protocol', icon: ShieldAlert, route: 'Scanner', roles: ['AGENT'] },
-    { label: 'Value Registry', icon: Shapes, route: 'Rewards', roles: ['AGENT'] },
+    { label: 'Dashboard', icon: LayoutDashboard, route: 'Dashboard', roles: ['ADMIN', 'SUPERADMIN'] },
+    { label: 'Organizations', icon: Users, route: 'Organizations', roles: ['SUPERADMIN'] },
+    { label: 'Members', icon: UserPlus, route: 'Personnel', roles: ['ADMIN', 'SUPERADMIN'] },
+    { label: 'Campaigns', icon: Target, route: 'Campaigns', roles: ['ADMIN'] },
+    { label: 'QR Codes', icon: QrCode, route: 'Protocols', roles: ['ADMIN'] },
+    { label: 'Treasury', icon: Wallet, route: 'Treasury', roles: ['ADMIN'] },
+    { label: 'Activity', icon: Clock, route: 'Activity', roles: ['AGENT'] },
+    { label: 'Scan QR', icon: ShieldAlert, route: 'Scanner', roles: ['AGENT'] },
+    { label: 'Rewards', icon: Shapes, route: 'Rewards', roles: ['AGENT'] },
   ];
 
   const handleNavigate = (route) => {
@@ -77,7 +77,7 @@ export default function Sidebar({ visible, onClose, navigation, currentRole, onL
         
         <SafeAreaView style={styles.menuContainer}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>BETH.NAV</Text>
+            <Text style={styles.headerTitle}>Navigation</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
               <X color="black" size={20} />
             </TouchableOpacity>
@@ -111,7 +111,7 @@ export default function Sidebar({ visible, onClose, navigation, currentRole, onL
           <View style={styles.footer}>
             <TouchableOpacity style={styles.logoutBtn} onPress={handleInternalLogout}>
               <LogOut color={Theme.muted} size={16} />
-              <Text style={styles.logoutText}>TERMINATE SESSION</Text>
+              <Text style={styles.logoutText}>SIGN OUT</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>

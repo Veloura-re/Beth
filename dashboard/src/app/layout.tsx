@@ -14,8 +14,8 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: 'Beth Rewards | Premium Operational Analytics',
-  description: 'High-fidelity tracking for QR scans, agent rewards, and business profit with enterprise-grade precision.',
+  title: 'Beth Rewards | Dashboard',
+  description: 'Easily track QR scans, member rewards, and your business growth.',
 };
 
 export default function RootLayout({

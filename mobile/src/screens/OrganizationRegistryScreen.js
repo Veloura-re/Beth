@@ -55,21 +55,21 @@ export default function OrganizationRegistryScreen({ navigation }) {
 
   const handleDelete = (id, name) => {
     Alert.alert(
-      "Decommission Organization",
-      `Are you sure you want to terminate ${name}? This action is irreversible.`,
+      "Delete Organization",
+      `Are you sure you want to delete ${name}? This action is irreversible.`,
       [
         { text: "Cancel", style: "cancel" },
         { 
-          text: "DECOMMISSION", 
+          text: "DELETE", 
           style: "destructive",
           onPress: async () => {
              try {
                await deleteOrganization(id);
-               setSuccessMsg('NODE_DECOMMISSIONED');
+               setSuccessMsg('ORGANIZATION DELETED');
                setShowSuccess(true);
                loadData();
              } catch (error) {
-              Alert.alert("Error", "Failed to decommission organization.");
+              Alert.alert("Error", "Failed to delete organization.");
             }
           }
         }
@@ -80,7 +80,7 @@ export default function OrganizationRegistryScreen({ navigation }) {
   const handleRename = (id, currentName) => {
     Alert.prompt(
       "Rename Organization",
-      "Enter new identifier for this node:",
+      "Enter new name for this organization:",
       [
         { text: "Cancel", style: "cancel" },
         { 
@@ -89,7 +89,7 @@ export default function OrganizationRegistryScreen({ navigation }) {
             if (!newName) return;
              try {
                await updateOrganization(id, { name: newName });
-               setSuccessMsg('NODE_RENAMED');
+               setSuccessMsg('ORGANIZATION RENAMED');
                setShowSuccess(true);
                loadData();
              } catch (error) {
@@ -106,14 +106,14 @@ export default function OrganizationRegistryScreen({ navigation }) {
   const renderOrgItem = ({ item, index }) => (
     <Animated.View entering={FadeInDown.delay(100 * index).duration(400).springify()} style={styles.orgCard}>
       <View style={styles.orgInfo}>
-        <Text style={styles.orgName}>{item.name?.toUpperCase() || 'NODE_PENDING'}</Text>
+        <Text style={styles.orgName}>{item.name || 'New Organization'}</Text>
          <Text style={styles.orgId}>{item.id}</Text>
          <View style={styles.statsRow}>
             <View style={styles.miniBadge}>
-              <Text style={styles.miniBadgeText}>{item._count?.users || 0} MEMBERS</Text>
+              <Text style={styles.miniBadgeText}>{item._count?.users || 0} members</Text>
             </View>
             <View style={styles.miniBadge}>
-              <Text style={styles.miniBadgeText}>{item._count?.campaigns || 0} DIRECTIVES</Text>
+              <Text style={styles.miniBadgeText}>{item._count?.campaigns || 0} campaigns</Text>
             </View>
          </View>
       </View>
@@ -135,8 +135,8 @@ export default function OrganizationRegistryScreen({ navigation }) {
           <Menu color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerLabel}>PLANETARY OVERSIGHT</Text>
-          <Text style={styles.headerTitle}>ORG_REGISTRY</Text>
+          <Text style={styles.headerLabel}>Management</Text>
+          <Text style={styles.headerTitle}>Organizations</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Invitation')} style={styles.addBtn}>
           <Plus color="white" size={20} />
@@ -147,7 +147,7 @@ export default function OrganizationRegistryScreen({ navigation }) {
         <Search color={Theme.muted} size={18} />
         <TextInput 
           style={styles.searchInput}
-          placeholder="SEARCH NODES..."
+          placeholder="Search organizations..."
           placeholderTextColor={Theme.muted}
           value={search}
           onChangeText={setSearch}
@@ -172,7 +172,7 @@ export default function OrganizationRegistryScreen({ navigation }) {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>NO NODES DETECTED</Text>
+              <Text style={styles.emptyText}>No organizations found.</Text>
             </View>
           }
         />
@@ -216,12 +216,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 12,
   },
   headerTitleContainer: {
     alignItems: 'center',
   },
   headerLabel: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -238,6 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -248,11 +250,12 @@ const styles = StyleSheet.create({
     height: 52,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 12,
   },
   searchInput: {
     flex: 1,
     paddingHorizontal: 12,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     color: 'black',
     letterSpacing: 1,
@@ -271,14 +274,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   orgName: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '900',
     letterSpacing: 2,
     color: 'black',
     marginBottom: 4,
   },
   orgId: {
-    fontSize: 10,
+    fontSize: 12,
     color: Theme.muted,
     fontFamily: 'monospace',
     marginBottom: 12,
@@ -293,9 +296,10 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.background,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 8,
   },
   miniBadgeText: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     color: 'black',
   },
@@ -311,6 +315,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     backgroundColor: 'white',
+    borderRadius: 8,
   },
   deleteBtn: {
     borderColor: '#FFEBEB',
@@ -330,7 +335,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,

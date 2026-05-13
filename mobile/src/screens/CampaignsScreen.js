@@ -73,7 +73,7 @@ export default function CampaignsScreen({ navigation }) {
        if (Platform.OS === 'web') {
          window.alert(error.message || "Failed to purge directive.");
        } else {
-         Alert.alert("Registry Error", error.message || "Failed to purge directive.");
+         Alert.alert("Error", error.message || "Failed to delete campaign.");
        }
     } finally {
       setDeleting(false);
@@ -87,7 +87,7 @@ export default function CampaignsScreen({ navigation }) {
             <Zap color="black" size={16} />
          </View>
          <View style={styles.campaignMeta}>
-          <Text style={styles.campaignName}>{item.name?.toUpperCase() || 'UNTITLED DIRECTIVE'}</Text>
+          <Text style={styles.campaignName}>{item.name || 'New Campaign'}</Text>
           <Text style={styles.campaignId}>ID: {item.id?.substring(0,8) || '####'}</Text>
        </View>
        <View style={styles.activeBadge}>
@@ -98,7 +98,7 @@ export default function CampaignsScreen({ navigation }) {
       <View style={styles.statsRow}>
          <View style={styles.statBox}>
             <Text style={styles.statVal}>{item._count?.scans || 0}</Text>
-            <Text style={styles.statLab}>VOLUME</Text>
+            <Text style={styles.statLab}>SCANS</Text>
          </View>
          <View style={[styles.statBox, styles.borderLeft]}>
             <Text style={styles.statVal}>{item.rewardPerScan || 0}</Text>
@@ -112,7 +112,7 @@ export default function CampaignsScreen({ navigation }) {
       >
          <View style={styles.detailsBtnContent}>
             <Pencil color="black" size={14} />
-            <Text style={styles.detailsBtnText}>EDIT SYSTEM DIRECTIVE</Text>
+            <Text style={styles.detailsBtnText}>EDIT CAMPAIGN</Text>
          </View>
          <ArrowRight color="black" size={12} />
       </TouchableOpacity>
@@ -122,7 +122,7 @@ export default function CampaignsScreen({ navigation }) {
         onPress={() => handleDelete(item.id)}
       >
          <Trash2 color={Theme.danger || '#FF3B30'} size={14} />
-         <Text style={styles.deleteBtnText}>PERMANENTLY PURGE DIRECTIVE</Text>
+         <Text style={styles.deleteBtnText}>DELETE CAMPAIGN</Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -135,8 +135,8 @@ export default function CampaignsScreen({ navigation }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerSub}>Technical Directives</Text>
-          <Text style={styles.headerTitle}>CAMPAIGNS</Text>
+          <Text style={styles.headerSub}>Program Details</Text>
+          <Text style={styles.headerTitle}>Campaigns</Text>
         </View>
         <TouchableOpacity style={styles.deployBtn} onPress={() => navigation.navigate('CreateCampaign')}>
            <Plus color="white" size={24} />
@@ -156,7 +156,7 @@ export default function CampaignsScreen({ navigation }) {
           contentContainerStyle={styles.list}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Text style={styles.emptyText}>NO ACTIVE DIRECTIVES LOGGED IN SYSTEM.</Text>
+              <Text style={styles.emptyText}>No campaigns found.</Text>
             </View>
           }
         />
@@ -182,9 +182,9 @@ export default function CampaignsScreen({ navigation }) {
             <View style={styles.modalHeaderIcon}>
                <ShieldAlert color="#FF3B30" size={32} strokeWidth={1.5} />
             </View>
-            <Text style={styles.modalTitleText}>INITIATE SYSTEM PURGE?</Text>
+            <Text style={styles.modalTitleText}>Delete this campaign?</Text>
             <Text style={styles.modalBodyText}>
-               You are about to permanently erase this technical directive. This operation is <Text style={{ fontWeight: '900' }}>IRREVERSIBLE</Text> and will cascade to all associated QR protocols.
+               Are you sure? This will permanently remove the campaign and all related QR codes. This action cannot be undone.
             </Text>
             
             <View style={styles.modalActions}>
@@ -196,7 +196,7 @@ export default function CampaignsScreen({ navigation }) {
                 {deleting ? (
                   <ActivityIndicator color="white" size="small" />
                 ) : (
-                  <Text style={styles.confirmBtnText}>CONFIRM PURGE</Text>
+                  <Text style={styles.confirmBtnText}>DELETE</Text>
                 )}
               </TouchableOpacity>
               
@@ -205,7 +205,7 @@ export default function CampaignsScreen({ navigation }) {
                 onPress={() => setDeleteModalVisible(false)}
                 disabled={deleting}
               >
-                <Text style={styles.cancelBtnText}>ABORT OPERATION</Text>
+                <Text style={styles.cancelBtnText}>GO BACK</Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   headerTitleContainer: {
     flex: 1,
@@ -262,6 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   list: {
     padding: 32,
@@ -273,6 +275,7 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     marginBottom: 24,
     padding: 24,
+    borderRadius: Theme.radius,
   },
   campaignHeader: {
     flexDirection: 'row',
@@ -286,6 +289,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
+    borderRadius: 12,
   },
   campaignMeta: {
     flex: 1,
@@ -306,6 +310,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderWidth: 1,
     borderColor: '#000000',
+    borderRadius: 8,
   },
   activeText: {
     fontSize: 7,
@@ -318,6 +323,8 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     marginBottom: 20,
     backgroundColor: Theme.background + '44',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   statBox: {
     flex: 1,
@@ -400,6 +407,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#00000010',
     alignItems: 'center',
+    borderRadius: Theme.radius,
   },
   modalHeaderIcon: {
     marginBottom: 24,
@@ -435,6 +443,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   confirmBtnText: {
     color: '#FFFFFF',

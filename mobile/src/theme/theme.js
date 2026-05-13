@@ -10,7 +10,7 @@ export const Theme = {
   border: '#E5E2D9',
 
   // Minimalist Measurements
-  radius: 2, // Sharp structural edges
+  radius: 24, // Soft structural edges
   padding: 24,
 
   // Subtle structural shadow

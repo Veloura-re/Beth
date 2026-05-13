@@ -69,37 +69,37 @@ export default function Home() {
         
         <div className="relative z-20">
           <div className="flex items-center gap-4 mb-24 group cursor-default">
-            <div className="w-12 h-12 rounded-xl bg-[#C62E2E] flex items-center justify-center shadow-[0_0_20px_rgba(198,46,46,0.3)] transform transition-all group-hover:scale-110 group-hover:rotate-6">
-               <div className="w-4 h-4 bg-white rounded-sm rotate-45" />
+            <div className="w-12 h-12 rounded-3xl bg-[#C62E2E] flex items-center justify-center shadow-[0_0_20px_rgba(198,46,46,0.3)] transform transition-all group-hover:scale-110 group-hover:rotate-6">
+               <div className="w-4 h-4 bg-white rounded-md rotate-45" />
             </div>
             <div>
               <h1 className="text-2xl font-sans font-black tracking-tighter uppercase leading-none">Beth</h1>
-              <p className="text-[10px] font-black text-[#C62E2E] tracking-[0.3em] uppercase mt-1">Oversight Hub</p>
+              <p className="text-[12px] font-black text-[#C62E2E] tracking-[0.3em] uppercase mt-1">Oversight Hub</p>
             </div>
           </div>
           
           <div className="max-w-md">
-            <p className="text-[10px] font-black tracking-[0.5em] uppercase text-white/30 mb-8 ml-1">
-              Command & Control
+            <p className="text-[12px] font-black tracking-[0.5em] uppercase text-white/30 mb-8 ml-1">
+              Welcome Back
             </p>
             <h2 className="text-8xl font-sans font-bold leading-[0.95] tracking-tighter text-white mb-8">
-              PREMIUM<br />
-              <span className="text-white/20">NETWORK</span><br />
-              STABILITY.
+              SIMPLE.<br />
+              <span className="text-white/20">FAST.</span><br />
+              SECURE.
             </h2>
             <p className="text-lg text-[#8E8E93] font-bold leading-relaxed uppercase tracking-tight opacity-60">
-              Coordinating the rewards ecosystem with architectural precision and high-fidelity operational control protocols.
+              Managing your rewards easily and keeping everything running smoothly.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-8 relative z-20">
           {[
-            { label: 'Security State', value: 'ENCRYPTED' },
+            { label: 'Status', value: 'Secured' },
             { label: 'Network status', value: 'OPERATIONAL' },
           ].map((s) => (
-            <div key={s.label} className="bg-white/[0.02] backdrop-blur-md p-8 rounded-2xl border border-white/5 group hover:border-[#C62E2E]/20 transition-all shadow-2xl">
-              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#8E8E93] mb-3 group-hover:text-[#C62E2E] transition-colors">
+            <div key={s.label} className="bg-white/[0.02] backdrop-blur-md p-8 rounded-3xl border border-white/5 group hover:border-[#C62E2E]/20 transition-all shadow-2xl">
+              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#8E8E93] mb-3 group-hover:text-[#C62E2E] transition-colors">
                 {s.label}
               </p>
               <p className="text-2xl font-sans font-bold text-white tracking-tight italic uppercase">{s.value}</p>
@@ -113,22 +113,22 @@ export default function Home() {
         <div className="w-full max-w-sm">
           {/* Mobile brand elevation */}
           <div className="flex lg:hidden items-center gap-4 mb-16">
-            <div className="w-10 h-10 rounded-xl bg-[#C62E2E] flex items-center justify-center shadow-lg">
-               <div className="w-4 h-4 bg-white rounded-sm rotate-45" />
+            <div className="w-10 h-10 rounded-3xl bg-[#C62E2E] flex items-center justify-center shadow-lg">
+               <div className="w-4 h-4 bg-white rounded-md rotate-45" />
             </div>
             <span className="text-xl font-sans font-black tracking-tighter uppercase">Beth</span>
           </div>
 
           <div className="mb-14">
-            <h2 className="text-4xl font-sans font-bold text-white mb-4 tracking-tight uppercase">Authorized Access</h2>
-            <p className="text-[#8E8E93] font-bold uppercase text-[11px] tracking-widest opacity-60">Enter credentials to initialize secure session</p>
+            <h2 className="text-4xl font-sans font-bold text-white mb-4 tracking-tight uppercase">Sign In</h2>
+            <p className="text-[#8E8E93] font-bold uppercase text-[13px] tracking-widest opacity-60">Enter your credentials to continue</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-8">
             {/* Email */}
             <div className="space-y-3">
-              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">
-                Security Identifier
+              <label className="block text-[12px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">
+                Email Address
               </label>
               <div className="relative group">
                 <Mail className="absolute left-0 top-1/2 -translate-y-1/2 text-white/10 group-focus-within:text-[#C62E2E] transition-colors" size={20} />
@@ -145,8 +145,8 @@ export default function Home() {
 
             {/* Password */}
             <div className="space-y-3">
-              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">
-                Access Key
+              <label className="block text-[12px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">
+                Password
               </label>
               <div className="relative group">
                 <Lock className="absolute left-0 top-1/2 -translate-y-1/2 text-white/10 group-focus-within:text-[#C62E2E] transition-colors" size={20} />
@@ -169,7 +169,7 @@ export default function Home() {
             </div>
 
             {error && (
-              <div className="bg-[#C62E2E]/10 text-[#C62E2E] border border-[#C62E2E]/20 px-6 py-4 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-3 animate-in shake duration-500 shadow-2xl">
+              <div className="bg-[#C62E2E]/10 text-[#C62E2E] border border-[#C62E2E]/20 px-6 py-4 rounded-3xl text-[12px] font-black tracking-widest uppercase flex items-center gap-3 animate-in shake duration-500 shadow-2xl">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#C62E2E] animate-pulse shadow-[0_0_8px_#C62E2E]" />
                 {error}
               </div>
@@ -178,20 +178,20 @@ export default function Home() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-16 bg-[#C62E2E] hover:brightness-110 text-white rounded-xl font-black text-sm uppercase tracking-[0.3em] transition-all shadow-2xl hover:shadow-[#C62E2E]/20 hover:-translate-y-1 disabled:opacity-50 disabled:translate-y-0 flex items-center justify-center gap-4 group/btn"
+              className="w-full h-16 bg-[#C62E2E] hover:brightness-110 text-white rounded-3xl font-black text-sm uppercase tracking-[0.3em] transition-all shadow-2xl hover:shadow-[#C62E2E]/20 hover:-translate-y-1 disabled:opacity-50 disabled:translate-y-0 flex items-center justify-center gap-4 group/btn"
             >
               {loading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
                 <>
-                  INITIALIZE SESSION <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                  CONTINUE <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                 </>
               )}
             </button>
           </form>
 
           <footer className="mt-24 pt-10 border-t border-white/5 flex justify-between items-center text-[#8E8E93]/20">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">
+            <span className="text-[12px] font-black uppercase tracking-[0.3em]">
               BETH.OS Intel v1.2
             </span>
             <div className="flex gap-4">

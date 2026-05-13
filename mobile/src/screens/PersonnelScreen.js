@@ -38,7 +38,7 @@ export default function PersonnelScreen({ navigation, route }) {
       setProfile(me);
 
       if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
-        Alert.alert("Access Denied", "Authorized clearance required.");
+        Alert.alert("Access Denied", "You don't have permission to see this.");
         navigation.replace('Dashboard');
         return;
       }
@@ -60,7 +60,7 @@ export default function PersonnelScreen({ navigation, route }) {
       const data = Array.isArray(allUsers) ? allUsers : [];
       const filteredRegistry = data.filter(u => u.role === effectiveRoleType).map(u => ({
         ...u,
-        organizationName: orgMap[u.organizationId] || 'UNKNOWN'
+        organizationName: orgMap[u.organizationId] || 'MEMBERS'
       }));
       
       setUsers(filteredRegistry);
@@ -93,12 +93,12 @@ export default function PersonnelScreen({ navigation, route }) {
         {item.role === 'ADMIN' ? <Shield color="black" size={16} /> : <Info color="black" size={16} />}
       </View>
       <View style={styles.userInfo}>
-        <Text style={styles.userName}>{item.name?.toUpperCase() || 'IDENTITY_PENDING'}</Text>
+        <Text style={styles.userName}>{item.name || 'New Member'}</Text>
         <View style={styles.userMeta}>
-          <Text style={styles.userEmail}>{item.email || 'NO_CLEARANCE'}</Text>
+          <Text style={styles.userEmail}>{item.email || 'No email'}</Text>
           {profile?.role === 'SUPERADMIN' && (
             <View style={styles.orgBadge}>
-              <Text style={styles.orgBadgeText}>{item.organizationName?.toUpperCase()}</Text>
+              <Text style={styles.orgBadgeText}>{item.organizationName}</Text>
             </View>
           )}
           <View style={styles.miniBadge}>
@@ -108,7 +108,7 @@ export default function PersonnelScreen({ navigation, route }) {
       </View>
       <View style={styles.userStatus}>
          <View style={styles.statusPulse} />
-         <Text style={styles.statusLabel}>OPERATIONAL</Text>
+         <Text style={styles.statusLabel}>Active</Text>
       </View>
     </Animated.View>
   );
@@ -121,8 +121,8 @@ export default function PersonnelScreen({ navigation, route }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerSub}>Registry Alpha</Text>
-          <Text style={styles.headerTitle}>{roleType === 'ADMIN' ? 'ADMIN REGISTRY' : 'AGENT REGISTRY'}</Text>
+          <Text style={styles.headerSub}>Our Team</Text>
+          <Text style={styles.headerTitle}>{roleType === 'ADMIN' ? 'Admins' : 'Agents'}</Text>
         </View>
         <TouchableOpacity 
           style={styles.addBtn} 
@@ -136,7 +136,7 @@ export default function PersonnelScreen({ navigation, route }) {
         <Search color={Theme.muted} size={16} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
-          placeholder={`SEARCH ${roleType} REGISTRY...`}
+          placeholder={`Search ${roleType} members...`}
           placeholderTextColor={Theme.muted + '88'}
           value={search}
           onChangeText={setSearch}
@@ -155,7 +155,7 @@ export default function PersonnelScreen({ navigation, route }) {
           contentContainerStyle={styles.list}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Text style={styles.emptyText}>NO CORRESPONDING ENTRIES FOUND.</Text>
+              <Text style={styles.emptyText}>No members found.</Text>
             </View>
           }
         />
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 12,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -253,6 +254,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 12,
+    borderRadius: Theme.radius,
   },
   userIcon: {
     width: 40,
@@ -261,6 +263,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 20,
+    borderRadius: 12,
   },
   userInfo: {
     flex: 1,
@@ -287,6 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.background,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 6,
   },
   miniBadgeText: {
     fontSize: 7,
@@ -328,11 +332,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   orgBadge: {
     paddingHorizontal: 8,
     paddingVertical: 2,
     backgroundColor: '#000000',
+    borderRadius: 4,
   },
   orgBadgeText: {
     fontSize: 6.5,

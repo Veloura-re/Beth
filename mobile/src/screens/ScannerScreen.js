@@ -41,15 +41,15 @@ export default function ScannerScreen({ navigation }) {
 
       const response = await scanQRCode(data, lat, lng);
       Alert.alert(
-        "Verification Successful", 
-        `IDENTIFIER: ${data.substring(0, 12)}...\nSTATUS: LOGGED\nREWARD: ${response?.points_earned ?? response?.pointsEarned ?? '+'} UNITS`,
-        [{ text: "CONTINUE", onPress: () => {
+        "Scan Successful", 
+        `Points earned: ${response?.points_earned ?? response?.pointsEarned ?? '+'}`,
+        [{ text: "Continue", onPress: () => {
           setScanned(false);
           setLoading(false);
         }}]
       );
     } catch (error) {
-      Alert.alert("Verification Failed", error.message || "Invalid or unrecognized identifier.");
+      Alert.alert("Scan Failed", error.message || "We couldn't recognize this QR code.");
       setScanned(false);
       setLoading(false);
     }
@@ -63,9 +63,9 @@ export default function ScannerScreen({ navigation }) {
 
   if (!permission.granted) return (
     <View style={[styles.container, styles.center]}>
-      <Text style={styles.errorText}>CAMERA ACCESS REQUIRED FOR SCANNING.</Text>
+      <Text style={styles.errorText}>WE NEED CAMERA ACCESS TO SCAN QR CODES.</Text>
       <TouchableOpacity style={styles.btn} onPress={requestPermission}>
-        <Text style={styles.btnText}>GRANT PERMISSION</Text>
+        <Text style={styles.btnText}>ALLOW CAMERA</Text>
       </TouchableOpacity>
     </View>
   );
@@ -78,8 +78,8 @@ export default function ScannerScreen({ navigation }) {
           <X color="white" size={24} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.headerSub}>Technical Protocol</Text>
-          <Text style={styles.headerTitle}>SCANNER.v1</Text>
+          <Text style={styles.headerSub}>Scan</Text>
+          <Text style={styles.headerTitle}>QR Scanner</Text>
         </View>
       </Animated.View>
 
@@ -103,7 +103,7 @@ export default function ScannerScreen({ navigation }) {
               {loading && (
                 <View style={styles.loadingOverlay}>
                    <ActivityIndicator color="white" />
-                   <Text style={styles.loadingText}>VERIFYING...</Text>
+                   <Text style={styles.loadingText}>SCANNING...</Text>
                 </View>
               )}
            </View>
@@ -112,7 +112,7 @@ export default function ScannerScreen({ navigation }) {
         <Animated.View entering={FadeInDown.delay(600).duration(400).springify()} style={styles.instructionBox}>
            <View style={styles.indicator} />
            <Text style={styles.instructionText}>
-             ALIGN THE TECHNICAL IDENTIFIER WITHIN THE FRAME FOR REGISTRY VERIFICATION.
+             Center the QR code in the frame to scan it.
            </Text>
         </Animated.View>
       </View>
@@ -144,9 +144,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 20,
+    borderRadius: 12,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: 'rgba(255,255,255,0.5)',
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: 'white',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 3,
   },
@@ -208,6 +209,7 @@ const styles = StyleSheet.create({
     gap: 16,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: Theme.radius,
   },
   indicator: {
     width: 8,
@@ -217,14 +219,14 @@ const styles = StyleSheet.create({
   instructionText: {
     flex: 1,
     color: 'white',
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 1.5,
     lineHeight: 14,
   },
   errorText: {
     color: 'white',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
     textAlign: 'center',
@@ -235,10 +237,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderWidth: 1,
     borderColor: 'white',
+    borderRadius: 12,
   },
   btnText: {
     color: 'white',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
   }

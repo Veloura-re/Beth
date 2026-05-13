@@ -57,7 +57,7 @@ export default function ProtocolScreen({ navigation }) {
     if (!selectionMode) {
       setSelectionMode(true);
       setSelectedQueue([]);
-      Alert.alert("Print Queue Mode", "Tap the protocols exactly in the order you wish them to be printed.\n\nTap the print button again to finalize.");
+      Alert.alert("Print Queue", "Select the codes you want to print in the order you'd like them.\n\nTap the print button again when you're ready.");
       return;
     }
 
@@ -82,11 +82,11 @@ export default function ProtocolScreen({ navigation }) {
       const htmlContent = `
         <html>
           <body style="font-family: sans-serif; padding: 40px; margin: 0;">
-            <h1 style="text-align: center; font-size: 24px; letter-spacing: 4px; margin-bottom: 40px;">BETH.ARCH // BATCH PROTOCOL EXPORT</h1>
+            <h1 style="text-align: center; font-size: 24px; letter-spacing: 4px; margin-bottom: 40px;">QR CODE EXPORT</h1>
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
               ${qrCards}
             </div>
-            <p style="text-align: center; font-size: 10px; color: #999; margin-top: 40px;">MERSI ARCHITECTURE STANDARDS V 16.2.0 - CONFIDENTIAL</p>
+            <p style="text-align: center; font-size: 10px; color: #999; margin-top: 40px;">Securely generated.</p>
           </body>
         </html>
       `;
@@ -142,15 +142,15 @@ export default function ProtocolScreen({ navigation }) {
           <h3 style="margin: 0 0 10px 0; font-family: monospace; font-size: 14px;">${p.campaign?.organization?.name || 'BETH CORE SYSTEM'}</h3>
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(p.id)}" style="width: 150px; height: 150px; margin-bottom: 10px;" />
           <p style="margin: 0; font-family: monospace; font-size: 10px; color: #666;">ID: ${p.id.substring(0,8).toUpperCase()}</p>
-          <p style="margin: 5px 0 0 0; font-family: sans-serif; font-size: 12px; font-weight: bold;">${p.locationName?.toUpperCase() || 'UNKNOWN LOC'}</p>
-          <p style="margin: 0; font-family: sans-serif; font-size: 10px; color: #666;">${p.campaign?.name || 'GENERIC DIRECTIVE'}</p>
+          <p style="margin: 5px 0 0 0; font-family: sans-serif; font-size: 12px; font-weight: bold;">${p.locationName || 'Location not set'}</p>
+          <p style="margin: 0; font-family: sans-serif; font-size: 10px; color: #666;">${p.campaign?.name || 'General'}</p>
         </div>
       `).join('');
 
       const htmlContent = `
         <html>
           <body style="font-family: sans-serif; padding: 40px; margin: 0;">
-            <h1 style="text-align: center; font-size: 24px; letter-spacing: 4px; margin-bottom: 40px;">BETH.ARCH // BATCH EXPORT (${batchItem.total} NODES)</h1>
+            <h1 style="text-align: center; font-size: 24px; letter-spacing: 4px; margin-bottom: 40px;">QR CODE EXPORT (${batchItem.total} CODES)</h1>
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
               ${qrCards}
             </div>
@@ -172,20 +172,20 @@ export default function ProtocolScreen({ navigation }) {
          <Animated.View 
            key={item.id} 
            entering={FadeInDown.delay(100 * index).duration(400).springify()}
-           style={[styles.protocolCard, { borderColor: '#000000', borderWidth: 2 }]}
+           style={[styles.protocolCard, { borderColor: '#000000', borderWidth: 2, borderRadius: Theme.radius }]}
          >
            <View style={styles.protocolHeader}>
               <View style={styles.protocolType}>
                  <Zap color="black" size={20} />
-                 <Text style={styles.protocolTypeText}>BATCH DEPLOYMENT</Text>
+                 <Text style={styles.protocolTypeText}>BATCH</Text>
               </View>
               <Text style={styles.protocolId}>({item.nodes.length} UNITS)</Text>
            </View>
 
            <View style={styles.protocolMain}>
               <View style={styles.protocolInfo}>
-                 <Text style={styles.locationTitle}>{item.locationName?.toUpperCase() || 'UNKNOWN DEPOT'}</Text>
-                 <Text style={styles.campaignSubtitle}>{item.campaign?.name || 'GENERIC INITIATIVE'}</Text>
+                 <Text style={styles.locationTitle}>{item.locationName || 'Location not set'}</Text>
+                 <Text style={styles.campaignSubtitle}>{item.campaign?.name || 'General'}</Text>
               </View>
               <TouchableOpacity style={styles.inlinePrintBtn} onPress={() => printBatchGroup(item)}>
                  <Printer color="white" size={16} />
@@ -224,7 +224,7 @@ export default function ProtocolScreen({ navigation }) {
         <Animated.View 
           key={item.id} 
           entering={FadeInDown.delay(100 * index).duration(400).springify()}
-          style={[styles.protocolCard, selectionMode && isSelected && styles.protocolCardSelected]}
+          style={[styles.protocolCard, selectionMode && isSelected && styles.protocolCardSelected, { borderRadius: Theme.radius }]}
         >
           {selectionMode && (
             <View style={[styles.selectionBadge, isSelected && styles.selectionBadgeActive]}>
@@ -241,7 +241,7 @@ export default function ProtocolScreen({ navigation }) {
                  color="black"
                  backgroundColor="white"
                />
-               <Text style={styles.protocolTypeText}>SYSTEM.v1</Text>
+               <Text style={styles.protocolTypeText}>System</Text>
             </View>
             <Text style={styles.protocolId}>{item.id?.substring(0,8).toUpperCase() || 'REF-####'}</Text>
          </View>
@@ -260,7 +260,7 @@ export default function ProtocolScreen({ navigation }) {
          <View style={styles.protocolFooter}>
             <View style={styles.metaRow}>
                <MapPin size={10} color={Theme.muted} />
-               <Text style={styles.metaText}>{item.gps || 'NO GPS LOC'}</Text>
+               <Text style={styles.metaText}>{item.gps || 'Location not set'}</Text>
             </View>
             <View style={styles.statusIndicator}>
                <View style={styles.activeDot} />
@@ -280,8 +280,8 @@ export default function ProtocolScreen({ navigation }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerSub}>Technical Protocols</Text>
-          <Text style={styles.headerTitle}>REGISTRY</Text>
+          <Text style={styles.headerSub}>QR Code Details</Text>
+          <Text style={styles.headerTitle}>QR Codes</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 12 }}>
           <TouchableOpacity 
@@ -299,11 +299,11 @@ export default function ProtocolScreen({ navigation }) {
       <View style={styles.statsBar}>
          <View style={styles.statMini}>
             <Text style={styles.statMiniVal}>{protocols?.length || 0}</Text>
-            <Text style={styles.statMiniLab}>TOTAL PROTOCOLS</Text>
+            <Text style={styles.statMiniLab}>TOTAL QRS</Text>
          </View>
          <View style={[styles.statMini, styles.borderLeft]}>
             <Text style={styles.statMiniVal}>{Array.isArray(protocols) ? protocols.filter(q => q.status === 'ACTIVE').length : 0}</Text>
-            <Text style={styles.statMiniLab}>ACTIVE NODES</Text>
+            <Text style={styles.statMiniLab}>ACTIVE</Text>
          </View>
       </View>
 
@@ -321,7 +321,7 @@ export default function ProtocolScreen({ navigation }) {
           contentContainerStyle={styles.list}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Text style={styles.emptyText}>NO TECHNICAL IDENTIFIERS CURRENTLY LOGGED.</Text>
+              <Text style={styles.emptyText}>No QR codes found.</Text>
             </View>
           }
         />
@@ -395,6 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   content: {
     padding: 32,
@@ -424,6 +425,7 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     padding: 24,
     marginBottom: 16,
+    borderRadius: Theme.radius,
   },
   protocolHeader: {
     flexDirection: 'row',
@@ -478,6 +480,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     gap: 6,
+    borderRadius: 12,
   },
   inlinePrintText: {
     color: '#FFFFFF',
@@ -493,6 +496,7 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     alignItems: 'center',
     minWidth: 50,
+    borderRadius: 12,
   },
   rewardValue: {
     fontSize: 14,
@@ -553,12 +557,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   statsBar: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: Theme.border,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginHorizontal: 32,
+    marginTop: 16,
+    borderWidth: 1,
   },
   statMini: {
     flex: 1,
@@ -586,6 +596,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   printBatchBtn: {
     width: 48,
@@ -594,6 +605,7 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   printBatchBtnActive: {
     backgroundColor: '#000000',

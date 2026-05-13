@@ -35,7 +35,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
 
   const handleCreate = async () => {
     if (!form.name || !form.rewardPerScan) {
-      Alert.alert("Input Required", "Identifier and scan reward must be defined.");
+      Alert.alert("Error", "Please enter a name and reward amount.");
       return;
     }
 
@@ -56,7 +56,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
       
       setShowSuccess(true);
     } catch (error) {
-      Alert.alert("System Error", error.message || "Operation failed.");
+      Alert.alert("Error", error.message || "Failed to save campaign.");
     } finally {
       setBusy(false);
     }
@@ -72,8 +72,8 @@ export default function CreateCampaignScreen({ navigation, route }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerText}>
-          <Text style={styles.headerSub}>SYSTEM OVERLAY</Text>
-          <Text style={styles.headerTitle}>{isEditing ? 'EDIT' : 'NEW'} DIRECTIVE</Text>
+          <Text style={styles.headerSub}>Campaign Details</Text>
+          <Text style={styles.headerTitle}>{isEditing ? 'Edit' : 'New'} Campaign</Text>
         </View>
       </Animated.View>
 
@@ -83,19 +83,19 @@ export default function CreateCampaignScreen({ navigation, route }) {
       >
         <ScrollView contentContainerStyle={styles.content}>
           <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.section}>
-            <Text style={styles.label}>CORE IDENTIFIER</Text>
+            <Text style={styles.label}>CAMPAIGN NAME</Text>
             <TextInput 
               style={styles.input}
-              placeholder="e.g. AURORA OVERLAY PROTOCOL"
+              placeholder="e.g. Spring Promotion"
               placeholderTextColor={Theme.muted + '44'}
               value={form.name}
               onChangeText={(v) => updateForm('name', v)}
             />
 
-            <Text style={styles.label}>OPERATIONAL DESCRIPTION</Text>
+            <Text style={styles.label}>DESCRIPTION</Text>
             <TextInput 
               style={[styles.input, styles.textArea]}
-              placeholder="STRATEGIC GOALS..."
+              placeholder="Campaign details..."
               placeholderTextColor={Theme.muted + '44'}
               multiline
               numberOfLines={3}
@@ -106,7 +106,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
 
           <Animated.View entering={FadeInDown.delay(300).duration(400).springify()} style={styles.row}>
             <View style={styles.col}>
-               <Text style={styles.label}>SCAN REWARD (POINTS)</Text>
+               <Text style={styles.label}>POINTS PER SCAN</Text>
                <TextInput 
                  style={styles.input}
                  placeholder="10"
@@ -116,7 +116,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
                />
             </View>
             <View style={styles.col}>
-               <Text style={styles.label}>PAINTER MARGIN (%)</Text>
+               <Text style={styles.label}>MARGIN (%)</Text>
                <TextInput 
                  style={styles.input}
                  placeholder="0.05"
@@ -128,7 +128,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
           </Animated.View>
 
           <Animated.View entering={FadeInDown.delay(400).duration(400).springify()}>
-            <Text style={styles.label}>TOTAL BUDGETARY ALLOCATION (UNITS)</Text>
+            <Text style={styles.label}>TOTAL BUDGET (POINTS)</Text>
             <TextInput 
               style={styles.input}
               placeholder="5000"
@@ -140,7 +140,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
             <View style={styles.infoCard}>
                <Zap size={16} color={Theme.muted} />
                <Text style={styles.infoText}>
-                  Directive activation will immediately update registry protocols across active devices.
+                  Saving this campaign will update it across all devices immediately.
                </Text>
             </View>
           </Animated.View>
@@ -155,7 +155,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
             <ActivityIndicator color="white" />
           ) : (
             <>
-              <Text style={styles.actionBtnText}>{isEditing ? 'UPDATE' : 'DEPLOY'} DIRECTIVE</Text>
+              <Text style={styles.actionBtnText}>{isEditing ? 'SAVE' : 'CREATE'} CAMPAIGN</Text>
               <ArrowRight color="white" size={18} />
             </>
           )}
@@ -164,7 +164,7 @@ export default function CreateCampaignScreen({ navigation, route }) {
 
       <SuccessOverlay 
         visible={showSuccess} 
-        message={isEditing ? "DIRECTIVE UPDATED" : "DIRECTIVE REGISTERED"}
+        message={isEditing ? "CAMPAIGN UPDATED" : "CAMPAIGN CREATED"}
         onClose={() => {
           setShowSuccess(false);
           navigation.goBack();
@@ -195,12 +195,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   headerText: {
     flex: 1,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   label: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -253,10 +254,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 120,
     gap: 16,
+    borderRadius: Theme.radius,
   },
   infoText: {
     flex: 1,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: Theme.muted,
     lineHeight: 16,
@@ -272,13 +274,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    borderRadius: Theme.radius,
   },
   btnDisabled: {
     opacity: 0.7,
   },
   actionBtnText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
   }

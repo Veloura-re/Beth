@@ -50,11 +50,11 @@ export default function ActivityLogScreen({ navigation }) {
       </View>
       <View style={styles.activityInfo}>
         <View style={styles.activityHeader}>
-          <Text style={styles.campaignName}>{item.campaign?.name?.toUpperCase() || 'CORE_DIRECTIVE'}</Text>
+          <Text style={styles.campaignName}>{item.campaign?.name || 'Campaign'}</Text>
           <Text style={styles.points}>+{item.pointsEarned} PTS</Text>
         </View>
         <Text style={styles.timestamp}>
-          {item.timestamp ? new Date(item.timestamp).toLocaleString().toUpperCase() : 'TIME_UNKNOWN'}
+          {item.timestamp ? new Date(item.timestamp).toLocaleString() : 'No time set'}
         </Text>
         <View style={styles.qrRow}>
            <QrCode color={Theme.muted} size={12} />
@@ -72,20 +72,20 @@ export default function ActivityLogScreen({ navigation }) {
           <Menu color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerLabel}>PERSONNEL_LOGS</Text>
-          <Text style={styles.headerTitle}>CAPTURE_ACTIVITY</Text>
+          <Text style={styles.headerLabel}>Activity</Text>
+          <Text style={styles.headerTitle}>Recent Scans</Text>
         </View>
         <View style={styles.placeholder} />
       </View>
 
       <View style={styles.statsSummary}>
          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>TOTAL CAPTURES</Text>
+            <Text style={styles.statLabel}>TOTAL SCANS</Text>
             <Text style={styles.statValue}>{activities.length}</Text>
          </View>
          <View style={styles.vLine} />
          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>UNITS EARNED</Text>
+            <Text style={styles.statLabel}>POINTS EARNED</Text>
             <Text style={styles.statValue}>
               {activities.reduce((sum, item) => sum + item.pointsEarned, 0)}
             </Text>
@@ -104,12 +104,12 @@ export default function ActivityLogScreen({ navigation }) {
           contentContainerStyle={styles.list}
           ListHeaderComponent={
             <View style={styles.listHeader}>
-               <Text style={styles.listHeaderText}>CHRONOLOGICAL_STREAM</Text>
+               <Text style={styles.listHeaderText}>History</Text>
             </View>
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-               <Text style={styles.emptyText}>NO CAPTURES DETECTED IN CURRENT CYCLE</Text>
+               <Text style={styles.emptyText}>No recent activity found.</Text>
             </View>
           }
         />
@@ -147,12 +147,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 12,
   },
   headerTitleContainer: {
     alignItems: 'center',
   },
   headerLabel: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -173,13 +174,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     padding: 20,
+    borderRadius: Theme.radius,
   },
   statBox: {
     flex: 1,
     alignItems: 'center',
   },
   statLabel: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     letterSpacing: 1.5,
     color: Theme.muted,
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   listHeaderText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -217,11 +219,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 12,
+    borderRadius: Theme.radius,
   },
   iconContainer: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: '#F0FFF4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -236,18 +239,18 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   campaignName: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '900',
     letterSpacing: 1,
     color: 'black',
   },
   points: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '900',
     color: '#00C853',
   },
   timestamp: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '700',
     color: Theme.muted,
     marginBottom: 8,
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   qrId: {
-    fontSize: 9,
+    fontSize: 11,
     color: Theme.muted,
     fontFamily: 'monospace',
   },
@@ -272,7 +275,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,

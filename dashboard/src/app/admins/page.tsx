@@ -83,7 +83,7 @@ export default function AdminsPage() {
           <div className="flex items-center justify-between mb-12">
             <div>
               <h1 className="text-4xl font-sans font-bold tracking-tight mb-2">Personnel Registry</h1>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">High-level internal node management</p>
+              <p className="text-[12px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">High-level internal node management</p>
             </div>
             {isSuperAdmin && (
               <button
@@ -102,7 +102,7 @@ export default function AdminsPage() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h3 className="text-2xl font-sans font-bold tracking-tight">Generate Authorization</h3>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C62E2E] mt-1">Tier-1 Access Provisioning</p>
+                    <p className="text-[14px] font-black uppercase tracking-[0.2em] text-[#C62E2E] mt-1">Tier-1 Access Provisioning</p>
                   </div>
                   <button onClick={() => setIsAdding(false)} className="w-10 h-10 rounded-full border border-[#262626] flex items-center justify-center text-[#8E8E93] hover:bg-white/5 transition-colors">
                     <X size={20} />
@@ -110,7 +110,7 @@ export default function AdminsPage() {
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 mb-8">
                   <div className="space-y-2">
-                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Identity Label</label>
+                    <label className="block text-[13px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Identity Label</label>
                     <div className="relative group">
                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
                        <input
@@ -123,7 +123,7 @@ export default function AdminsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Secure Communication</label>
+                    <label className="block text-[13px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Secure Communication</label>
                     <div className="relative group">
                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
                        <input
@@ -136,7 +136,7 @@ export default function AdminsPage() {
                     </div>
                   </div>
                 </div>
-                {error && <p className="text-[#C62E2E] text-[10px] font-black uppercase tracking-widest mb-6 px-4 py-2 bg-[#C62E2E]/10 rounded-lg inline-block border border-[#C62E2E]/20">{error}</p>}
+                {error && <p className="text-[#C62E2E] text-[14px] font-black uppercase tracking-widest mb-6 px-4 py-2 bg-[#C62E2E]/10 rounded-lg inline-block border border-[#C62E2E]/20">{error}</p>}
                 <div className="flex justify-end pt-6 border-t border-white/5">
                   <button
                     onClick={handleInvite}
@@ -161,14 +161,14 @@ export default function AdminsPage() {
                     </div>
                     <div>
                       <h3 className="text-2xl font-sans font-bold tracking-tight">Authorization Link Ready</h3>
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Credential acquisition protocol active</p>
+                      <p className="text-[14px] font-black uppercase tracking-[0.2em] text-white/40">Credential acquisition protocol active</p>
                     </div>
                   </div>
                   <div className="bg-black/20 border border-white/10 p-6 rounded-2xl flex items-center gap-4 group backdrop-blur-md">
                     <code className="flex-1 text-sm text-white/70 break-all font-mono tracking-tighter">{inviteLink}</code>
                     <button
                       onClick={copyToClipboard}
-                      className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white text-[#0A0A0A] rounded-lg transition-all text-[11px] font-black uppercase tracking-wider"
+                      className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white text-[#0A0A0A] rounded-lg transition-all text-[15px] font-black uppercase tracking-wider"
                     >
                       {copying ? <><Check size={14} /> COPIED</> : <><Copy size={14} /> COPY LINK</>}
                     </button>
@@ -182,7 +182,7 @@ export default function AdminsPage() {
               <div className="px-10 py-8 border-b border-white/5 flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-sans font-bold tracking-tight text-white">Authorized Operators</h3>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mt-1">Hierarchical node registry</p>
+                  <p className="text-[14px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mt-1">Hierarchical node registry</p>
                 </div>
               </div>
 
@@ -201,10 +201,10 @@ export default function AdminsPage() {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="bg-white/2">
-                        <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Operator Identity</th>
-                        <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Communication Path</th>
-                        <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Clearance Level</th>
-                        <th className="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Provisioned Date</th>
+                        <th className="px-10 py-5 text-[13px] font-black uppercase tracking-[0.2em] text-white/30">Operator Identity</th>
+                        <th className="px-10 py-5 text-[13px] font-black uppercase tracking-[0.2em] text-white/30">Communication Path</th>
+                        <th className="px-10 py-5 text-[13px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Clearance Level</th>
+                        <th className="px-10 py-5 text-[13px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Provisioned Date</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -212,7 +212,7 @@ export default function AdminsPage() {
                         <tr key={a.id} className="hover:bg-white/2 transition-colors group/row">
                           <td className="px-10 py-6">
                              <div className="flex items-center gap-4">
-                                <div className="w-9 h-9 rounded-lg bg-[#262626] text-white flex items-center justify-center text-[11px] font-black font-sans group-hover/row:bg-[#C62E2E] transition-colors border border-white/5">
+                                <div className="w-9 h-9 rounded-lg bg-[#262626] text-white flex items-center justify-center text-[13px] font-black font-sans group-hover/row:bg-[#C62E2E] transition-colors border border-white/5">
                                    {a.name?.charAt(0).toUpperCase()}
                                 </div>
                                 <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#C62E2E] transition-colors">{a.name}</span>
@@ -222,7 +222,7 @@ export default function AdminsPage() {
                              {a.email}
                           </td>
                           <td className="px-10 py-6 text-center">
-                            <span className={`text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1 rounded-full border ${
+                            <span className={`text-[11px] font-black uppercase tracking-[0.3em] px-3 py-1 rounded-full border ${
                                a.role === 'SUPERADMIN' 
                                  ? 'bg-[#C62E2E]/10 text-[#C62E2E] border-[#C62E2E]/20' 
                                  : 'bg-white/5 text-white/40 border-white/5'

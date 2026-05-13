@@ -97,11 +97,11 @@ export default function DashboardPage() {
                 {isSuper ? 'System Oversight' : 'Mission Control'}
               </h1>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">Operational Analytics Node: 01</span>
+                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">Operational Analytics Node: 01</span>
                 <div className="w-1 h-1 rounded-full bg-[#262626]" />
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-[#C62E2E] shadow-[0_0_8px_#C62E2E]" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Synchronized</span>
+                  <span className="text-[12px] font-black uppercase tracking-[0.2em] text-white/40">Synchronized</span>
                 </div>
               </div>
             </div>
@@ -128,11 +128,11 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-10">
                   <div>
                     <h3 className="text-xl font-sans font-bold tracking-tight">Data Throughput</h3>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mt-1">Real-time engagement telemetry</p>
+                    <p className="text-[12px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mt-1">Real-time engagement telemetry</p>
                   </div>
                   <div className="flex gap-2 p-1 bg-black rounded-lg">
                     {['7D', '30D', '90D'].map((t) => (
-                      <button key={t} className={`px-4 py-1.5 text-[9px] font-black tracking-widest uppercase rounded-md transition-all ${t === '7D' ? 'bg-[#C62E2E] text-white shadow-lg' : 'text-[#8E8E93] hover:text-white'}`}>
+                      <button key={t} className={`px-4 py-1.5 text-[11px] font-black tracking-widest uppercase rounded-md transition-all ${t === '7D' ? 'bg-[#C62E2E] text-white shadow-lg' : 'text-[#8E8E93] hover:text-white'}`}>
                         {t}
                       </button>
                     ))}
@@ -147,7 +147,7 @@ export default function DashboardPage() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-[60px] translate-x-10 -translate-y-10 group-hover:bg-white/20 transition-colors" />
                 
                 <div className="relative z-10">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-10">
+                  <p className="text-[12px] font-black uppercase tracking-[0.3em] text-white/40 mb-10">
                     Network State
                   </p>
                   <div className="space-y-6">
@@ -158,10 +158,10 @@ export default function DashboardPage() {
                     ].map((s, i) => (
                       <div key={i} className="group/item">
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-white/60 group-hover/item:text-white transition-colors">{s.label}</p>
+                          <p className="text-[12px] font-black uppercase tracking-widest text-white/60 group-hover/item:text-white transition-colors">{s.label}</p>
                           <p className="text-2xl font-sans font-bold">{s.val}</p>
                         </div>
-                        <p className="text-[9px] text-white/40 uppercase tracking-widest font-bold">{s.detail}</p>
+                        <p className="text-[11px] text-white/40 uppercase tracking-widest font-bold">{s.detail}</p>
                         <div className="mt-4 h-px bg-white/10 w-full" />
                       </div>
                     ))}
@@ -170,8 +170,8 @@ export default function DashboardPage() {
                 
                 <div className="relative z-10 pt-10">
                   <div className="p-4 bg-black/20 rounded-xl border border-white/5 backdrop-blur-md">
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-white font-black mb-1">Status</p>
-                    <p className="text-[11px] text-white/80 font-bold leading-relaxed">Platform performance within operational parameters.</p>
+                    <p className="text-[11px] uppercase tracking-[0.3em] text-white font-black mb-1">Status</p>
+                    <p className="text-[13px] text-white/80 font-bold leading-relaxed">Platform performance within operational parameters.</p>
                   </div>
                 </div>
               </div>

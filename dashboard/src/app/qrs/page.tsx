@@ -32,21 +32,21 @@ export default function QRsPage() {
           <style>
             body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: 'Courier New', monospace; background: white; }
             .qr-container { padding: 40px; border: 2px solid #0A0A0A; text-align: center; }
-            .brand { font-size: 10px; font-weight: 900; letter-spacing: 4px; color: #C62E2E; margin-bottom: 24px; text-transform: uppercase; }
+            .brand { font-size: 12px; font-weight: 900; letter-spacing: 4px; color: #000000; margin-bottom: 24px; text-transform: uppercase; }
             .qr-wrap { display: inline-block; padding: 16px; border: 1px solid #e5e5e5; }
-            .id { margin-top: 20px; font-size: 11px; font-weight: bold; color: #0A0A0A; letter-spacing: 3px; text-transform: uppercase; }
-            .campaign { margin-top: 6px; font-size: 10px; color: #666; letter-spacing: 1px; }
-            .footer { margin-top: 16px; font-size: 8px; color: #999; letter-spacing: 2px; }
+            .id { margin-top: 20px; font-size: 13px; font-weight: bold; color: #0A0A0A; letter-spacing: 3px; text-transform: uppercase; }
+            .campaign { margin-top: 6px; font-size: 12px; color: #666; letter-spacing: 1px; }
+            .footer { margin-top: 16px; font-size: 10px; color: #999; letter-spacing: 2px; }
             @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
           </style>
         </head>
         <body>
           <div class="qr-container">
-            <div class="brand">BETH.ARCH // PROTOCOL REGISTRY</div>
+            <div class="brand">BETH REWARDS</div>
             <div class="qr-wrap"><div id="qr"></div></div>
             <div class="id">ID: ${qr.id.toUpperCase()}</div>
             <div class="campaign">${qr.campaign?.name || 'BETH PROTOCOL'}</div>
-            <div class="footer">SCAN TO VERIFY — MERSI ARCHITECTURE STANDARDS V16.2</div>
+            <div class="footer">SCAN TO EARN REWARDS</div>
           </div>
           <script>
             function loadQR() {
@@ -77,7 +77,7 @@ export default function QRsPage() {
 
     const gridHtml = codesToPrint.map(qr => `
       <div class="qr-card">
-        <div class="brand">BETH.ARCH</div>
+        <div class="brand">BETH REWARDS</div>
         <div id="qr-${qr.id}"></div>
         <div class="id">${qr.id.slice(0, 8).toUpperCase()}</div>
         <div class="campaign">${qr.campaign?.name || 'BETH'}</div>
@@ -110,10 +110,10 @@ export default function QRsPage() {
               page-break-inside: avoid;
               break-inside: avoid;
             }
-            .brand { font-size: 7px; font-weight: 900; letter-spacing: 3px; color: #C62E2E; margin-bottom: 12px; }
+            .brand { font-size: 9px; font-weight: 900; letter-spacing: 3px; color: #000000; margin-bottom: 12px; }
             .qr-card > div:nth-child(2) { margin: 0 auto; }
-            .id { margin-top: 12px; font-size: 9px; font-weight: 900; color: #0A0A0A; letter-spacing: 2px; }
-            .campaign { margin-top: 4px; font-size: 8px; color: #C62E2E; font-weight: 700; text-transform: uppercase; }
+            .id { margin-top: 12px; font-size: 11px; font-weight: 900; color: #0A0A0A; letter-spacing: 2px; }
+            .campaign { margin-top: 4px; font-size: 10px; color: #000000; font-weight: 700; text-transform: uppercase; }
             @media print { 
               body { padding: 0; }
               .no-print { display: none !important; }
@@ -121,16 +121,16 @@ export default function QRsPage() {
             }
             .controls { 
               position: sticky; top: 0; 
-              background: #0A0A0A; 
+              background: #FBFBFD; 
               padding: 16px 24px; 
               margin: -20px -20px 20px -20px;
               display: flex; justify-content: space-between; align-items: center;
-              border-bottom: 1px solid #262626;
+              border-bottom: 1px solid #D2D2D7;
             }
             .btn { 
-              background: #C62E2E; color: white; border: none; 
+              background: #000000; color: white; border: none; 
               padding: 12px 24px;
-              font-weight: 700; cursor: pointer; font-size: 11px;
+              font-weight: 700; cursor: pointer; font-size: 13px;
               text-transform: uppercase; letter-spacing: 1px;
             }
             .btn-secondary {
@@ -181,23 +181,23 @@ export default function QRsPage() {
 
   if (loading) {
     return (
-      <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+      <div className="flex bg-[#FBFBFD] min-h-screen items-center justify-center">
+        <Loader2 className="w-8 h-8 text-black animate-spin" />
       </div>
     );
   }
 
   return (
     <ProtectedRoute allowedRoles={['ADMIN']}>
-      <div className="flex bg-[#0A0A0A] min-h-screen font-sans text-[#F5F5F7]">
+      <div className="flex bg-[#FBFBFD] min-h-screen font-sans text-[#1D1D1F]">
         <Sidebar />
         <main className="flex-1 min-h-screen ml-64 p-8 lg:p-12">
 
           {/* Header */}
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h1 className="text-4xl font-sans font-bold tracking-tight mb-2">Protocol Registry</h1>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">Secure identifier & Token management</p>
+              <h1 className="text-4xl font-sans font-bold tracking-tight mb-2 text-black">QR Codes</h1>
+              <p className="text-[12px] font-black uppercase tracking-[0.2em] text-[#86868B]">Manage your campaign QR codes and scan history.</p>
             </div>
             <div className="flex gap-4">
               <button 
@@ -208,8 +208,8 @@ export default function QRsPage() {
                 <Printer size={18} /> 
                 <span>{selectedQs.length > 0 ? `Print Selected (${selectedQs.length})` : 'Print All'}</span>
               </button>
-              <button className="flex items-center gap-2 px-6 py-3 bg-[#C62E2E] text-white rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
-                <Plus size={18} /> <span>CREATE IDENTIFIER</span>
+              <button className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
+                <Plus size={18} /> <span>CREATE QR CODE</span>
               </button>
             </div>
           </div>
@@ -218,45 +218,45 @@ export default function QRsPage() {
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
-                { label: 'Total Tokens', value: qrs.length, icon: QrCode },
-                { label: 'Verified State', value: qrs.filter(q => q && q.status === 'ACTIVE').length, icon: ShieldCheck },
-                { label: 'Network Signals', value: qrs.filter(q => q && (q.scanCount ?? 0) > 0).length, icon: Activity },
-                { label: 'Protocol Volume', value: qrs.reduce((s, q) => s + (q?.scanCount ?? 0), 0), icon: Printer },
+                { label: 'Total QR Codes', value: qrs.length, icon: QrCode },
+                { label: 'Active', value: qrs.filter(q => q && q.status === 'ACTIVE').length, icon: ShieldCheck },
+                { label: 'Scanned', value: qrs.filter(q => q && (q.scanCount ?? 0) > 0).length, icon: Activity },
+                { label: 'Total Scans', value: qrs.reduce((s, q) => s + (q?.scanCount ?? 0), 0), icon: Printer },
               ].map((m, i) => (
-                <div key={i} className="bg-[#161616] p-6 rounded-2xl border border-[#262626] shadow-xl hover:border-[#C62E2E]/20 transition-all group">
+                <div key={i} className="bg-white p-6 rounded-2xl border border-[#D2D2D7] shadow-sm hover:border-black/20 transition-all group">
                    <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-[#8E8E93] group-hover:bg-[#C62E2E]/10 group-hover:text-[#C62E2E] transition-colors border border-white/5">
+                    <div className="w-8 h-8 rounded-lg bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F] group-hover:bg-black group-hover:text-white transition-colors border border-black/5">
                        <m.icon size={16} />
                     </div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#8E8E93]">{m.label}</p>
+                    <p className="text-[11px] font-black uppercase tracking-widest text-[#86868B]">{m.label}</p>
                   </div>
-                  <p className="text-3xl font-sans font-bold text-white tracking-tight">{m.value}</p>
+                  <p className="text-3xl font-sans font-bold text-black tracking-tight">{m.value}</p>
                 </div>
               ))}
             </div>
 
             {/* Table */}
-            <div className="bg-[#161616] border border-[#262626] rounded-3xl overflow-hidden shadow-2xl">
-              <div className="px-10 py-8 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="bg-white border border-[#D2D2D7] rounded-3xl overflow-hidden shadow-sm">
+              <div className="px-10 py-8 border-b border-black/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                  <h3 className="text-xl font-sans font-bold tracking-tight text-white">Secure Data Ledger</h3>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C62E2E] mt-1">Active Security Tokens</p>
+                  <h3 className="text-xl font-sans font-bold tracking-tight text-black">QR Code List</h3>
+                  <p className="text-[12px] font-black uppercase tracking-[0.2em] text-[#86868B] mt-1">Manage your QR codes</p>
                 </div>
                 <div className="relative group">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-black transition-colors" size={18} />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search by ID or Initiative..."
-                    className="pl-12 pr-4 py-3 text-sm bg-black border border-[#262626] rounded-xl focus:border-[#C62E2E] focus:ring-4 focus:ring-[#C62E2E]/10 outline-none transition-all w-full md:w-80 shadow-inner placeholder:text-white/10"
+                    placeholder="Search by ID or campaign..."
+                    className="pl-12 pr-4 py-3 text-sm bg-[#F5F5F7] border border-[#D2D2D7] rounded-xl focus:border-black focus:ring-4 focus:ring-black/10 outline-none transition-all w-full md:w-80 shadow-inner placeholder:text-black/10"
                   />
                 </div>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-white/2">
+                    <tr className="bg-[#F5F5F7]">
                       <th className="px-6 py-5">
                         <input
                           type="checkbox"
@@ -268,54 +268,54 @@ export default function QRsPage() {
                               setSelectedQs(filtered.map(q => q.id));
                             }
                           }}
-                          className="w-4 h-4 accent-[#C62E2E] cursor-pointer"
+                          className="w-4 h-4 accent-black cursor-pointer"
                         />
                       </th>
-                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Identifier</th>
-                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Initiative Context</th>
-                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Throughput</th>
-                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Reward Weight</th>
-                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Protocol State</th>
-                      <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Actions</th>
+                      <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#86868B]">QR Code ID</th>
+                      <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#86868B]">Campaign</th>
+                      <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#86868B] text-center">Scans</th>
+                      <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#86868B] text-center">Points</th>
+                      <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#86868B] text-center">Status</th>
+                      <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#86868B] text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-black/5">
                     {filtered.length === 0 ? (
                       <tr><td colSpan={7} className="px-10 py-24 text-center">
-                        <QrCode size={32} className="mx-auto mb-4 text-white/10" />
-                        <p className="text-lg font-sans italic text-white/40 uppercase tracking-tight opacity-60">No identifiers identified in registry.</p>
+                        <QrCode size={32} className="mx-auto mb-4 text-black/10" />
+                        <p className="text-lg font-sans italic text-[#86868B] uppercase tracking-tight">No QR codes found.</p>
                       </td></tr>
                     ) : filtered.map((qr) => (
-                      <tr key={qr.id} className="hover:bg-white/2 transition-colors group/row">
+                      <tr key={qr.id} className="hover:bg-[#F5F5F7] transition-colors group/row">
                         <td className="px-6 py-6">
                           <input
                             type="checkbox"
                             checked={selectedQs.includes(qr.id)}
                             onChange={() => toggleSelection(qr.id)}
-                            className="w-4 h-4 accent-[#C62E2E] cursor-pointer"
+                            className="w-4 h-4 accent-black cursor-pointer"
                           />
                         </td>
                         <td className="px-6 py-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-black rounded-xl border border-white/5 flex items-center justify-center group-hover/row:bg-[#C62E2E] transition-all shadow-inner">
-                              <QrCode size={18} className="text-[#8E8E93] group-hover/row:text-white transition-colors" />
+                            <div className="w-10 h-10 bg-[#F5F5F7] rounded-xl border border-black/5 flex items-center justify-center group-hover/row:bg-black transition-all shadow-inner">
+                              <QrCode size={18} className="text-[#1D1D1F] group-hover/row:text-white transition-colors" />
                             </div>
-                            <span className="text-sm font-mono font-bold text-white tracking-tighter opacity-80">{qr.id.slice(0, 14).toUpperCase()}</span>
+                            <span className="text-sm font-mono font-bold text-black tracking-tighter opacity-80">{qr.id.slice(0, 14).toUpperCase()}</span>
                           </div>
                         </td>
                         <td className="px-6 py-6">
                           <div className="flex flex-col">
-                             <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#C62E2E] transition-colors">{qr.campaign?.name ?? 'General Protocol'}</span>
-                             <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#8E8E93]">Active Initiative</span>
+                             <span className="font-sans font-bold text-lg text-black group-hover/row:text-black transition-colors">{qr.campaign?.name ?? 'General'}</span>
+                             <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#86868B]">Active Campaign</span>
                           </div>
                         </td>
-                        <td className="px-6 py-6 text-center font-sans font-bold text-xl text-white">{qr.scanCount ?? 0}</td>
-                        <td className="px-6 py-6 text-center font-sans font-bold text-xl text-[#C62E2E]">{qr.rewardPoints}</td>
+                        <td className="px-6 py-6 text-center font-sans font-bold text-xl text-black">{qr.scanCount ?? 0}</td>
+                        <td className="px-6 py-6 text-center font-sans font-bold text-xl text-black">{qr.rewardPoints}</td>
                         <td className="px-6 py-6 text-center">
-                          <span className={`text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1 rounded-full border ${
+                          <span className={`text-[11px] font-black uppercase tracking-[0.3em] px-3 py-1 rounded-full border ${
                              qr.status === 'ACTIVE' 
-                               ? 'bg-[#C62E2E]/10 text-[#C62E2E] border-[#C62E2E]/20' 
-                               : 'bg-white/5 text-[#8E8E93] border-white/5'
+                               ? 'bg-black/10 text-black border-black/20' 
+                               : 'bg-[#F5F5F7] text-[#86868B] border-black/5'
                           }`}>
                             {qr.status}
                           </span>
@@ -324,12 +324,12 @@ export default function QRsPage() {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => printSingle(qr)}
-                              className="w-10 h-10 rounded-xl bg-white/5 text-white/60 hover:bg-[#C62E2E] hover:text-white flex items-center justify-center transition-all border border-white/5"
+                              className="w-10 h-10 rounded-xl bg-[#F5F5F7] text-[#1D1D1F] hover:bg-black hover:text-white flex items-center justify-center transition-all border border-black/5"
                               title="Print QR Code"
                             >
                               <Printer size={16} />
                             </button>
-                            <button className="w-10 h-10 rounded-xl bg-[#C62E2E]/10 text-[#C62E2E] hover:bg-[#C62E2E] hover:text-white flex items-center justify-center transition-all border border-[#C62E2E]/20 shadow-lg">
+                            <button className="w-10 h-10 rounded-xl bg-black/5 text-[#86868B] hover:bg-black hover:text-white flex items-center justify-center transition-all border border-black/10 shadow-sm">
                               <Trash2 size={18} />
                             </button>
                           </div>

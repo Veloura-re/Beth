@@ -14,7 +14,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Input Required", "Identifier and Access Key are mandatory.");
+      Alert.alert("Input Required", "Please enter your email and password.");
       return;
     }
 
@@ -55,8 +55,8 @@ export default function LoginScreen({ navigation }) {
                 resizeMode="contain"
               />
               <View>
-                <Text style={styles.headerSubtitle}>Authorized Access</Text>
-                <Text style={styles.headerTitle}>BETH.ARCH</Text>
+                <Text style={styles.headerSubtitle}>Sign In</Text>
+                <Text style={styles.headerTitle}>BETH</Text>
               </View>
             </View>
             <View style={styles.structuralLine} />
@@ -64,10 +64,10 @@ export default function LoginScreen({ navigation }) {
 
           <Animated.View entering={FadeInDown.delay(400).duration(600).springify()} style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Identifier</Text>
+              <Text style={styles.label}>Email Address</Text>
               <TextInput
                 style={styles.input}
-                placeholder="operator@beth.arch"
+                placeholder="hello@beth.com"
                 placeholderTextColor="#A1887F66"
                 value={email}
                 onChangeText={setEmail}
@@ -76,10 +76,10 @@ export default function LoginScreen({ navigation }) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Access Key</Text>
+              <Text style={styles.label}>Password</Text>
               <TextInput
                 style={styles.input}
-                placeholder="••••••••"
+                placeholder="Your password"
                 placeholderTextColor="#A1887F66"
                 value={password}
                 onChangeText={setPassword}
@@ -103,7 +103,7 @@ export default function LoginScreen({ navigation }) {
                 </View>
                 <View style={styles.errorActions}>
                   <TouchableOpacity onPress={() => setError(null)} style={styles.dismissBtn}>
-                    <Text style={styles.dismissBtnText}>DISMISS</Text>
+                    <Text style={styles.dismissBtnText}>GO BACK</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={handleLogin} style={styles.retryBtn}>
                     <RefreshCw color="#FFFFFF" size={10} />
@@ -123,7 +123,7 @@ export default function LoginScreen({ navigation }) {
                 <ActivityIndicator color="white" />
               ) : (
                 <>
-                  <Text style={styles.loginBtnText}>Initialize Session</Text>
+                  <Text style={styles.loginBtnText}>Continue</Text>
                   <ArrowRight color="white" size={16} />
                 </>
               )}
@@ -133,7 +133,7 @@ export default function LoginScreen({ navigation }) {
               style={styles.registerLink}
               onPress={() => navigation.navigate('Register')}
             >
-               <Text style={styles.registerLinkText}>INCOMING CLEARANCE? REGISTER PHASE.</Text>
+               <Text style={styles.registerLinkText}>New here? Create an account.</Text>
             </TouchableOpacity>
           </Animated.View>
 
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
     padding: 32,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: Theme.radius,
   },
   inputGroup: {
     marginBottom: 32,
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 16,
     gap: 12,
+    borderRadius: Theme.radius,
   },
   loginBtnText: {
     color: '#FFFFFF',
@@ -279,6 +281,7 @@ const styles = StyleSheet.create({
     borderColor: '#FF000033',
     padding: 16,
     marginBottom: 24,
+    borderRadius: Theme.radius,
   },
   errorHeader: {
     flexDirection: 'row',
@@ -307,6 +310,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000008',
     padding: 12,
     marginBottom: 16,
+    borderRadius: 8,
   },
   diagnosticLabel: {
     fontSize: 8,
@@ -341,6 +345,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    borderRadius: 20,
   },
   retryBtnText: {
     fontSize: 9,

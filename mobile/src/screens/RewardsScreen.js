@@ -32,12 +32,12 @@ export default function RewardsScreen({ navigation }) {
     const cashValue = parseInt(points.replace(',', '')) / 10;
     
     Alert.alert(
-      "CONFIRM REDEMPTION",
-      `TRADE ${points} UNITS FOR ${type.toUpperCase()} VALUED AT $${cashValue}?`,
+      "Confirm Reward",
+      `Exchange ${points} points for ${type} ($${cashValue})?`,
       [
-        { text: "DECLINE", style: "cancel" },
+        { text: "Cancel", style: "cancel" },
         { 
-          text: "CONFIRM", 
+          text: "Exchange", 
           onPress: async () => {
             setProcessing(true);
             try {
@@ -45,7 +45,7 @@ export default function RewardsScreen({ navigation }) {
               setShowSuccess(true);
               loadProfile();
             } catch (error) {
-              Alert.alert("ERROR", error.message || "SYSTEM LATENCY. RETRY LATER.");
+              Alert.alert("Error", error.message || "Something went wrong. Please try again later.");
             } finally {
               setProcessing(false);
             }
@@ -79,23 +79,23 @@ export default function RewardsScreen({ navigation }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.headerSub}>Value Registry</Text>
-          <Text style={styles.headerTitle}>REWARD.LOG</Text>
+          <Text style={styles.headerSub}>Rewards</Text>
+          <Text style={styles.headerTitle}>My Rewards</Text>
         </View>
       </Animated.View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Animated.View entering={FadeInUp.delay(200).duration(500).springify()} style={styles.balanceCard}>
-           <Text style={styles.balanceLabel}>Unit Registry Balance</Text>
+           <Text style={styles.balanceLabel}>Available Points</Text>
            <Text style={styles.balanceValue}>{balance.toLocaleString()}</Text>
            <View style={styles.statusRow}>
               <View style={styles.dot} />
-              <Text style={styles.statusText}>ALL CLEARANCES STABLE</Text>
+              <Text style={styles.statusText}>Your account is active</Text>
            </View>
         </Animated.View>
 
         <View style={styles.sectionHeader}>
-           <Text style={styles.sectionLabel}>Available Values</Text>
+           <Text style={styles.sectionLabel}>Available Rewards</Text>
            <View style={styles.hLine} />
         </View>
 
@@ -114,10 +114,10 @@ export default function RewardsScreen({ navigation }) {
                 <View style={styles.rewardIcon}>
                    <reward.icon color="black" size={20} />
                 </View>
-                <View style={styles.rewardInfo}>
-                   <Text style={styles.rewardTitle}>{reward.title.toUpperCase()}</Text>
-                   <Text style={styles.rewardId}>{reward.id}</Text>
-                </View>
+                 <View style={styles.rewardInfo}>
+                    <Text style={styles.rewardTitle}>{reward.title}</Text>
+                    <Text style={styles.rewardId}>{reward.id}</Text>
+                 </View>
                 <View style={[styles.rewardAction, { backgroundColor: canAfford ? 'black' : Theme.border }]}>
                    <Text style={[styles.rewardPointText, { color: canAfford ? 'white' : Theme.muted }]}>{reward.points}</Text>
                 </View>
@@ -128,14 +128,14 @@ export default function RewardsScreen({ navigation }) {
 
         <View style={styles.footerInfo}>
            <Text style={styles.footerInfoText}>
-             ALL REDEMPTIONS ARE AUDITED BY MERSI HQ. PROCESSING WINDOW: 24-48H UTC.
+             All rewards are reviewed. Please allow 24-48 hours for processing.
            </Text>
         </View>
       </ScrollView>
 
       <SuccessOverlay 
         visible={showSuccess} 
-        message="REWARD DISPATCHED"
+        message="Reward Requested"
         onClose={() => setShowSuccess(false)}
       />
     </SafeAreaView>
@@ -167,9 +167,10 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 12,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -191,9 +192,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 48,
+    borderRadius: Theme.radius,
   },
   balanceLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   statusText: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -252,6 +254,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 12,
+    borderRadius: Theme.radius,
   },
   disabled: {
     opacity: 0.4,
@@ -264,19 +267,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 20,
+    borderRadius: 12,
   },
   rewardInfo: {
     flex: 1,
   },
   rewardTitle: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '900',
     letterSpacing: 2,
     color: '#000000',
     marginBottom: 2,
   },
   rewardId: {
-    fontSize: 9,
+    fontSize: 11,
     color: Theme.muted,
     fontWeight: '600',
     letterSpacing: 1,
@@ -286,16 +290,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     minWidth: 80,
     alignItems: 'center',
+    borderRadius: 12,
   },
   rewardPointText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
   },
   footerInfo: {
     marginTop: 48,
   },
   footerInfoText: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     color: Theme.muted,
     opacity: 0.4,

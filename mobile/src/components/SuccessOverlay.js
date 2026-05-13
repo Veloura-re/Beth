@@ -39,10 +39,10 @@ export default function SuccessOverlay({ visible, message, onClose }) {
           <View style={styles.iconContainer}>
             <CheckCircle2 color="white" size={48} strokeWidth={1.5} />
           </View>
-          <Text style={styles.title}>ACTION SUCCESSFUL</Text>
-          <Text style={styles.message}>{message?.toUpperCase() || 'DATA REGISTRY SYNCHRONIZED'}</Text>
+          <Text style={styles.title}>Success</Text>
+          <Text style={styles.message}>{message || 'Changes saved'}</Text>
           <View style={styles.line} />
-          <Text style={styles.subtext}>BETH.ARCH // SYSTEM LOG: 200 OK</Text>
+          <Text style={styles.subtext}>Everything is up to date</Text>
         </Animated.View>
       </View>
     </Modal>
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: Theme.radius,
   },
   iconContainer: {
     width: 96,
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 32,
+    borderRadius: 48,
   },
   title: {
     fontSize: 10,

@@ -39,7 +39,7 @@ export default function InvitationScreen({ navigation, route }) {
 
   const handleInvite = async () => {
     if (!email) {
-      Alert.alert("Input Error", "Target email is required for clearance.");
+      Alert.alert("Error", "Please enter an email address.");
       return;
     }
 
@@ -54,7 +54,7 @@ export default function InvitationScreen({ navigation, route }) {
       
       setShowSuccess(true);
     } catch (error) {
-      Alert.alert("Protocol Error", error.message || "Failed to issue invitation.");
+      Alert.alert("Error", error.message || "Failed to send invitation.");
     } finally {
       setInviting(false);
     }
@@ -68,8 +68,8 @@ export default function InvitationScreen({ navigation, route }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerText}>
-          <Text style={styles.headerSub}>PERSONNEL CLEARANCE</Text>
-          <Text style={styles.headerTitle}>INVITE {targetRole}</Text>
+          <Text style={styles.headerSub}>Invite Member</Text>
+          <Text style={styles.headerTitle}>Invite {targetRole}</Text>
         </View>
       </Animated.View>
 
@@ -80,15 +80,15 @@ export default function InvitationScreen({ navigation, route }) {
         <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.infoCard}>
            <Info size={16} color={Theme.muted} />
            <Text style={styles.infoText}>
-             Authorized invitation will grant access to BETH hierarchy under the role of {targetRole}.
+             This will send an invite to join your organization as a {targetRole}.
            </Text>
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(400).duration(400).springify()} style={styles.form}>
-           <Text style={styles.label}>TARGET IDENTIFIER (EMAIL)</Text>
+           <Text style={styles.label}>EMAIL ADDRESS</Text>
            <TextInput 
              style={styles.input}
-             placeholder="operator@beth.arch"
+             placeholder="member@email.com"
              placeholderTextColor={Theme.muted + '44'}
              value={email}
              onChangeText={setEmail}
@@ -97,7 +97,7 @@ export default function InvitationScreen({ navigation, route }) {
            />
 
            <View style={styles.roleDisplay}>
-              <Text style={styles.label}>ASSIGNED PRIVILEGE</Text>
+              <Text style={styles.label}>ROLE</Text>
               <View style={styles.roleBadge}>
                  <Text style={styles.roleBadgeText}>{targetRole}</Text>
               </View>
@@ -105,7 +105,7 @@ export default function InvitationScreen({ navigation, route }) {
 
            {isSuperAdmin && targetRole === 'ADMIN' && (
              <View style={styles.orgSection}>
-               <Text style={styles.label}>TARGET ORGANIZATION</Text>
+               <Text style={styles.label}>ORGANIZATION</Text>
                
                <View style={styles.orgOptions}>
                  {organizations.map(org => (
@@ -126,13 +126,13 @@ export default function InvitationScreen({ navigation, route }) {
 
                <View style={styles.divider}>
                  <View style={styles.dLine} />
-                 <Text style={styles.dText}>OR CREATE NEW</Text>
+                 <Text style={styles.dText}>OR CREATE A NEW ONE</Text>
                  <View style={styles.dLine} />
                </View>
 
                <TextInput 
                  style={styles.input}
-                 placeholder="NEW COMPANY NAME"
+                 placeholder="COMPANY NAME"
                  placeholderTextColor={Theme.muted + '44'}
                  value={newOrgName}
                  onChangeText={(text) => {
@@ -153,7 +153,7 @@ export default function InvitationScreen({ navigation, route }) {
             <ActivityIndicator color="white" />
           ) : (
             <>
-              <Text style={styles.actionBtnText}>DISPATCH INVITATION</Text>
+              <Text style={styles.actionBtnText}>SEND INVITATION</Text>
               <ArrowRight color="white" size={18} />
             </>
           )}
@@ -162,7 +162,7 @@ export default function InvitationScreen({ navigation, route }) {
 
       <SuccessOverlay 
         visible={showSuccess} 
-        message="INVITATION SENT"
+        message="INVITE SENT"
         onClose={() => {
           setShowSuccess(false);
           navigation.goBack();
@@ -193,12 +193,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   headerText: {
     flex: 1,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -220,10 +221,11 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     marginBottom: 48,
     gap: 16,
+    borderRadius: Theme.radius,
   },
   infoText: {
     flex: 1,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: Theme.muted,
     lineHeight: 16,
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -257,10 +259,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderWidth: 1,
     borderColor: '#000000',
+    borderRadius: 12,
   },
   roleBadgeText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
   },
@@ -272,13 +275,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 16,
     marginTop: 'auto',
+    borderRadius: Theme.radius,
   },
   btnDisabled: {
     opacity: 0.7,
   },
   actionBtnText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
   },
@@ -296,13 +300,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: Theme.border,
+    borderRadius: 8,
   },
   orgTabActive: {
     backgroundColor: '#000000',
     borderColor: '#000000',
   },
   orgText: {
-    fontSize: 8,
+    fontSize: 10,
     color: Theme.muted,
     fontWeight: '900',
   },
@@ -321,7 +326,7 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.border,
   },
   dText: {
-    fontSize: 7,
+    fontSize: 9,
     fontWeight: '900',
     color: Theme.muted,
   }

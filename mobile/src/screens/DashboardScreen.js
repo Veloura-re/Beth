@@ -144,8 +144,8 @@ export default function DashboardScreen({ navigation }) {
           <Menu color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>{profile?.name?.toUpperCase() || 'OPERATOR'}</Text>
-          <View style={[styles.roleBadge, { backgroundColor: isAdmin ? '#000000' : Theme.border }]}>
+          <Text style={styles.headerTitle}>{profile?.name || 'MEMBER'}</Text>
+          <View style={[styles.roleBadge, { backgroundColor: isAdmin ? '#000000' : Theme.border, borderRadius: 12 }]}>
             <Text style={[styles.roleBadgeText, { color: isAdmin ? '#FFFFFF' : '#000000' }]}>
               {profile?.role || 'FETCHING'}
             </Text>
@@ -161,7 +161,7 @@ export default function DashboardScreen({ navigation }) {
         {role === 'SUPERADMIN' && (
           <>
             <View style={styles.sectionHeader}>
-               <Text style={styles.sectionLabel}>Network Growth</Text>
+               <Text style={styles.sectionLabel}>Our Community</Text>
                <View style={styles.hLine} />
             </View>
 
@@ -173,7 +173,7 @@ export default function DashboardScreen({ navigation }) {
               </Animated.View>
               <Animated.View entering={FadeInUp.delay(100).duration(400).springify()} style={styles.statCard}>
                 <Text style={styles.statId}>02</Text>
-                <Text style={styles.statLabel}>CORE FLEET</Text>
+                <Text style={styles.statLabel}>TEAM MEMBERS</Text>
                 <Text style={styles.statValue}>{(census?.totalAdmins || 0) + (census?.totalAgents || 0)}</Text>
               </Animated.View>
             </View>
@@ -183,7 +183,7 @@ export default function DashboardScreen({ navigation }) {
         {role !== 'SUPERADMIN' && (
           <>
             <View style={styles.sectionHeader}>
-               <Text style={styles.sectionLabel}>System Status</Text>
+               <Text style={styles.sectionLabel}>Overview</Text>
                <View style={styles.hLine} />
             </View>
 
@@ -208,7 +208,7 @@ export default function DashboardScreen({ navigation }) {
         )}
 
         <View style={styles.sectionHeader}>
-           <Text style={styles.sectionLabel}>{role === 'SUPERADMIN' ? 'CORE REGISTRY' : 'OPERATIONAL HUD'}</Text>
+           <Text style={styles.sectionLabel}>{role === 'SUPERADMIN' ? 'Management' : 'Dashboard'}</Text>
            <View style={styles.hLine} />
         </View>
 
@@ -220,24 +220,24 @@ export default function DashboardScreen({ navigation }) {
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContainer}>
                       <TouchableOpacity 
                         onPress={() => handleOrgSelect(null)}
-                        style={[styles.filterTab, !selectedOrgId && styles.filterTabActive]}
+                        style={[styles.filterTab, !selectedOrgId && styles.filterTabActive, { borderRadius: 12 }]}
                       >
-                        <Text style={[styles.filterTabText, !selectedOrgId && styles.filterTabActiveText]}>GLOBAL VIEW</Text>
+                        <Text style={[styles.filterTabText, !selectedOrgId && styles.filterTabActiveText]}>EVERYWHERE</Text>
                       </TouchableOpacity>
                       {organizations.map(org => (
                         <TouchableOpacity 
                           key={org.id}
                           onPress={() => handleOrgSelect(org.id)}
-                          style={[styles.filterTab, selectedOrgId === org.id && styles.filterTabActive]}
+                          style={[styles.filterTab, selectedOrgId === org.id && styles.filterTabActive, { borderRadius: 12 }]}
                         >
-                          <Text style={[styles.filterTabText, selectedOrgId === org.id && styles.filterTabActiveText]}>{org.name?.toUpperCase() || 'COMPANY'}</Text>
+                          <Text style={[styles.filterTabText, selectedOrgId === org.id && styles.filterTabActiveText]}>{org.name || 'COMPANY'}</Text>
                         </TouchableOpacity>
                       ))}
                     </ScrollView>
                   </View>
                   <AdminActionCard 
-                    title="ADMIN REGISTRY" 
-                    subtitle="Manage high-level organizational nodes." 
+                    title="Admins" 
+                    subtitle="Manage your team and organization nodes." 
                     icon={Shield} 
                     onPress={() => navigation.navigate('Personnel', { roleType: 'ADMIN' })}
                     delay={100}
@@ -245,8 +245,8 @@ export default function DashboardScreen({ navigation }) {
                 </>
               )}
               <AdminActionCard 
-                title="PERSONNEL REGISTRY" 
-                subtitle="Manage and monitor field agent rosters." 
+                title="Members" 
+                subtitle="Manage and monitor your field agents." 
                 icon={UserPlus} 
                 onPress={() => navigation.navigate('Personnel', { roleType: 'AGENT' })}
                 delay={200}
@@ -254,22 +254,22 @@ export default function DashboardScreen({ navigation }) {
               {role === 'ADMIN' && (
                 <>
                   <AdminActionCard 
-                    title="SYSTEM DIRECTIVES" 
-                    subtitle="Initialize and oversee active reward protocols." 
+                    title="Campaigns" 
+                    subtitle="Create and manage your reward programs." 
                     icon={Target} 
                     onPress={() => navigation.navigate('Campaigns')}
                     delay={300}
                   />
                   <AdminActionCard 
-                    title="PROTOCOL REGISTRY" 
-                    subtitle="Technical identifier and QR deployment registry." 
+                    title="QR Codes" 
+                    subtitle="Manage your QR codes and identifiers." 
                     icon={QrCode} 
                     onPress={() => navigation.navigate('Protocols')}
                     delay={400}
                   />
                   <AdminActionCard 
-                    title="TREASURY LEDGER" 
-                    subtitle="Fiscal oversight and disbursement records." 
+                    title="Treasury" 
+                    subtitle="Review your financial and reward records." 
                     icon={Wallet} 
                     onPress={() => navigation.navigate('Treasury')}
                     delay={500}
@@ -287,12 +287,12 @@ export default function DashboardScreen({ navigation }) {
                 onPress={() => navigation.navigate('Scanner')}
                 activeOpacity={0.7}
               >
-                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border, borderRadius: 16 }]}>
                   <ShieldAlert color="black" size={24} />
                 </View>
                 <View style={styles.actionInfo}>
-                  <Text style={styles.actionTitle}>INITIALIZE SCAN</Text>
-                  <Text style={styles.actionDesc}>Technical ID verification and Capture</Text>
+                  <Text style={styles.actionTitle}>SCAN QR</Text>
+                  <Text style={styles.actionDesc}>Verify and capture member data</Text>
                 </View>
                 <View style={styles.actionBtn}>
                    <ArrowUpRight color="black" size={16} />
@@ -306,12 +306,12 @@ export default function DashboardScreen({ navigation }) {
                 onPress={() => navigation.navigate('Rewards')}
                 activeOpacity={0.7}
               >
-                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border, borderRadius: 16 }]}>
                   <Shapes color="black" size={24} />
                 </View>
                 <View style={styles.actionInfo}>
-                  <Text style={styles.actionTitle}>VALUE REGISTRY</Text>
-                  <Text style={styles.actionDesc}>Live Reward and Performance Pulse</Text>
+                  <Text style={styles.actionTitle}>REWARDS</Text>
+                  <Text style={styles.actionDesc}>Check live performance and rewards</Text>
                 </View>
                 <View style={styles.actionBtn}>
                    <ArrowUpRight color="black" size={16} />
@@ -325,12 +325,12 @@ export default function DashboardScreen({ navigation }) {
                 onPress={() => navigation.navigate('Activity')}
                 activeOpacity={0.7}
               >
-                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border }]}>
+                <View style={[styles.actionIconWrapper, { backgroundColor: Theme.border, borderRadius: 16 }]}>
                   <Clock color="black" size={24} />
                 </View>
                 <View style={styles.actionInfo}>
-                  <Text style={styles.actionTitle}>ACTIVITY REGISTRY</Text>
-                  <Text style={styles.actionDesc}>Historical Capture and Log Stream</Text>
+                  <Text style={styles.actionTitle}>ACTIVITY</Text>
+                  <Text style={styles.actionDesc}>Review your recent activity logs</Text>
                 </View>
                 <View style={styles.actionBtn}>
                    <ArrowUpRight color="black" size={16} />
@@ -342,7 +342,7 @@ export default function DashboardScreen({ navigation }) {
 
         <View style={styles.footerNote}>
            <Text style={styles.footerNoteText}>
-             ALL OPERATIONS LOGGED PURSUANT TO MERSI ARCHITECTURE STANDARDS V 16.2.0
+             Securely managing your data and rewards program.
            </Text>
         </View>
       </ScrollView>
@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12,
   },
   content: {
     padding: 32,
@@ -443,6 +444,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 48,
+    borderRadius: Theme.radius,
+    overflow: 'hidden',
   },
   statCard: {
     flex: 1,
@@ -492,6 +495,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 12,
+    borderRadius: Theme.radius,
   },
   actionIconWrapper: {
     width: 56,

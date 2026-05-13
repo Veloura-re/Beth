@@ -60,13 +60,13 @@ export default function CreateProtocolScreen({ navigation }) {
 
   const handleGenerate = async () => {
     if (!form.campaignId || !form.rewardPoints) {
-      Alert.alert("Registry Error", "Target directive and unit value must be specified.");
+      Alert.alert("Error", "Please select a campaign and enter points.");
       return;
     }
 
     const points = parseInt(form.rewardPoints);
     if (isNaN(points)) {
-      Alert.alert("Registry Error", "Unit value must be a valid numerical value.");
+      Alert.alert("Error", "Points must be a number.");
       setBusy(false);
       return;
     }
@@ -84,7 +84,7 @@ export default function CreateProtocolScreen({ navigation }) {
       console.log('[REGISTRY_SUCCESS]', response);
       setShowSuccess(true);
     } catch (error) {
-      Alert.alert("Registry failure", error.message || "Failed to finalize unit deployment.");
+      Alert.alert("Error", error.message || "Failed to create QR code.");
     } finally {
       setBusy(false);
     }
@@ -108,8 +108,8 @@ export default function CreateProtocolScreen({ navigation }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerText}>
-          <Text style={styles.headerSub}>TECHNICAL REGISTRY</Text>
-          <Text style={styles.headerTitle}>GENERATE PROTOCOL</Text>
+          <Text style={styles.headerSub}>QR Code Details</Text>
+          <Text style={styles.headerTitle}>Create QR Code</Text>
         </View>
       </Animated.View>
 
@@ -124,34 +124,34 @@ export default function CreateProtocolScreen({ navigation }) {
           <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.infoCard}>
              <Info size={16} color={Theme.muted} />
              <Text style={styles.infoText}>
-                Identify the target directive and physical painter for record synchronization.
+                Select a campaign and an agent to assign this QR code to.
              </Text>
           </Animated.View>
 
           <Animated.View entering={FadeInDown.delay(400).duration(400).springify()} style={styles.form}>
-             <Text style={styles.label}>TARGET SYSTEM DIRECTIVE</Text>
+             <Text style={styles.label}>CAMPAIGN</Text>
              <TouchableOpacity 
                style={styles.selectBox} 
                onPress={() => setShowCampaignPicker(true)}
              >
                 <Text style={styles.selectText}>
-                  {campaigns.find(c => c.id === form.campaignId)?.name || "SELECT DIRECTIVE..."}
+                  {campaigns.find(c => c.id === form.campaignId)?.name || "Select campaign..."}
                 </Text>
                 <ChevronDown size={14} color={Theme.muted} />
              </TouchableOpacity>
 
-             <Text style={styles.label}>ASSIGNED PAINTER (AUTHORIZED AGENT)</Text>
+             <Text style={styles.label}>ASSIGNED AGENT</Text>
              <TouchableOpacity 
                style={styles.selectBox} 
                onPress={() => setShowAgentPicker(true)}
              >
                 <Text style={[styles.selectText, !form.painterId && { color: Theme.muted }]}>
-                  {agents.find(a => a.id === form.painterId)?.name || "SELECT AGENT (OPTIONAL)..."}
+                  {agents.find(a => a.id === form.painterId)?.name || "Select agent (optional)..."}
                 </Text>
                 <User size={14} color={Theme.muted} />
              </TouchableOpacity>
 
-             <Text style={styles.label}>UNIT VALUE (POINTS PER SCAN)</Text>
+             <Text style={styles.label}>POINTS PER SCAN</Text>
              <TextInput 
                style={styles.input}
                placeholder="100"
@@ -160,15 +160,15 @@ export default function CreateProtocolScreen({ navigation }) {
                onChangeText={(v) => updateForm('rewardPoints', v)}
              />
 
-             <Text style={styles.label}>GEOGRAPHICAL IDENTIFIER (LOCATION)</Text>
+             <Text style={styles.label}>LOCATION</Text>
              <TextInput 
                style={styles.input}
-               placeholder="e.g. DISTRICT ALPHA"
+               placeholder="e.g. Main Entrance"
                value={form.locationName}
                onChangeText={(v) => updateForm('locationName', v)}
              />
 
-             <Text style={[styles.label, { marginTop: 24 }]}>NODE QUANTITY (BATCH COUNT)</Text>
+             <Text style={[styles.label, { marginTop: 24 }]}>QUANTITY</Text>
              <TextInput 
                style={styles.input}
                placeholder="1"
@@ -187,7 +187,7 @@ export default function CreateProtocolScreen({ navigation }) {
                  <ActivityIndicator color="white" />
                ) : (
                  <>
-                   <Text style={styles.actionBtnText}>REGISTER PROTOCOL</Text>
+                   <Text style={styles.actionBtnText}>CREATE QR CODE</Text>
                    <ArrowRight color="white" size={18} />
                  </>
                )}
@@ -199,7 +199,7 @@ export default function CreateProtocolScreen({ navigation }) {
 
       <SuccessOverlay 
         visible={showSuccess} 
-        message="PROTOCOL GENERATED"
+        message="QR CODE CREATED"
         onClose={() => {
           setShowSuccess(false);
           navigation.goBack();
@@ -211,7 +211,7 @@ export default function CreateProtocolScreen({ navigation }) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>SELECT DIRECTIVE</Text>
+              <Text style={styles.modalTitle}>SELECT CAMPAIGN</Text>
               <TouchableOpacity onPress={() => setShowCampaignPicker(false)}>
                 <X size={20} color="black" />
               </TouchableOpacity>
@@ -255,7 +255,7 @@ export default function CreateProtocolScreen({ navigation }) {
                     setShowAgentPicker(false);
                   }}
                 >
-                  <Text style={[styles.pickerItemText, { color: Theme.muted }]}>NONE / UNASSIGNED</Text>
+                  <Text style={[styles.pickerItemText, { color: Theme.muted }]}>NONE</Text>
                 </TouchableOpacity>
               )}
               keyExtractor={(item) => item.id}
@@ -304,12 +304,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   headerText: {
     flex: 1,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -330,10 +331,11 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     marginBottom: 32,
     gap: 16,
+    borderRadius: Theme.radius,
   },
   infoText: {
     flex: 1,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: Theme.muted,
     lineHeight: 16,
@@ -343,7 +345,7 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   label: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -367,7 +369,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Theme.border,
   },
   selectText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     color: '#000000',
   },
@@ -379,13 +381,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 16,
     marginTop: 48,
+    borderRadius: Theme.radius,
   },
   btnDisabled: {
     opacity: 0.7,
   },
   actionBtnText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
   },
@@ -398,6 +401,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: '60%',
     padding: 32,
+    borderTopLeftRadius: Theme.radius,
+    borderTopRightRadius: Theme.radius,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -406,7 +411,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   modalTitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -423,7 +428,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   pickerItemSub: {
-    fontSize: 10,
+    fontSize: 12,
     color: Theme.muted,
     marginTop: 4,
   }

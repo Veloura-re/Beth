@@ -19,7 +19,7 @@ export default function TreasuryScreen({ navigation }) {
     try {
       const me = await getMyProfile();
       if (me.role !== 'ADMIN' && me.role !== 'SUPERADMIN') {
-        Alert.alert("Access Denied", "Authorized fiscal clearance required.");
+        Alert.alert("Access Denied", "You don't have permission to see this.");
         navigation.replace('Dashboard');
         return;
       }
@@ -59,8 +59,8 @@ export default function TreasuryScreen({ navigation }) {
       await updateCashoutStatus(id, status);
       loadData();
     } catch (error) {
-      console.error('Clearance failure', error);
-      Alert.alert("System Error", "Failed to update protocol status.");
+      console.error('Error', error);
+      Alert.alert("Error", "Failed to update payout status.");
     } finally {
       setLoading(false);
     }
@@ -71,22 +71,22 @@ export default function TreasuryScreen({ navigation }) {
        <View style={styles.payoutIcon}>
           <Clock color={Theme.muted} size={16} />
        </View>
-       <View style={styles.payoutInfo}>
-          <Text style={styles.payoutTarget}>{item.agent?.name?.toUpperCase() || 'SYSTEM'}</Text>
+        <View style={styles.payoutInfo}>
+          <Text style={styles.payoutTarget}>{item.agent?.name || 'MEMBER'}</Text>
           <Text style={styles.payoutMeta}>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'} // ID: {item.id?.substring(0,8).toUpperCase() || 'REF-LOG'}</Text>
           {item.status === 'PENDING' && (
             <View style={styles.actionRow}>
-              <TouchableOpacity 
+                <TouchableOpacity 
                 style={[styles.smallActionBtn, styles.bgSuccess]} 
                 onPress={() => handleUpdateStatus(item.id, 'APPROVED')}
               >
-                <Text style={styles.smallActionText}>APPROVE</Text>
+                <Text style={styles.smallActionText}>Approve</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
+                <TouchableOpacity 
                 style={[styles.smallActionBtn, styles.bgDanger]} 
                 onPress={() => handleUpdateStatus(item.id, 'REJECTED')}
               >
-                <Text style={styles.smallActionText}>REJECT</Text>
+                <Text style={styles.smallActionText}>Reject</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -95,7 +95,7 @@ export default function TreasuryScreen({ navigation }) {
               style={[styles.smallActionBtn, styles.bgSuccess, { marginTop: 8 }]} 
               onPress={() => handleUpdateStatus(item.id, 'PAID')}
             >
-              <Text style={styles.smallActionText}>MARK AS PAID</Text>
+              <Text style={styles.smallActionText}>Paid</Text>
             </TouchableOpacity>
           )}
        </View>
@@ -116,8 +116,8 @@ export default function TreasuryScreen({ navigation }) {
           <ArrowLeft color="black" size={24} />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerSub}>Fiscal Oversight</Text>
-          <Text style={styles.headerTitle}>TREASURY</Text>
+          <Text style={styles.headerSub}>Overview</Text>
+          <Text style={styles.headerTitle}>Treasury</Text>
         </View>
       </Animated.View>
 
@@ -126,10 +126,10 @@ export default function TreasuryScreen({ navigation }) {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <Animated.View entering={FadeInUp.delay(200).duration(500).springify()} style={styles.statsCard}>
-           <View style={styles.statLine}>
-              <Text style={styles.statLabel}>Total Platform Volume</Text>
-              <Text style={styles.statValue}>{financials?.totalVolume || 0}</Text>
-           </View>
+            <View style={styles.statLine}>
+               <Text style={styles.statLabel}>Total Scans</Text>
+               <Text style={styles.statValue}>{financials?.totalVolume || 0}</Text>
+            </View>
            <View style={styles.divider} />
            <View style={styles.statLine}>
               <Text style={styles.statLabel}>Total Payouts Issued</Text>
@@ -138,7 +138,7 @@ export default function TreasuryScreen({ navigation }) {
         </Animated.View>
 
         <View style={styles.sectionHeader}>
-           <Text style={styles.sectionLabel}>Pending Clearances</Text>
+           <Text style={styles.sectionLabel}>Payout Requests</Text>
            <View style={styles.hLine} />
         </View>
 
@@ -154,7 +154,7 @@ export default function TreasuryScreen({ navigation }) {
 
         {payouts.length === 0 && !loading && (
           <View style={styles.empty}>
-             <Text style={styles.emptyText}>NO PENDING PAYOUT CLEARANCES AT THIS TIME.</Text>
+             <Text style={styles.emptyText}>No pending payout requests.</Text>
           </View>
         )}
       </ScrollView>
@@ -191,12 +191,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginRight: 20,
+    borderRadius: 12,
   },
   headerTitleContainer: {
     flex: 1,
   },
   headerSub: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -216,6 +217,7 @@ const styles = StyleSheet.create({
     borderColor: Theme.border,
     padding: 24,
     marginBottom: 48,
+    borderRadius: Theme.radius,
   },
   statLine: {
     flexDirection: 'row',
@@ -224,7 +226,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   statLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     color: Theme.muted,
     textTransform: 'uppercase',
@@ -247,7 +249,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 2,
     color: Theme.muted,
@@ -266,6 +268,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.border,
     marginBottom: 12,
+    borderRadius: Theme.radius,
   },
   payoutIcon: {
     width: 40,
@@ -274,18 +277,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
+    borderRadius: 12,
   },
   payoutInfo: {
     flex: 1,
   },
   payoutTarget: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '800',
     color: '#000000',
     marginBottom: 2,
   },
   payoutMeta: {
-    fontSize: 8,
+    fontSize: 10,
     color: Theme.muted,
     fontWeight: '600',
     letterSpacing: 1,
@@ -303,6 +307,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderWidth: 1,
+    borderRadius: 8,
   },
   bgPending: {
     borderColor: Theme.muted,
@@ -325,15 +330,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderWidth: 1,
+    borderRadius: 8,
   },
   smallActionText: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '900',
     color: '#FFFFFF',
     letterSpacing: 1,
   },
   statusText: {
-    fontSize: 7,
+    fontSize: 9,
     fontWeight: '900',
     letterSpacing: 1,
     color: Theme.muted,
@@ -343,7 +349,7 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   emptyText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
     color: Theme.muted,
     textAlign: 'center',
