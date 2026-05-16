@@ -36,8 +36,8 @@ export default function ScanChart({ data = [] }: { data?: ChartData[] }) {
         >
           <defs>
             <linearGradient id="colorScans" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#C62E2E" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#C62E2E" stopOpacity={0} />
+              <stop offset="5%" stopColor="#F4F1EA" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="#F4F1EA" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid
@@ -66,7 +66,7 @@ export default function ScanChart({ data = [] }: { data?: ChartData[] }) {
             letterSpacing="0.1em"
           />
           <Tooltip
-            cursor={{ stroke: '#C62E2E', strokeWidth: 1, strokeDasharray: '4 4' }}
+            cursor={{ stroke: '#F4F1EA', strokeWidth: 1, strokeDasharray: '4 4' }}
             contentStyle={{
               backgroundColor: '#000000',
               border: '1px solid rgba(255,255,255,0.05)',
@@ -79,18 +79,18 @@ export default function ScanChart({ data = [] }: { data?: ChartData[] }) {
               textTransform: 'uppercase',
               letterSpacing: '0.2em'
             }}
-            itemStyle={{ color: '#C62E2E' }}
+            itemStyle={{ color: '#F4F1EA' }}
             labelStyle={{ color: '#8E8E93', marginBottom: '8px', fontSize: '9px' }}
           />
           <Area
             type="monotone"
             dataKey="scans"
-            stroke="#C62E2E"
+            stroke="#F4F1EA"
             strokeWidth={4}
             fillOpacity={1}
             fill="url(#colorScans)"
             animationDuration={2000}
-            activeDot={{ r: 6, stroke: '#0D0D0D', strokeWidth: 3, fill: '#C62E2E' }}
+            activeDot={{ r: 6, stroke: '#0D0D0D', strokeWidth: 3, fill: '#F4F1EA' }}
           />
         </AreaChart>
       </ResponsiveContainer>

@@ -26,7 +26,7 @@ export default function CampaignsPage() {
    if (loading) {
       return (
          <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
-            <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#F4F1EA] animate-spin" />
          </div>
       );
    }
@@ -46,7 +46,7 @@ export default function CampaignsPage() {
                     <h1 className="text-4xl font-sans font-bold tracking-tight mb-2">System Directives</h1>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">High-level operational targeting protocols</p>
                   </div>
-                  <button className="flex items-center gap-2 px-6 py-3 bg-[#C62E2E] text-white rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
+                  <button className="flex items-center gap-2 px-6 py-3 bg-[#F4F1EA] text-black rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
                      <Plus size={18} /> <span>CREATE INITIATIVE</span>
                   </button>
                </div>
@@ -59,8 +59,8 @@ export default function CampaignsPage() {
                         { label: 'Live Executions', value: activeCamps, icon: Activity },
                         { label: 'Platform Scans', value: totalScans.toLocaleString(), icon: Target },
                      ].map((m, i) => (
-                        <div key={i} className="bg-[#161616] p-6 rounded-2xl border border-[#262626] shadow-xl flex items-center gap-4 group hover:border-[#C62E2E]/20 transition-all">
-                           <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white/20 group-hover:text-[#C62E2E] transition-colors border border-white/5">
+                        <div key={i} className="bg-[#161616] p-6 rounded-2xl border border-[#262626] shadow-xl flex items-center gap-4 group hover:border-[#F4F1EA]/20 transition-all">
+                           <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white/20 group-hover:text-[#F4F1EA] transition-colors border border-white/5">
                               <m.icon size={20} />
                            </div>
                            <div>
@@ -82,15 +82,15 @@ export default function CampaignsPage() {
                         const scans = c?._count?.scans ?? 0;
                         const utilization = c && c.budget > 0 ? Math.min(100, Math.round((scans * c.rewardPerScan * 0.1 / c.budget) * 100)) : 0;
                         return (
-                           <div key={c.id} className="bg-[#161616] p-8 rounded-2xl border border-[#262626] hover:border-[#C62E2E]/30 transition-all duration-300 shadow-xl group overflow-hidden relative">
-                              <div className="absolute top-0 right-0 w-64 h-64 bg-[#C62E2E]/5 rounded-full blur-[80px] translate-x-32 -translate-y-32 group-hover:bg-[#C62E2E]/10 transition-colors" />
+                           <div key={c.id} className="bg-[#161616] p-8 rounded-2xl border border-[#262626] hover:border-[#F4F1EA]/30 transition-all duration-300 shadow-xl group overflow-hidden relative">
+                              <div className="absolute top-0 right-0 w-64 h-64 bg-[#F4F1EA]/5 rounded-full blur-[80px] translate-x-32 -translate-y-32 group-hover:bg-[#F4F1EA]/10 transition-colors" />
                               
                               <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-6 relative z-10">
                                  <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-4">
                                        <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${
                                           c.status === 'ACTIVE' 
-                                             ? 'bg-[#C62E2E]/10 text-[#C62E2E] border-[#C62E2E]/20' 
+                                             ? 'bg-[#F4F1EA]/10 text-[#F4F1EA] border-[#F4F1EA]/20' 
                                              : 'bg-white/5 text-[#8E8E93] border-white/5'
                                        }`}>
                                           {c.status}
@@ -104,7 +104,7 @@ export default function CampaignsPage() {
                                  </div>
                                  <div className="lg:text-right bg-black p-6 rounded-2xl border border-white/5 min-w-[200px] shadow-inner">
                                     <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mb-1">Assigned Resources</p>
-                                    <p className="text-4xl font-sans font-bold text-[#C62E2E] tracking-tighter">${c.budget.toLocaleString()}</p>
+                                    <p className="text-4xl font-sans font-bold text-[#F4F1EA] tracking-tighter">${c.budget.toLocaleString()}</p>
                                  </div>
                               </div>
 
@@ -116,7 +116,7 @@ export default function CampaignsPage() {
                                  </div>
                                  <div className="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 shadow-inner">
                                     <div 
-                                       className="h-full bg-gradient-to-r from-[#C62E2E] to-[#801B1B] transition-all duration-1000 ease-out rounded-full shadow-[0_0_10px_rgba(198,46,46,0.3)]" 
+                                       className="h-full bg-gradient-to-r from-[#F4F1EA] to-[#801B1B] transition-all duration-1000 ease-out rounded-full shadow-[0_0_10px_rgba(198,46,46,0.3)]" 
                                        style={{ width: `${utilization}%` }} 
                                     />
                                  </div>
@@ -125,16 +125,16 @@ export default function CampaignsPage() {
                               <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-white/5 relative z-10">
                                  <div className="flex gap-12 mb-6 sm:mb-0">
                                     <div className="group/item cursor-default">
-                                       <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mb-1 group-hover/item:text-[#C62E2E] transition-colors">Registered Telemetry</p>
+                                       <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mb-1 group-hover/item:text-[#F4F1EA] transition-colors">Registered Telemetry</p>
                                        <p className="text-2xl font-sans font-bold text-white tracking-tight">{scans.toLocaleString()}</p>
                                     </div>
                                     <div className="group/item cursor-default">
-                                       <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mb-1 group-hover/item:text-[#C62E2E] transition-colors">Reward / Capture</p>
+                                       <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mb-1 group-hover/item:text-[#F4F1EA] transition-colors">Reward / Capture</p>
                                        <p className="text-2xl font-sans font-bold text-white tracking-tight">${c.rewardPerScan}</p>
                                     </div>
                                  </div>
                                  <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] hover:text-white transition-all group/btn">
-                                    VIEW PROTOCOL MANIFEST <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform text-[#C62E2E]" />
+                                    VIEW PROTOCOL MANIFEST <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform text-[#F4F1EA]" />
                                  </button>
                               </div>
                            </div>

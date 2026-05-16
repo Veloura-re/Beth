@@ -61,7 +61,7 @@ export default function AgentsPage() {
   if (loading) {
     return (
       <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#F4F1EA] animate-spin" />
       </div>
     );
   }
@@ -78,7 +78,7 @@ export default function AgentsPage() {
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">Platform operational intelligence personnel</p>
             </div>
             {isAdmin && (
-              <button onClick={() => { setIsAdding(true); setInviteLink(''); }} className="flex items-center gap-2 px-6 py-3 bg-[#C62E2E] text-white rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
+              <button onClick={() => { setIsAdding(true); setInviteLink(''); }} className="flex items-center gap-2 px-6 py-3 bg-[#F4F1EA] text-black rounded-xl font-bold shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5">
                 <UserPlus size={18} /> <span>RECRUIT AGENT</span>
               </button>
             )}
@@ -91,7 +91,7 @@ export default function AgentsPage() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h3 className="text-2xl font-sans font-bold tracking-tight">Generate Invitation</h3>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C62E2E] mt-1">Tier-3 Operational Recruitment</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F4F1EA] mt-1">Tier-3 Operational Recruitment</p>
                   </div>
                   <button onClick={() => setIsAdding(false)} className="w-10 h-10 rounded-full border border-[#262626] flex items-center justify-center text-[#8E8E93] hover:bg-white/5 transition-colors">
                     <X size={20} />
@@ -101,17 +101,17 @@ export default function AgentsPage() {
                   <div className="space-y-2">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Identity Profile</label>
                     <div className="relative group">
-                       <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
+                       <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#F4F1EA] transition-colors" size={18} />
                        <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Full Name"
-                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#C62E2E] focus:ring-4 focus:ring-[#C62E2E]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10" />
+                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#F4F1EA] focus:ring-4 focus:ring-[#F4F1EA]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10" />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Secure Signal (Email)</label>
                     <div className="relative group">
-                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
+                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#F4F1EA] transition-colors" size={18} />
                        <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="agent@beth.com"
-                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#C62E2E] focus:ring-4 focus:ring-[#C62E2E]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10" />
+                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#F4F1EA] focus:ring-4 focus:ring-[#F4F1EA]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10" />
                     </div>
                   </div>
                 </div>
@@ -126,7 +126,7 @@ export default function AgentsPage() {
 
             {/* Invite Link */}
             {inviteLink && (
-              <div className="bg-[#C62E2E] text-white p-10 rounded-3xl shadow-2xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
+              <div className="bg-[#F4F1EA] text-black p-10 rounded-3xl shadow-2xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-[80px]" />
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-8">
@@ -139,7 +139,7 @@ export default function AgentsPage() {
                     </div>
                   </div>
                   <div className="bg-black/20 border border-white/10 p-6 rounded-2xl flex items-center gap-4 group backdrop-blur-md">
-                    <code className="flex-1 text-sm text-white/70 break-all font-mono tracking-tighter">{inviteLink}</code>
+                    <code className="flex-1 text-sm text-black/70 break-all font-mono tracking-tighter">{inviteLink}</code>
                     <button onClick={copy} className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white text-[#0A0A0A] rounded-lg transition-all text-[11px] font-black uppercase tracking-wider">
                       {copying ? <><Check size={14} /> COPIED</> : <><Copy size={14} /> COPY LINK</>}
                     </button>
@@ -155,8 +155,8 @@ export default function AgentsPage() {
                 { label: 'Weekly Delta', value: agents.filter(a => a && a.createdAt && new Date(a.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length, icon: Activity },
                 { label: 'Operational Throughput', value: agents.reduce((s, a) => s + (a?._count?.scans ?? 0), 0), icon: Target },
               ].map((m, i) => (
-                <div key={i} className="bg-[#161616] p-6 rounded-2xl border border-[#262626] shadow-xl flex items-center gap-4 hover:border-[#C62E2E]/30 transition-all group">
-                   <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white/20 group-hover:text-[#C62E2E] transition-colors border border-white/5">
+                <div key={i} className="bg-[#161616] p-6 rounded-2xl border border-[#262626] shadow-xl flex items-center gap-4 hover:border-[#F4F1EA]/30 transition-all group">
+                   <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white/20 group-hover:text-[#F4F1EA] transition-colors border border-white/5">
                       <m.icon size={20} />
                    </div>
                    <div>
@@ -193,16 +193,16 @@ export default function AgentsPage() {
                       <tr key={a.id} className="hover:bg-white/2 transition-colors group/row">
                         <td className="px-10 py-6">
                            <div className="flex items-center gap-4">
-                              <div className="w-9 h-9 rounded-lg bg-black text-white flex items-center justify-center text-[10px] font-black font-sans group-hover/row:bg-[#C62E2E] transition-colors border border-white/5">
+                              <div className="w-9 h-9 rounded-lg bg-black text-white flex items-center justify-center text-[10px] font-black font-sans group-hover/row:bg-[#F4F1EA] transition-colors border border-white/5">
                                  {a.name?.charAt(0).toUpperCase()}
                               </div>
-                              <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#C62E2E] transition-colors">{a.name}</span>
+                              <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#F4F1EA] transition-colors">{a.name}</span>
                            </div>
                         </td>
                         <td className="px-10 py-6 text-sm font-bold text-[#8E8E93]">{a.email}</td>
                         <td className="px-10 py-6 text-center">
                           <span className="inline-flex items-center px-4 py-1.5 bg-black rounded-lg text-lg font-sans font-bold text-white border border-white/5 shadow-inner">
-                             {a._count?.scans ?? 0} <span className="text-[9px] font-black text-[#C62E2E] ml-2 tracking-widest uppercase opacity-60">Scans</span>
+                             {a._count?.scans ?? 0} <span className="text-[9px] font-black text-[#F4F1EA] ml-2 tracking-widest uppercase opacity-60">Scans</span>
                           </span>
                         </td>
                         <td className="px-10 py-6 text-right text-xs font-bold text-[#8E8E93] opacity-60">{a.createdAt ? new Date(a.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase() : 'UNKNOWN'}</td>

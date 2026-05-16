@@ -11,17 +11,17 @@ interface MetricCardProps {
 
 export default function MetricCard({ title, value, change, icon: Icon, trend }: MetricCardProps) {
   return (
-    <div className="bg-[#161616] border border-[#262626] p-8 rounded-2xl hover:border-[#C62E2E]/30 transition-all duration-500 shadow-2xl group relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[#C62E2E]/5 rounded-full blur-[60px] translate-x-10 -translate-y-10 group-hover:bg-[#C62E2E]/10 transition-colors" />
+    <div className="bg-[#161616] border border-[#262626] p-8 rounded-2xl hover:border-[#F4F1EA]/30 transition-all duration-500 shadow-2xl group relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[#F4F1EA]/5 rounded-full blur-[60px] translate-x-10 -translate-y-10 group-hover:bg-[#F4F1EA]/10 transition-colors" />
       
       <div className="flex items-start justify-between mb-8 relative z-10">
-        <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-[#8E8E93] group-hover:bg-[#C62E2E]/10 group-hover:text-[#C62E2E] transition-colors border border-white/5 shadow-inner">
+        <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-[#8E8E93] group-hover:bg-[#F4F1EA]/10 group-hover:text-[#F4F1EA] transition-colors border border-white/5 shadow-inner">
           <Icon className="w-6 h-6" />
         </div>
         {change && (
           <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black tracking-widest border transition-all ${
             trend === 'up' 
-              ? 'text-[#C62E2E] bg-[#C62E2E]/10 border-[#C62E2E]/20 shadow-[0_0_10px_rgba(198,46,46,0.1)]' 
+              ? 'text-[#F4F1EA] bg-[#F4F1EA]/10 border-[#F4F1EA]/20 shadow-[0_0_10px_rgba(198,46,46,0.1)]' 
               : 'text-[#8E8E93] bg-white/5 border-white/10'
           }`}>
             {trend === 'up' ? <TrendingUp size={12} strokeWidth={3} /> : <TrendingDown size={12} strokeWidth={3} />}
@@ -38,7 +38,7 @@ export default function MetricCard({ title, value, change, icon: Icon, trend }: 
       {/* Subtle bottom accent line */}
       <div className="mt-6 h-px w-full bg-white/5 rounded-full overflow-hidden relative z-10">
         <div 
-          className="h-full bg-[#C62E2E] opacity-40 group-hover:opacity-100 transition-all duration-700 w-1/4 group-hover:w-full" 
+          className="h-full bg-[#F4F1EA] opacity-40 group-hover:opacity-100 transition-all duration-700 w-1/4 group-hover:w-full" 
         />
       </div>
     </div>

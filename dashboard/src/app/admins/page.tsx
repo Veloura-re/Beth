@@ -68,7 +68,7 @@ export default function AdminsPage() {
   if (loading) {
     return (
       <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#F4F1EA] animate-spin" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function AdminsPage() {
             {isSuperAdmin && (
               <button
                 onClick={() => { setIsAdding(true); setInviteLink(''); }}
-                className="flex items-center gap-2 px-6 py-3 bg-[#C62E2E] text-white rounded-xl font-bold shadow-[0_4px_15px_rgba(198,46,46,0.3)] hover:brightness-110 transition-all hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-3 bg-[#F4F1EA] text-black rounded-xl font-bold shadow-[0_4px_15px_rgba(198,46,46,0.3)] hover:brightness-110 transition-all hover:-translate-y-0.5"
               >
                 <Plus size={18} /> <span>PROVISION NODE</span>
               </button>
@@ -102,7 +102,7 @@ export default function AdminsPage() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h3 className="text-2xl font-sans font-bold tracking-tight">Generate Authorization</h3>
-                    <p className="text-[14px] font-black uppercase tracking-[0.2em] text-[#C62E2E] mt-1">Tier-1 Access Provisioning</p>
+                    <p className="text-[14px] font-black uppercase tracking-[0.2em] text-[#F4F1EA] mt-1">Tier-1 Access Provisioning</p>
                   </div>
                   <button onClick={() => setIsAdding(false)} className="w-10 h-10 rounded-full border border-[#262626] flex items-center justify-center text-[#8E8E93] hover:bg-white/5 transition-colors">
                     <X size={20} />
@@ -112,31 +112,31 @@ export default function AdminsPage() {
                   <div className="space-y-2">
                     <label className="block text-[13px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Identity Label</label>
                     <div className="relative group">
-                       <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
+                       <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#F4F1EA] transition-colors" size={18} />
                        <input
                          type="text"
                          value={newName}
                          onChange={(e) => setNewName(e.target.value)}
                          placeholder="Authorized Name"
-                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#C62E2E] focus:ring-4 focus:ring-[#C62E2E]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10"
+                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#F4F1EA] focus:ring-4 focus:ring-[#F4F1EA]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10"
                        />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="block text-[13px] font-black uppercase tracking-[0.2em] text-[#8E8E93] ml-1">Secure Communication</label>
                     <div className="relative group">
-                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
+                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#F4F1EA] transition-colors" size={18} />
                        <input
                          type="email"
                          value={newEmail}
                          onChange={(e) => setNewEmail(e.target.value)}
                          placeholder="admin@beth.com"
-                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#C62E2E] focus:ring-4 focus:ring-[#C62E2E]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10"
+                         className="w-full pl-12 pr-4 py-4 bg-black border border-[#262626] rounded-xl focus:border-[#F4F1EA] focus:ring-4 focus:ring-[#F4F1EA]/10 outline-none transition-all text-base font-bold shadow-inner placeholder:text-white/10"
                        />
                     </div>
                   </div>
                 </div>
-                {error && <p className="text-[#C62E2E] text-[14px] font-black uppercase tracking-widest mb-6 px-4 py-2 bg-[#C62E2E]/10 rounded-lg inline-block border border-[#C62E2E]/20">{error}</p>}
+                {error && <p className="text-[#F4F1EA] text-[14px] font-black uppercase tracking-widest mb-6 px-4 py-2 bg-[#F4F1EA]/10 rounded-lg inline-block border border-[#F4F1EA]/20">{error}</p>}
                 <div className="flex justify-end pt-6 border-t border-white/5">
                   <button
                     onClick={handleInvite}
@@ -152,7 +152,7 @@ export default function AdminsPage() {
 
             {/* Invite Link Result */}
             {inviteLink && (
-              <div className="bg-[#C62E2E] text-white p-10 rounded-3xl shadow-2xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
+              <div className="bg-[#F4F1EA] text-black p-10 rounded-3xl shadow-2xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-[80px]" />
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-8">
@@ -165,7 +165,7 @@ export default function AdminsPage() {
                     </div>
                   </div>
                   <div className="bg-black/20 border border-white/10 p-6 rounded-2xl flex items-center gap-4 group backdrop-blur-md">
-                    <code className="flex-1 text-sm text-white/70 break-all font-mono tracking-tighter">{inviteLink}</code>
+                    <code className="flex-1 text-sm text-black/70 break-all font-mono tracking-tighter">{inviteLink}</code>
                     <button
                       onClick={copyToClipboard}
                       className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white text-[#0A0A0A] rounded-lg transition-all text-[15px] font-black uppercase tracking-wider"
@@ -212,10 +212,10 @@ export default function AdminsPage() {
                         <tr key={a.id} className="hover:bg-white/2 transition-colors group/row">
                           <td className="px-10 py-6">
                              <div className="flex items-center gap-4">
-                                <div className="w-9 h-9 rounded-lg bg-[#262626] text-white flex items-center justify-center text-[13px] font-black font-sans group-hover/row:bg-[#C62E2E] transition-colors border border-white/5">
+                                <div className="w-9 h-9 rounded-lg bg-[#262626] text-white flex items-center justify-center text-[13px] font-black font-sans group-hover/row:bg-[#F4F1EA] transition-colors border border-white/5">
                                    {a.name?.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#C62E2E] transition-colors">{a.name}</span>
+                                <span className="font-sans font-bold text-lg text-white group-hover/row:text-[#F4F1EA] transition-colors">{a.name}</span>
                              </div>
                           </td>
                           <td className="px-10 py-6 text-sm font-bold text-[#8E8E93]">
@@ -224,7 +224,7 @@ export default function AdminsPage() {
                           <td className="px-10 py-6 text-center">
                             <span className={`text-[11px] font-black uppercase tracking-[0.3em] px-3 py-1 rounded-full border ${
                                a.role === 'SUPERADMIN' 
-                                 ? 'bg-[#C62E2E]/10 text-[#C62E2E] border-[#C62E2E]/20' 
+                                 ? 'bg-[#F4F1EA]/10 text-[#F4F1EA] border-[#F4F1EA]/20' 
                                  : 'bg-white/5 text-white/40 border-white/5'
                             }`}>
                               {a.role}

@@ -46,7 +46,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     return (
       <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-           <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+           <Loader2 className="w-8 h-8 text-[#F4F1EA] animate-spin" />
            <div className="text-[9px] font-black tracking-[0.4em] uppercase text-white/40">Auditing Access Protocol...</div>
         </div>
       </div>

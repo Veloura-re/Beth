@@ -31,7 +31,7 @@ const navItems = [
 ];
 
 const roleLabels: Record<string, { label: string; color: string }> = {
-  'SUPERADMIN': { label: 'Node Commander', color: 'bg-[#C62E2E]' },
+  'SUPERADMIN': { label: 'Node Commander', color: 'bg-[#F4F1EA]' },
   'ADMIN': { label: 'Platform Admin', color: 'bg-white/10' },
 };
 
@@ -68,8 +68,8 @@ export default function Sidebar() {
       {/* Brand */}
       <div className="px-6 py-8">
         <div className="flex items-center gap-3 group cursor-pointer">
-          <div className="w-8 h-8 rounded-lg bg-[#C62E2E] flex items-center justify-center shadow-[0_0_15px_rgba(198,46,46,0.2)] group-hover:scale-105 transition-transform">
-             <div className="w-3 h-3 bg-white rounded-sm rotate-45" />
+          <div className="w-8 h-8 bg-[#F4F1EA] flex items-center justify-center shadow-[0_0_15px_rgba(244,241,234,0.1)] group-hover:scale-105 transition-transform rounded-lg">
+             <div className="w-5 h-5 bg-black" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }} />
           </div>
           <div>
             <h1 className="text-lg font-sans font-bold tracking-tight leading-none text-white">BETH</h1>
@@ -105,13 +105,13 @@ export default function Sidebar() {
               <item.icon
                 size={18}
                 strokeWidth={active ? 2.5 : 2}
-                className={`shrink-0 transition-colors ${active ? 'text-[#C62E2E]' : 'text-white/30 group-hover:text-white/60'}`}
+                className={`shrink-0 transition-colors ${active ? 'text-[#F4F1EA]' : 'text-white/30 group-hover:text-white/60'}`}
               />
               <span className="text-sm tracking-tight">
                 {item.name}
               </span>
               {active && (
-                <div className="ml-auto w-1 h-1 rounded-full bg-[#C62E2E] shadow-[0_0_8px_#C62E2E]" />
+                <div className="ml-auto w-1 h-1 rounded-full bg-[#F4F1EA] shadow-[0_0_8px_#F4F1EA]" />
               )}
             </Link>
           );
@@ -130,7 +130,7 @@ export default function Sidebar() {
         )}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#8E8E93] hover:bg-[#C62E2E] hover:text-white rounded-lg transition-all shadow-sm border border-transparent"
+          className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#8E8E93] hover:bg-[#F4F1EA] hover:text-black rounded-lg transition-all shadow-sm border border-transparent"
         >
           <div className="flex items-center gap-3">
             <LogOut size={16} strokeWidth={2} />

@@ -70,7 +70,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#F4F1EA] animate-spin" />
       </div>
     );
   }
@@ -100,7 +100,7 @@ export default function DashboardPage() {
                 <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#8E8E93]">Operational Analytics Node: 01</span>
                 <div className="w-1 h-1 rounded-full bg-[#262626]" />
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[#C62E2E] shadow-[0_0_8px_#C62E2E]" />
+                  <div className="w-2 h-2 rounded-full bg-[#F4F1EA] shadow-[0_0_8px_#F4F1EA]" />
                   <span className="text-[12px] font-black uppercase tracking-[0.2em] text-white/40">Synchronized</span>
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex gap-2 p-1 bg-black rounded-lg">
                     {['7D', '30D', '90D'].map((t) => (
-                      <button key={t} className={`px-4 py-1.5 text-[11px] font-black tracking-widest uppercase rounded-md transition-all ${t === '7D' ? 'bg-[#C62E2E] text-white shadow-lg' : 'text-[#8E8E93] hover:text-white'}`}>
+                      <button key={t} className={`px-4 py-1.5 text-[11px] font-black tracking-widest uppercase rounded-md transition-all ${t === '7D' ? 'bg-[#F4F1EA] text-black shadow-lg' : 'text-[#8E8E93] hover:text-white'}`}>
                         {t}
                       </button>
                     ))}
@@ -143,7 +143,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-[#C62E2E] text-white p-10 rounded-2xl flex flex-col justify-between shadow-2xl relative overflow-hidden group">
+              <div className="bg-[#F4F1EA] text-black p-10 rounded-2xl flex flex-col justify-between shadow-2xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-[60px] translate-x-10 -translate-y-10 group-hover:bg-white/20 transition-colors" />
                 
                 <div className="relative z-10">

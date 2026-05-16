@@ -56,7 +56,7 @@ export default function FinancialsPage() {
   if (loading) {
     return (
       <div className="flex bg-[#0A0A0A] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#C62E2E] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#F4F1EA] animate-spin" />
       </div>
     );
   }
@@ -91,7 +91,7 @@ export default function FinancialsPage() {
                 { label: 'Net Profit', value: `$${stats?.netProfit?.toLocaleString() ?? '0'}`, icon: TrendingUp },
               ].map((m, i) => (
                 <div key={i} className="bg-[#161616] p-10 rounded-3xl border border-[#262626] shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/2 rounded-full blur-[60px] -translate-x-10 -translate-y-10 group-hover:bg-[#C62E2E]/5 transition-colors" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/2 rounded-full blur-[60px] -translate-x-10 -translate-y-10 group-hover:bg-[#F4F1EA]/5 transition-colors" />
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-[#8E8E93] group-hover:text-white transition-colors border border-white/5">
@@ -107,7 +107,7 @@ export default function FinancialsPage() {
 
             {/* Revenue chart */}
             <div className="bg-[#161616] border border-[#262626] p-10 rounded-3xl shadow-2xl overflow-hidden relative group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#C62E2E]/5 rounded-full blur-[80px] translate-x-32 -translate-y-32 group-hover:bg-[#C62E2E]/10 transition-colors" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#F4F1EA]/5 rounded-full blur-[80px] translate-x-32 -translate-y-32 group-hover:bg-[#F4F1EA]/10 transition-colors" />
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-10">
                   <div>
@@ -115,7 +115,7 @@ export default function FinancialsPage() {
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8E8E93] mt-1">Daily trend analysis protocol</p>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-black rounded-full border border-white/5">
-                    <div className="w-2 h-2 rounded-full bg-[#C62E2E] shadow-[0_0_8px_#C62E2E]" />
+                    <div className="w-2 h-2 rounded-full bg-[#F4F1EA] shadow-[0_0_8px_#F4F1EA]" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Live Distribution</span>
                   </div>
                 </div>
@@ -130,15 +130,15 @@ export default function FinancialsPage() {
               <div className="px-10 py-8 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                   <h3 className="text-xl font-sans font-bold tracking-tight text-white">Audit Ledger</h3>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C62E2E] mt-1">Comprehensive Transaction Record</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F4F1EA] mt-1">Comprehensive Transaction Record</p>
                 </div>
                 <div className="relative group">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C62E2E] transition-colors" size={18} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#F4F1EA] transition-colors" size={18} />
                   <input
                     type="text" value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search by respondent..."
-                    className="pl-12 pr-4 py-3 text-sm bg-black border border-[#262626] rounded-xl focus:border-[#C62E2E] focus:ring-4 focus:ring-[#C62E2E]/10 outline-none transition-all w-full md:w-80 shadow-inner placeholder:text-white/10"
+                    className="pl-12 pr-4 py-3 text-sm bg-black border border-[#262626] rounded-xl focus:border-[#F4F1EA] focus:ring-4 focus:ring-[#F4F1EA]/10 outline-none transition-all w-full md:w-80 shadow-inner placeholder:text-white/10"
                   />
                 </div>
               </div>
@@ -163,11 +163,11 @@ export default function FinancialsPage() {
                       <tr key={t.id} className="hover:bg-white/2 transition-colors group/row">
                         <td className="px-10 py-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-9 h-9 rounded-lg bg-black text-[#8E8E93] flex items-center justify-center text-[10px] font-black font-sans group-hover/row:bg-[#C62E2E] group-hover/row:text-white transition-all border border-white/5 shadow-inner">
+                            <div className="w-9 h-9 rounded-lg bg-black text-[#8E8E93] flex items-center justify-center text-[10px] font-black font-sans group-hover/row:bg-[#F4F1EA] group-hover/row:text-white transition-all border border-white/5 shadow-inner">
                                {t.user?.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                               <p className="font-sans font-bold text-lg text-white group-hover/row:text-[#C62E2E] transition-colors leading-none mb-1">{t.user}</p>
+                               <p className="font-sans font-bold text-lg text-white group-hover/row:text-[#F4F1EA] transition-colors leading-none mb-1">{t.user}</p>
                                <p className="text-[10px] text-[#8E8E93] font-mono uppercase tracking-tighter opacity-50">ID: {t.id.slice(0, 10).toUpperCase()}</p>
                             </div>
                           </div>
@@ -176,7 +176,7 @@ export default function FinancialsPage() {
                           <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#8E8E93]">
                             {t.type.includes('Revenue') || t.type.includes('Deposit')
                               ? <ArrowUpRight size={16} className="text-emerald-500" />
-                              : <ArrowDownLeft size={16} className="text-[#C62E2E]" />
+                              : <ArrowDownLeft size={16} className="text-[#F4F1EA]" />
                             }
                             {t.type}
                           </span>
