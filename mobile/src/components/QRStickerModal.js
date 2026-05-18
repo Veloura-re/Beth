@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import ViewShot from 'react-native-view-shot';
+import { captureRef } from 'react-native-view-shot';
 import * as Print from 'expo-print';
 import { X, Share2, ShieldCheck, Printer } from 'lucide-react-native';
 import { Theme } from '../theme/theme';
@@ -13,7 +13,7 @@ export default function QRStickerModal({ visible, protocol, onClose }) {
 
   const handleShare = async () => {
     try {
-      const uri = await viewShotRef.current.capture();
+      const uri = await captureRef(viewShotRef, { format: 'png', quality: 1.0, result: 'tmpfile' });
       await Sharing.shareAsync(uri, {
         mimeType: 'image/png',
         dialogTitle: 'Share Beth Protocol Sticker',
@@ -26,12 +26,12 @@ export default function QRStickerModal({ visible, protocol, onClose }) {
 
   const handlePrint = async () => {
     try {
-      const uri = await viewShotRef.current.capture();
+      const dataUri = await captureRef(viewShotRef, { format: 'png', quality: 1.0, result: 'data-uri' });
       
       const htmlContent = `
         <html>
           <body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 0;">
-            <img src="${uri}" style="width: 80%; height: auto;" />
+            <img src="${dataUri}" style="width: 80%; height: auto;" />
           </body>
         </html>
       `;
@@ -58,9 +58,9 @@ export default function QRStickerModal({ visible, protocol, onClose }) {
           </View>
 
           <View style={styles.stickerWrapper}>
-            <ViewShot 
+            <View 
               ref={viewShotRef} 
-              options={{ format: 'png', quality: 1.0 }}
+              collapsable={false}
               style={styles.stickerOuter}
             >
               <View style={styles.stickerInner}>
@@ -91,7 +91,7 @@ export default function QRStickerModal({ visible, protocol, onClose }) {
                   <Text style={styles.securityText}>BETH REWARDS // ENCRYPTED PROTOCOL v1</Text>
                 </View>
               </View>
-            </ViewShot>
+            </View>
           </View>
 
           <View style={styles.actionRow}>

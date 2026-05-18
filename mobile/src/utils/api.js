@@ -132,13 +132,33 @@ export const getCampaigns = async (organizationId) => {
 };
 
 export const createCampaign = async (payload) => {
-  const { data, error } = await supabase.from('campaigns').insert(payload).select().single();
+  const dbPayload = {
+    ...payload,
+    reward_per_scan: payload.rewardPerScan,
+    painter_margin: payload.painterMargin,
+    organization_id: payload.organizationId,
+  };
+  delete dbPayload.rewardPerScan;
+  delete dbPayload.painterMargin;
+  delete dbPayload.organizationId;
+
+  const { data, error } = await supabase.from('campaigns').insert(dbPayload).select().single();
   if (error) throw new Error(error.message);
   return data;
 };
 
 export const updateCampaign = async (id, payload) => {
-  const { data, error } = await supabase.from('campaigns').update(payload).eq('id', id).select().single();
+  const dbPayload = {
+    ...payload,
+    reward_per_scan: payload.rewardPerScan,
+    painter_margin: payload.painterMargin,
+    organization_id: payload.organizationId,
+  };
+  delete dbPayload.rewardPerScan;
+  delete dbPayload.painterMargin;
+  delete dbPayload.organizationId;
+
+  const { data, error } = await supabase.from('campaigns').update(dbPayload).eq('id', id).select().single();
   if (error) throw new Error(error.message);
   return data;
 };
@@ -209,6 +229,9 @@ export const createInvitation = async ({ email, role, organizationId, organizati
       .single();
     if (orgErr) throw new Error(orgErr.message);
     orgId = org.id;
+  } else if (!orgId) {
+    const profile = await getMyProfile();
+    orgId = profile.organization_id;
   }
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);

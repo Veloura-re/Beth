@@ -360,6 +360,9 @@ export const createInvitation = async ({ email, role, organizationId, organizati
       .single();
     if (orgErr) throw new Error(orgErr.message);
     orgId = org.id;
+  } else if (!orgId) {
+    const profile = await getMyProfile();
+    orgId = profile.organizationId;
   }
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);

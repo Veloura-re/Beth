@@ -23,19 +23,29 @@ export default function ScannerScreen({ navigation }) {
     setLoading(true);
 
     try {
+      // Validate the QR code payload
+      if (!data || typeof data !== 'string' || data.length < 20) {
+        Alert.alert("Invalid QR", "This QR code doesn't belong to our system.");
+        setScanned(false);
+        setLoading(false);
+        return;
+      }
+
       // Get current location for geo-verification
       let lat, lng;
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
-          const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
-          });
+          // Attempt to get location with a 3-second timeout to prevent UI freezes
+          const location = await Promise.race([
+            Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 3000))
+          ]);
           lat = location.coords.latitude;
           lng = location.coords.longitude;
         }
       } catch (locError) {
-        console.log('Location not available:', locError);
+        console.log('Location not available or timed out:', locError?.message || locError);
         // Continue without location - backend will handle it
       }
 
